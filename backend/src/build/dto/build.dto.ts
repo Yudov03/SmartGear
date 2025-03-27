@@ -1,19 +1,7 @@
 import { Type } from 'class-transformer';
-import {IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString} from 'class-validator';
+import {IsInt, IsNumber, IsOptional} from 'class-validator';
   
-export class CreateProjectDto {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-
-    @IsString()
-    @IsOptional()
-    description: string;
-
-    @IsBoolean()
-    @IsNotEmpty()
-    status: boolean;
-
+export class BuildDto {
     @IsOptional()
     @Type(() => Number)
     @IsNumber()

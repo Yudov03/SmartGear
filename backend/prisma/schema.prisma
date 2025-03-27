@@ -30,11 +30,57 @@ model Project {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  param1 Int
-  param2 Int
-  param3 Int
+  name String 
+  description String
+  status Boolean
+
+  P Float
+  L Int
+  n_sb Float
+
+  P_real Float
+  P1 Float
+  P2 Float
+  P3 Float
+  P_ct Float
+
+  n_real Int
+  n1 Float
+  n2 Float
+  n3 Float
+  n Int
+
+  T_dc Float
+  T1 Float
+  T2 Float
+  T3 Float
+  T_tt Float
+
+  u_d Float
+  u_brc Float
+  u_brt Float
+  u_kn Float
   
   userId Int
   user User @relation(fields: [userId], references: [id])
   @@map("projects")
+}
+
+model Engine {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company String
+  Type String
+  P_dc Float
+  n_dc Int
+  Voltage String
+  Current String
+  Efficiency Float
+  Power_Fractor Float
+  Max_Torque_Ratio Float
+  Start_Torque_Ratio Float
+  Start_Current_Ratio Float
+  Weight Float
 }

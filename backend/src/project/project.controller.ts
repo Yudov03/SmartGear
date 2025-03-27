@@ -9,6 +9,7 @@ import {CreateProjectDto, EditProjectDto} from './dto';
 export class ProjectController {
     constructor(private projectService: ProjectService) {}
 
+    // GET http://localhost:3000/projects (Header Beare token)
     @Get()
     getProjects(@GetUser('id') userId: number) {
         return this.projectService.getProjects(
@@ -16,6 +17,7 @@ export class ProjectController {
         );
     }
 
+    // GET http://localhost:3000/projects/1 (Header Beare token)
     @Get(':id')
     getProjectById(@GetUser('id') userId: number, @Param('id', ParseIntPipe) projectId: number) {
         return this.projectService.getProjectById(
@@ -24,6 +26,7 @@ export class ProjectController {
         );
     }
 
+    // POST http://localhost:3000/projects (Header Beare token, Body dto)
     @Post()
     createProject(@GetUser('id') userId: number, @Body() dto: CreateProjectDto) {
         return this.projectService.createProject(
@@ -32,6 +35,7 @@ export class ProjectController {
         );
     }
 
+    // PATCH http://localhost:3000/projects/1 (Header Beare token, Body dto)
     @Patch(':id')
     editProjectById(@GetUser('id') userId: number, @Param('id', ParseIntPipe) projectId: number, @Body() dto: EditProjectDto) {
         return this.projectService.editProjectById(
@@ -41,6 +45,7 @@ export class ProjectController {
         );
     }
 
+    // DELETE http://localhost:3000/projects/1 (Header Beare token)
     @HttpCode(HttpStatus.NO_CONTENT)
     @Delete(':id')
     deleteProjectById(@GetUser('id') userId: number,@Param('id', ParseIntPipe) projectId: number) {

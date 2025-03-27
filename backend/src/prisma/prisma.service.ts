@@ -17,6 +17,7 @@ export class PrismaService extends PrismaClient {
         return this.$transaction([
             this.project.deleteMany(),
             this.user.deleteMany(),
+            this.engine.deleteMany(),
         ]);
     }
 }
