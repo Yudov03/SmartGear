@@ -66,7 +66,7 @@ function Layout({ children }) {
   );
 
   return (
-    <div className="bg-[#F8F9FA] flex w-full h-full">
+    <div className="bg-[#F8F9FA] flex w-full min-h-screen">
       {/* Sidebar */}
       <div className="h-[1300px] w-[400px] bg-[#F8F9FA] shadow-md p-6 flex flex-col items-center rounded-[20px]">
         <div className="flex items-center justify-center mb-6 mt-[50px]">
@@ -187,7 +187,7 @@ function Layout({ children }) {
         </div>
 
         {/* Nội dung chính được truyền qua prop children */}
-        <div className="flex-1 p-6 bg-white rounded-[20px] mt-[5px] ml-[50px]">
+        <div className="flex-1 p-6 bg-[white] rounded-[20px] mt-[5px] ml-[50px]">
           {children}
         </div>
       </div>
