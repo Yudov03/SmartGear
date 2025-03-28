@@ -3,22 +3,29 @@ import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Layout from "../components/Layout.jsx";
 
 function BuilderPage() {
+  // State lưu các tham số đầu vào (P, n, L)
   const [params, setParams] = useState({
     power: "",
     speed: "",
     lifetime: "",
   });
 
+  // State lưu danh sách động cơ nhận từ API
   const [engines, setEngines] = useState([]);
 
+  // State lưu danh sách biến nhận từ API
   const [variables, setVariables] = useState([]);
 
+  // State lưu 2 biến hiển thị sau Build: P_ct và n_sb
   const [displayVariables, setDisplayVariables] = useState({ P_ct: "", n_sb: "" });
 
+  // State lưu động cơ đã được chọn
   const [selectedEngine, setSelectedEngine] = useState(null);
 
+  // State lưu kết quả tính toán tỷ số truyền (computed variables)
   const [computedVariables, setComputedVariables] = useState([]);
 
+  // Xử lý thay đổi input
   const handleChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
   };
@@ -36,6 +43,7 @@ function BuilderPage() {
     );
   };
 
+  // Xử lý khi nhấn Build: gửi GET request và nhận dữ liệu từ API
   const handleBuild = async () => {
     if (!validateParams()) {
       alert("Vui lòng nhập số hợp lệ!");
@@ -43,6 +51,7 @@ function BuilderPage() {
     }
 
     try {
+      // Gửi GET request với P, n, L
       const response = await AxiosInstance.get("build/engine", {
         params: {
           P: params.power,
@@ -52,13 +61,16 @@ function BuilderPage() {
       });
 
       if (response.data) {
+        // response.data[0]: danh sách động cơ, response.data[1]: danh sách biến
         const engineList = response.data[0];
         const vars = response.data[1];
 
+        // Sắp xếp động cơ sao cho động cơ có P_dc cao nhất đứng đầu
         const sortedEngines = engineList.sort((a, b) => b.P_dc - a.P_dc);
         setEngines(sortedEngines);
         setVariables(vars);
 
+        // Lấy 2 biến cần hiển thị: P_ct và n_sb
         const filteredVars = {
           P_ct: vars.find((v) => v.name === "P_ct")?.P_ct || "",
           n_sb: vars.find((v) => v.name === "n_sb")?.n_sb || "",
@@ -71,10 +83,12 @@ function BuilderPage() {
     }
   };
 
+  // Xử lý khi chọn 1 động cơ từ danh sách (chỉ lưu lựa chọn, không gửi GET ngay)
   const handleSelectEngine = (engineId) => {
     setSelectedEngine(engineId);
   };
 
+  // Xử lý khi nhấn nút "Xác nhận" sau khi đã chọn động cơ
   const handleConfirmEngine = async () => {
     if (!selectedEngine) {
       alert("Vui lòng chọn một động cơ!");
@@ -82,6 +96,7 @@ function BuilderPage() {
     }
 
     try {
+      // Gửi GET request đến build/{engineId} với các biến làm tham số
       const response = await AxiosInstance.get(`build/${selectedEngine}`, {
         params: variables,
       });
