@@ -16,4 +16,16 @@ export class CatalogController {
     getEngines() {
         return this.catalogService.getEngines();
     }
+
+    // lay o lan thong qua ID
+    // http://localhost:3000/catalogs/bearing/1
+    // @Get(TODO)
+    // getBearingById(TODO) {
+    //     return //TODO
+    // }
+
+    // lay danh sach o lan
+    // http://localhost:3000/catalogs/bearing
+    //TODO 
+
 }

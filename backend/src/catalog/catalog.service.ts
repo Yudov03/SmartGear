@@ -17,4 +17,10 @@ export class CatalogService {
             }
         });
     }
+
+    //TODO
+    // getBearings() {}
+
+    // getBearingById() {}
+
 }
