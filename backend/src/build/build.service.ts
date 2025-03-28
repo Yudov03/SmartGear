@@ -7,7 +7,7 @@ import { Engine } from '@prisma/client';
 @Injectable()
 export class BuildService {
     constructor(private prisma: PrismaService) {}
-    
+    // Nhap vao P va n tinh ra P_ct va n_sb
     async calculateEngine(dto: BuildDto) {
         dto.P_ct = dto.P/(0.955*0.96*0.97*(0.99**3))
         dto.n_sb = dto.n*37.5
@@ -24,7 +24,7 @@ export class BuildService {
         engines.sort((a, b) => loss_func(a, dto) - loss_func(b, dto))
         return [engines, dto]
     }
-
+    // nhap vao dto tu output o tren va chon dong co return dto
     async transmissionRate(engineId: number, dto: BuildDto) {
         const item = await this.prisma.engine.findFirst({
             where: {
@@ -37,142 +37,64 @@ export class BuildService {
         dto.n_real = item.n_dc
         dto.u_d = 4
         let u_h = (dto.n_real/dto.n)/dto.u_d
+        
+        let a = 18.67393
+        let b = Math.pow(u_h,2)
+        let c = Math.pow(u_h,3)
+        // Định nghĩa hàm và đạo hàm
+        const f = (x: number): number => {
+            return a * Math.pow(x, 4) - b * x - c;
+        };
 
-        // function solveQuartic(a: number, b: number, c: number, d: number, e: number): number[] {
-        //     // Xử lý trường hợp đặc biệt khi a = 0 (trở thành phương trình bậc 3)
-        //     if (a === 0) {
-        //         return solveCubic(b, c, d, e);
-        //     }
-        
-        //     // Chuẩn hóa phương trình về dạng x⁴ + px³ + qx² + rx + s = 0
-        //     const p = b / a;
-        //     const q = c / a;
-        //     const r = d / a;
-        //     const s = e / a;
-        
-        //     // Giải phương trình bậc 3 tương ứng
-        //     const cubicRoots = solveCubic(1, -q, p * r - 4 * s, -p * p * s + 4 * q * s - r * r);
-        
-        //     // Chọn nghiệm thực dương đầu tiên
-        //     const y = cubicRoots.find((root) => root > 0) || 0;
-        //     console.log(y)
-        //     // Tính các hệ số
-        //     function calculateR(p: number, q: number, y: number): number {
-        //         const underRoot = p * p / 4 - q + y; // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (R là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     function calculateTemp(y: number, s: number): number {
-        //         const underRoot = y * y - 4 * s; // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (temp là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     function calculateD1(p: number, q: number, r: number, R: number): number {
-        //         const underRoot = 3 * p * p / 4 - R * R - 2 * q + (4 * p * q - 8 * r - p * p * p) / (4 * R); // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (D là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     function calculateE1(p: number, q: number, r: number, R: number): number {
-        //         const underRoot = 3 * p * p / 4 - R * R - 2 * q - (4 * p * q - 8 * r - p * p * p) / (4 * R); // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (E là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     function calculateD2(p: number, q: number, temp: number): number {
-        //         const underRoot = 3 * p * p / 4 - 2 * q + 2 * temp; // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (D2 là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     function calculateE2(p: number, q: number, temp: number): number {
-        //         const underRoot = 3 * p * p / 4 - 2 * q - 2 * temp; // Giá trị trong căn
-                
-        //         if (underRoot < 0) {
-        //             throw new Error("Không thể tính căn bậc hai của số âm (E2 là phức).");
-        //         }
-                
-        //         return math.sqrt(underRoot) as number; // Ép kiểu thành number
-        //     }
-        //     // const R = math.sqrt(p * p / 4 - q + y);
-        //     const R = calculateR(p,q,y)
-        //     console.log(R)
-        //     let D: number|math.Complex, E: number|math.Complex;
-        
-        //     if (R !== 0) {
-        //         D = calculateD1(p,q,r,R);
-        //         E = calculateE1(p,q,r,R);
-        //     } else {
-        //         const temp = calculateTemp(y,s)
-        //         D = calculateD2(p,q,temp);
-        //         E = calculateE2(p,q,temp);
-        //     }
-        //     // Tính các nghiệm
-        //     const roots: number[] = [];
-        
-        //     if (R !== 0) {
-        //         roots.push(-p / 4 + R / 2 + D / 2);
-        //         roots.push(-p / 4 + R / 2 - D / 2);
-        //         roots.push(-p / 4 - R / 2 + E / 2);
-        //         roots.push(-p / 4 - R / 2 - E / 2);
-        //     } else {
-        //         roots.push(-p / 4 + D / 2);
-        //         roots.push(-p / 4 - D / 2);
-        //         roots.push(-p / 4 + E / 2);
-        //         roots.push(-p / 4 - E / 2);
-        //     }
-        
-        //     // Lọc bỏ các nghiệm NaN và trùng lặp
-        //     const realRoots = roots.filter((root, index, self) => 
-        //     !isNaN(root) && self.indexOf(root) === index
-        //     );
-        
-        //     return realRoots;
-        // }
-        
-        // function solveCubic(a: number, b: number, c: number, d: number) {
-        //     let result = math.polynomialRoot(a,b,c,d)
-        //     const ouput = result.filter(sol => {
-        //         if (math.isComplex(sol)) return false; // Bỏ hẳn nếu là Complex
-        //         return true; // Giữ lại nếu là number
-        //     }) as number[];
-        //     return ouput
-        // }
-        // const solutions = solveQuartic(14.03*(1.1**3),0,0,-(10.45**2),-(10.45**3))
-        dto.u_brc = 2.97674693
-        dto.u_brt = u_h/dto.u_brc
-        dto.u_kn = 1
-        
-        dto.P1=dto.P_real*0.99*0.955
-        dto.P2=dto.P1*0.99*0.96
-        dto.P3=dto.P2*0.99*0.955
+        const df = (x: number): number => {
+            return 4 * a * Math.pow(x, 3) - b;
+        };
 
-        dto.n1=dto.n_real/4
+        // Triển khai phương pháp Newton-Raphson
+        const newtonRaphson = (
+            f: (x: number) => number,
+            df: (x: number) => number,
+            x0: number,
+            tol: number = 1e-8,
+            maxIter: number = 100
+        ): number => {
+            let x = x0;
+            for (let i = 0; i < maxIter; i++) {
+                const fx = f(x);
+                const dfx = df(x);
+                
+                if (Math.abs(fx) < tol) break;
+                if (dfx === 0) throw new Error("Đạo hàm bằng 0 - Không thể tiếp tục");
+                
+                x = x - fx / dfx;
+            }
+            return x;
+        };
+
+
+        dto.u_brc=newtonRaphson(f,df,3)
+        dto.u_brt= u_h / dto.u_brc
+
+        dto.P_real=7.5 
+        dto.P1=dto.P_real*0.99*0.95
+        dto.P2=dto.P_real*0.99*0.96
+        dto.P3=dto.P_real*0.99*0.955
+
+        dto.n_real=2925
+        dto.u_kn=1
+        dto.n1=dto.n_real/dto.u_d
         dto.n2=dto.n1/dto.u_brc
         dto.n3=dto.n2/dto.u_brt
+        dto.n=dto.n3/dto.u_kn
 
-        dto.T_dc=9.55*(10**6)*dto.P_real/dto.n_real
-        dto.T1=9.55*(10**6)*dto.P1/dto.n1
-        dto.T2=9.55*(10**6)*dto.P2/dto.n2
-        dto.T3=9.55*(10**6)*dto.P3/dto.n3
-        dto.T_tt=9.55*(10**6)*dto.P3/dto.n
+        let temp = 9.55 * Math.pow(10,6)
+
+        dto.T_dc = temp*(dto.P_real/dto.n_real)
+        dto.T1= temp * (dto.P1/dto.n1)
+        dto.T2= temp *(dto.P2/dto.n2)
+        dto.T3= temp *(dto.P3/dto.n3)
+        dto.T_tt= dto.T3
+
 
         return dto
     }
