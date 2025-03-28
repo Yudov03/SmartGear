@@ -5,6 +5,9 @@ import "/src/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import WelcomePage from "./pages/WelcomePage.jsx";
 import CatalogPage from "./pages/CatalogPage.jsx";
 import SettingPage from "./pages/SettingPage.jsx";
@@ -14,11 +17,12 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import HistoryPage from "./pages/HistoryPage.jsx";
 import RootLayout from "./components/RootLayout.jsx";
 import { Login } from "./login/login.jsx";
+import LoginPage from "./login/loginPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: [<RootLayout />, <ToastContainer />],
     children: [
       // Route mặc định: khi truy cập '/', hiển thị WelcomePage
       {
@@ -54,7 +58,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <LoginPage />,
   },
 ]);
 

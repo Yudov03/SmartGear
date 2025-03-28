@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -34,7 +34,7 @@ export const Login = () => {
     { name: "Anh", link: true },
   ];
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
@@ -59,35 +59,31 @@ export const Login = () => {
 
   return (
     <>
-      <GlobalStyle />
+      {/* <GlobalStyle /> */}
       <div className="bg-transparent flex flex-row justify-center w-full">
-        <div className="w-[0] h-[1080px]">
+        <div className=" h-[1080px]">
           <div className="relative h-[1080px]">
-            {/* <div className="w-[1920px] h-[1052px] bg-[url(https://c.animaapp.com/m8qroov3KCtN5L/img/screencapture-demos-creative-tim-soft-ui-dashboard-pages-sign-in.png)] bg-cover bg-[50%_50%] absolute top-0 left-0" /> */}
-
-            <div className="absolute w-[0] h-[1080px] top-0 left-0">
+            <div className="absolute  h-[1080px] top-0 left-0">
               <div className="relative h-[1080px] bg-white">
-                {/* Footer */}
                 <div className="absolute w-[985px] h-[18px] top-[1020px] left-[169px] flex justify-between">
                   <div className="w-[423px] h-[18px]">
                     <div className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-xs tracking-[0] leading-[12.0px]">
                       <span className="text-[#a0aec0] leading-[18.0px]">
-                        @ 2025, Made with ❤ by{" "}
+                        @ 2025, Made with ❤ by
                       </span>
                       {creators.map((creator, index) => (
                         <React.Fragment key={index}>
                           <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#38b2ac] leading-[18.0px]">
-                            {creator.name}{" "}
+                            {creator.name}
                           </span>
                           {index < creators.length - 1 && (
                             <span className="text-[#a0aec0] leading-[18.0px]">
-                              &amp;{" "}
+                              &amp;
                             </span>
                           )}
                         </React.Fragment>
                       ))}
                       <span className="text-[#a0aec0] leading-[18.0px]">
-                        {" "}
                         for helping HCMUT student
                       </span>
                     </div>
@@ -103,27 +99,24 @@ export const Login = () => {
                   </div>
                 </div>
 
-                <div className="absolute w-[1454px] h-[895px] top-0 left-[56px]">
-                  <div className="absolute w-[1454px] h-[895px] top-0 left-0">
-                    {/* Right side image */}
+                <div className="absolute w-[50px] h-[895px] top-0 left-[56px]">
+                  <div className="absolute w-[50px] h-[895px] top-0 left-0">
                     <img
                       className="absolute w-[862px] h-[895px] top-0 left-[592px]"
                       alt="Login background"
                       src="https://c.animaapp.com/m8qroov3KCtN5L/img/image.png"
                     />
 
-                    {/* Navigation bar */}
                     <div
                       className="absolute top-[25px] left-[200px]
-             w-[988px] h-[72px]
-             rounded-[15px]
-             border border-white
-             shadow-[0_7px_23px_rgba(0,0,0,0.05)]
-             backdrop-blur-[10.5px]
-             [background:linear-gradient(137deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.8)_100%)]
-             flex items-center px-4"
+                        w-[988px] h-[72px]
+                        rounded-[15px]
+                        border border-white
+                        shadow-[0_7px_23px_rgba(0,0,0,0.05)]
+                        backdrop-blur-[10.5px]
+                        [background:linear-gradient(137deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.8)_100%)]
+                        flex items-center px-4"
                     >
-                      {/* Logo */}
                       <div className="flex items-center h-[23px]">
                         <div className="w-[22px] h-[23px] relative">
                           <img
@@ -149,7 +142,6 @@ export const Login = () => {
                         </div>
                       </div>
 
-                      {/* Menu */}
                       <div className="flex gap-4 ml-8">
                         {navItems.map((item, index) => (
                           <StyledButton
@@ -168,11 +160,10 @@ export const Login = () => {
                         ))}
                       </div>
 
-                      {/* FREE SIGN UP */}
                       <StyledButton
                         className="ml-auto w-[150px] h-[37px] rounded-[34.5px]
-               [background:linear-gradient(41deg,rgba(49,56,96,1)_0%,rgba(21,25,40,1)_100%)]
-               flex items-center justify-center"
+                [background:linear-gradient(41deg,rgba(49,56,96,1)_0%,rgba(21,25,40,1)_100%)]
+                flex items-center justify-center"
                       >
                         <div className="w-[89.5px] h-[15px] text-white font-bold text-[10px] leading-[15px]">
                           FREE SIGN UP!
@@ -181,130 +172,137 @@ export const Login = () => {
                     </div>
                   </div>
 
-                  {/* Login form */}
-                  <div className="absolute w-[355px] h-[457px] top-[289px] left-0">
-                    {/* Sign up link */}
-                    <div className="absolute w-[202px] top-[437px] left-[77px] [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-sm text-center tracking-[0] leading-[14.0px]">
-                      <span className="text-[#a0aec0] leading-[19.6px]">
-                        Don&#39;t have an account?
-                      </span>
-                      <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#a0aec0] leading-[19.6px]">
-                        &nbsp;
-                      </span>
-                      <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#4fd1c5] leading-[0.1px] cursor-pointer">
-                        Sign up
-                      </span>
-                    </div>
+                  <form onSubmit={handleLogin}>
+                    <div className="absolute w-[355px] h-[457px] top-[289px] left-0">
+                      <div className="absolute w-[202px] top-[437px] left-[77px] [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-sm text-center tracking-[0] leading-[14.0px]">
+                        <span className="text-[#a0aec0] leading-[19.6px]">
+                          Don&#39;t have an account?
+                        </span>
+                        <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#a0aec0] leading-[19.6px]">
+                          &nbsp;
+                        </span>
+                        <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#4fd1c5] leading-[0.1px] cursor-pointer">
+                          Sign up
+                        </span>
+                      </div>
 
-                    {/* Sign in button */}
-                    <Button className="w-[350px] h-[47px] absolute top-[385px] left-[3px] !bg-[#4fd1c5] rounded-xl text-white [font-family:'Arial-Bold',Helvetica] font-bold text-[10px] text-center tracking-[0] leading-[15px]">
-                      SIGN IN
-                    </Button>
+                      <Button
+                        type="submit"
+                        className="w-[350px] h-[47px] absolute top-[385px] left-[3px] !bg-[#4fd1c5] rounded-xl text-white [font-family:'Arial-Bold',Helvetica] font-bold text-[10px] text-center tracking-[0] leading-[15px]"
+                      >
+                        SIGN IN
+                      </Button>
 
-                    {/* Remember me toggle */}
-                    <div className="absolute w-32 h-[35px] top-[312px] left-[3px] flex items-center">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          id="remember-me"
-                          type="checkbox"
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
+                      <div className="absolute w-32 h-[35px] top-[312px] left-[3px] flex items-center">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            id="remember-me"
+                            type="checkbox"
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <Label
+                            htmlFor="remember-me"
+                            className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-xs tracking-[0] leading-[18px]"
+                          >
+                            Remember me
+                          </Label>
+                        </div>
+                      </div>
+
+                      <div className="absolute w-[352px] h-[92px] top-[210px] left-[3px]">
                         <Label
-                          htmlFor="remember-me"
-                          className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-xs tracking-[0] leading-[18px]"
+                          htmlFor="password"
+                          className="absolute w-[62px] top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
                         >
-                          Remember me
+                          Password
                         </Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Your password"
+                          className="w-[350px] h-[53px] absolute top-[39px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
+                          value={pass}
+                          onChange={(e) => setPass(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="absolute w-[352px] h-[89px] top-[109px] left-[3px]">
+                        <Label
+                          htmlFor="email"
+                          className="absolute w-9 top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
+                        >
+                          Email
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Your email address"
+                          className="w-[350px] h-[53px] absolute top-[37px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="absolute w-[283px] h-[72px] top-0 left-0">
+                        <div className="text-[#a0aec0] absolute w-[274px] top-[52px] left-1 [font-family:'Arial-Bold',Helvetica] font-bold text-graygray-400 text-sm text-center tracking-[0] leading-[19.6px]">
+                          Enter your email and password to sign in
+                        </div>
+                        <span className="text-[#4fd1c5] absolute w-[226px] top-0 left-0 [font-family:'Arial-Bold',Helvetica] font-bold text-tealteal-300 text-[32px] text-center tracking-[0] leading-[41.6px]">
+                          Welcome Back
+                        </span>
                       </div>
                     </div>
-
-                    {/* Password field */}
-                    <div className="absolute w-[352px] h-[92px] top-[210px] left-[3px]">
-                      <Label
-                        htmlFor="password"
-                        className="absolute w-[62px] top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
-                      >
-                        Password
-                      </Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="Your password"
-                        className="w-[350px] h-[53px] absolute top-[39px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
-                      />
-                    </div>
-
-                    {/* Email field */}
-                    <div className="absolute w-[352px] h-[89px] top-[109px] left-[3px]">
-                      <Label
-                        htmlFor="email"
-                        className="absolute w-9 top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
-                      >
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Your email address"
-                        className="w-[350px] h-[53px] absolute top-[37px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
-                      />
-                    </div>
-
-                    {/* Header */}
-                    <div className="absolute w-[283px] h-[72px] top-0 left-0">
-                      <div className="text-[#a0aec0] absolute w-[274px] top-[52px] left-1 [font-family:'Arial-Bold',Helvetica] font-bold text-graygray-400 text-sm text-center tracking-[0] leading-[19.6px]">
-                        Enter your email and password to sign in
-                      </div>
-                      <span className="text-[#4fd1c5] absolute w-[226px] top-0 left-0 [font-family:'Arial-Bold',Helvetica] font-bold text-tealteal-300 text-[32px] text-center tracking-[0] leading-[41.6px]">
-                        Welcome Back
-                      </span>
-                    </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      ;
     </>
   );
 };
 
 import styled, { createGlobalStyle } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import AxiosInstance from "../axios/AxiosInstance";
+import { toast } from "react-toastify";
 
 // Tạo global styles (thay thế cho :root và body)
 const GlobalStyle = createGlobalStyle`
-  :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-  }
-
-  @media (prefers-color-scheme: light) {
     :root {
-      color: #213547;
-      background-color: #ffffff;
+      font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      color-scheme: light dark;
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #242424;
+
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-  }
-`;
+
+    body {
+      margin: 0;
+      display: flex;
+      place-items: center;
+      min-width: 320px;
+      min-height: 100vh;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color: #213547;
+        background-color: #ffffff;
+      }
+    }
+  `;
 
 // Tạo styled components cho các phần tử
 const StyledLink = styled.a`
