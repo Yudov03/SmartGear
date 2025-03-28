@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import WelcomePage from "./pages/WelcomePage.jsx";
+import WelcomePage from "./WelcomePage/WelcomePage.jsx";
 import CatalogPage from "./pages/CatalogPage.jsx";
 import SettingPage from "./pages/SettingPage.jsx";
 import BuilderPage from "./pages/BuilderPage.jsx";
