@@ -162,42 +162,50 @@ export default LoginPage;
 const FixedTopNavbar = () => {
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-white shadow fixed-top rounded-4 container-xxl mt-3 w-75 "
-      style={{ height: "60px" }}
+      className="navbar navbar-expand-lg navbar-light shadow d-flex fixed-top rounded-4 container-xxl mt-3 w-75"
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.78)", // nền bán trong suốt
+        backdropFilter: "blur(10px)", // hiệu ứng làm mờ
+      }}
     >
       <div className="container">
         {/* Logo / Thương hiệu */}
         <a className="navbar-brand ms-4" href="#home">
-          {/* Thay gear1 bằng đường dẫn hình/logo của bạn */}
           <img src={gear1} alt="logo" style={{ height: "40px" }} />
         </a>
-        <div class=" navbar" id="navbarText">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-bold gap-4">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">
+        <div id="navbarText" className="navbar-text">
+          <ul className="navbar-nav fw-bold gap-4">
+            <li className="nav-item">
+              <a className="nav-link" aria-current="page" href="#">
                 SERVICE
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
                 EQUIPMENT
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
                 ABOUT US
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
                 BLOG
               </a>
             </li>
           </ul>
         </div>
-        <div class=" navbar" id="navbarText">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <button className="px-4  text-white btn [background:linear-gradient(41deg,rgba(49,56,96,1)_0%,rgba(21,25,40,1)_100%)] rounded-5">
+        <div id="navbarText" className="navbar-text">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <button
+              className="px-4 text-white btn rounded-5"
+              style={{
+                background:
+                  "linear-gradient(41deg, rgba(49,56,96,1) 0%, rgba(21,25,40,1) 100%)",
+              }}
+            >
               Free Sign Up!
             </button>
           </ul>
