@@ -11,9 +11,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ProjectModule } from './project/project.module';
 import { BuildModule } from './build/build.module';
 import { CatalogModule } from './catalog/catalog.module';
+import { BearingModule } from './bearing/bearing.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, UserModule, PrismaModule, ProjectModule, ConfigModule.forRoot({isGlobal: true}), BuildModule, CatalogModule],
+  imports: [DatabaseModule, AuthModule, UserModule, PrismaModule, ProjectModule, ConfigModule.forRoot({isGlobal: true}), BuildModule, CatalogModule, BearingModule],
   controllers: [AppController],
   providers: [AppService],
 })
