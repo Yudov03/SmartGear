@@ -84,3 +84,28 @@ model Engine {
   Start_Current_Ratio Float
   Weight Float
 }
+
+model Bearing {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company String
+  Type String
+  d Float
+  D Float
+  T Float
+  d1 Float
+  B Float
+  C_m Float
+  r1 Float
+  r2 Float
+  r3 Float
+  r4 Float
+  a Float
+  C_k Float
+  C_o Float
+  e Float
+  Y Float
+  Y_o Float
+}

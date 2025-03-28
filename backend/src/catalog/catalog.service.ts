@@ -18,14 +18,10 @@ export class CatalogService {
         });
     }
 
-    //TODO
-    // getBearings() {}
     getBearing() {
         return this.prisma.bearing.findMany();
     }
 
-
-    // getBearingById() {}
     getBearingById(catalogId: number) {
         console.log(catalogId)
         return this.prisma.bearing.findFirst({

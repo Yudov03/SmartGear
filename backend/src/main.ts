@@ -7,6 +7,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
+  app.enableCors({
+    origin: 'http://localhost:5173', // FE địa chỉ
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Nếu cần gửi cookie
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

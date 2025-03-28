@@ -26,6 +26,7 @@ export class BuildService {
     }
     // nhap vao dto tu output o tren va chon dong co return dto
     async transmissionRate(engineId: number, dto: BuildDto) {
+        console.log(dto)
         const item = await this.prisma.engine.findFirst({
             where: {
                 id: engineId,

@@ -17,16 +17,13 @@ export class CatalogController {
         return this.catalogService.getEngines();
     }
 
-    // lay o lan thong qua ID
     // http://localhost:3000/catalogs/bearing/1
     @Get('bearing/:id')
     getBearingById(@Param('id', ParseIntPipe) catalogId: number) {
         return this.catalogService.getBearingById(catalogId)
     }
 
-    // lay danh sach o lan
     // http://localhost:3000/catalogs/bearing
-    //TODO 
     @Get('bearing')
     getBearing() {
         return this.catalogService.getBearing();
