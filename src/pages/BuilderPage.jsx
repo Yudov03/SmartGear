@@ -1,138 +1,121 @@
-import { useState } from "react";
-import axios from "axios";
+ import { useState, useEffect } from "react";
+import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Layout from "../components/Layout.jsx";
 
 function BuilderPage() {
-  // State cho form
   const [params, setParams] = useState({
     power: "",
     speed: "",
     lifetime: "",
   });
 
-  // State để hiển thị khối Engine Info
-  const [showEngineResult, setShowEngineResult] = useState(false);
-
-  // State lưu giá trị "chốt" sau khi nhấn Build (chỉ cập nhật khi Build)
-  const [builtValues, setBuiltValues] = useState({
-    power: "",
-    speed: "",
-  });
+  const [engines, setEngines] = useState([]); // Danh sách động cơ
+  const [variables, setVariables] = useState([]); // Danh sách biến
+  const [selectedEngine, setSelectedEngine] = useState(null); // Động cơ được chọn
+  const [computedVariables, setComputedVariables] = useState([]); // Kết quả sau tính toán
 
   const handleChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
   };
 
-  // Kiểm tra các giá trị nhập vào phải là số dương
   const validateParams = () => {
     const { power, speed, lifetime } = params;
-    const p = parseFloat(power);
-    const s = parseFloat(speed);
-    const l = parseFloat(lifetime);
-
-    if (isNaN(p) || isNaN(s) || isNaN(l)) {
-      return false;
-    }
-    if (p <= 0 || s <= 0 || l <= 0) {
-      return false;
-    }
-    return true;
+    return (
+      !isNaN(parseFloat(power)) &&
+      !isNaN(parseFloat(speed)) &&
+      !isNaN(parseFloat(lifetime)) &&
+      power > 0 &&
+      speed > 0 &&
+      lifetime > 0
+    );
   };
 
-  const handleSubmit = async () => {
+  const handleBuild = async () => {
     if (!validateParams()) {
-      alert("Vui lòng nhập các giá trị số dương cho P, n, và L!");
+      alert("Vui lòng nhập số hợp lệ!");
       return;
     }
 
-    // Tạm thời comment logic gọi API
-    // try {
-    //   const response = await axios.post("https://your-api.com/build", params);
-    //   console.log("Response:", response.data);
-    //   // ...
-    // } catch (error) {
-    //   console.error("Error:", error);
-    //   alert("Có lỗi xảy ra khi gọi API!");
-    // }
+    try {
+      const response = await AxiosInstance.get("build/engine", {
+        params: {
+          P: params.power,
+          n: params.speed,
+          L: params.lifetime,
+        },
+      });
 
-    // Cập nhật giá trị "chốt" để hiển thị
-    setBuiltValues({
-      power: params.power,
-      speed: params.speed,
-    });
+      if (response.data) {
+        setEngines(response.data[0]); // Danh sách động cơ
+        setVariables(response.data[1]); // Danh sách biến
+      }
+    } catch (error) {
+      console.error("Error fetching engines:", error);
+      alert("Không thể lấy danh sách động cơ.");
+    }
+  };
 
-    // Hiển thị khối Engine Info
-    setShowEngineResult(true);
+  const handleSelectEngine = async (engineId) => {
+    setSelectedEngine(engineId);
+
+    try {
+      const response = await AxiosInstance.get(`build/${engineId}`, {
+        params: variables, // Gửi toàn bộ danh sách biến
+      });
+
+      if (response.data) {
+        setComputedVariables(response.data);
+      }
+    } catch (error) {
+      console.error("Error computing transmission:", error);
+      alert("Lỗi khi tính toán tỷ số truyền.");
+    }
   };
 
   return (
     <Layout>
       <div>
-        {/* Tiêu đề và mô tả */}
-        <div className="text-[35px] font-bold mt-[20px] text-black">
-          Gearbox Builder
-        </div>
-        <div className="text-[#718096] text-[20px] mt-[20px] mb-[50px]">
-          Enter the parameters below
-        </div>
+      <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
+        Gearbox Builder
+      </div>
+      <div className="mt-[20px] mb-[30px] text-[18px] ml-[20px] text-[#718096]">
+        Enter the parameters below
+      </div>
 
-        {/* Form Builder */}
-        <div className="flex flex-row items-end gap-6">
-          <div className="flex flex-row gap-6">
-            {/* P [kW] */}
-            <div className="flex flex-row items-center gap-2">
-              <label className="text-[25px] text-black">P [kW]</label>
-              <input
-                type="text"
-                name="power"
-                value={params.power}
-                onChange={handleChange}
-                placeholder="Value"
-                className="border pl-[15px] ml-[20px] text-[20px] w-[250px] h-[40px] border-gray-300 rounded-[5px] px-4 py-2"
-              />
-            </div>
-
-            {/* n [vg/ph] */}
-            <div className="flex flex-row items-center gap-2 ml-[20px]">
-              <label className="text-[25px] text-black">n [vg/ph]</label>
-              <input
-                type="text"
-                name="speed"
-                value={params.speed}
-                onChange={handleChange}
-                placeholder="Value"
-                className="border pl-[15px] ml-[20px] text-[20px] w-[250px] h-[40px] border-gray-300 rounded-[5px] px-4 py-2"
-              />
-            </div>
-
-            {/* L [year] */}
-            <div className="flex flex-row items-center gap-2 ml-[20px]">
-              <label className="text-[25px] text-black">L [year]</label>
-              <input
-                type="text"
-                name="lifetime"
-                value={params.lifetime}
-                onChange={handleChange}
-                placeholder="Value"
-                className="border pl-[15px] ml-[10px] text-[20px] w-[250px] h-[40px] border-gray-300 rounded-[5px] px-4 py-2"
-              />
-            </div>
+        <div className="flex flex-row items-end gap-6 ml-[20px]">
+          <div className="flex flex-row gap-[15px]">
+            <InputField
+              label="P [kW]"
+              name="power"
+              value={params.power}
+              onChange={handleChange}
+            />
+            <InputField
+              label="n [vg/ph]"
+              name="speed"
+              value={params.speed}
+              onChange={handleChange}
+            />
+            <InputField
+              label="L [year]"
+              name="lifetime"
+              value={params.lifetime}
+              onChange={handleChange}
+            />
           </div>
 
-          {/* Nút Build */}
           <button
-            onClick={handleSubmit}
-            className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] active:bg-[#2E8B87] w-[150px] h-[50px] text-[white] text-[20px] px-4 py-2 rounded-[5px] shadow-md transition-all focus:outline-none focus:ring-0"
+            onClick={handleBuild}
+            className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-[white] text-[20px] rounded-[5px] shadow-md transition-all"
           >
             Build
           </button>
         </div>
 
-        {/* Nếu showEngineResult = true thì hiển thị khối Engine Info */}
-        {showEngineResult && (
-          <div className="mt-8 flex flex-row gap-8">
+        {engines.length > 0 && (
+          <div className="mt-8 flex gap-8">
             {/* Phần bên trái (Engine info) */}
-            <div className="flex-1 border-none mt-[50px] p-4 rounded-md shadow-md">
+            <div className="flex-1 border-none p-4 rounded-md shadow-md">
               <span className="text-[30px] text-[#4FD1C5] font-[800] mb-1">
                 Engine
               </span>
@@ -140,68 +123,90 @@ function BuilderPage() {
                 This is the result based on your input
               </p>
 
-              {/* Giá trị P và n hiển thị ở đây (dùng builtValues) */}
+              {/* Giá trị P và n hiển thị ở đây */}
               <div className="mb-6 flex flex-col items-start gap-4">
-                {/* Khung cho giá trị P */}
+                {/* Giá trị P */}
                 <div className="w-[400px]">
                   <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
                     P
                   </label>
-                  {/* flex items-center để canh giữa theo chiều dọc */}
                   <div className="border mt-[15px] border-[#E2E8F0] h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {builtValues.power} kW
+                    {params.power} kW
                   </div>
                 </div>
 
-                {/* Khung cho giá trị n */}
+                {/* Giá trị n */}
                 <div className="w-[400px] mt-[20px]">
                   <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
                     n
                   </label>
                   <div className="border mt-[15px] border-gray-300 h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {builtValues.speed} rpm
+                    {params.speed} rpm
                   </div>
                 </div>
               </div>
 
               <p className="text-[#4FD1C5] font-[700]">
-                Choose your Engine base on P and n above
+                Choose your Engine based on P and n above
               </p>
             </div>
 
-            {/* Phần bên phải (Kết quả API) - Đã comment lại */}
-            {/* 
-            <div className="flex-1 border p-4 rounded-md shadow-md flex flex-col items-center">
-              {apiResult && (
-                <>
-                  {apiResult.imageUrl ? (
-                    <img
-                      src={apiResult.imageUrl}
-                      alt="Engine Result"
-                      className="w-[200px] h-[200px] object-contain mb-4"
-                    />
-                  ) : (
-                    <div className="w-[200px] h-[200px] mb-4 flex items-center justify-center bg-gray-200">
-                      No Image
-                    </div>
-                  )}
-                  <div className="text-lg">
-                    <p>
-                      <strong>Power:</strong> {apiResult.power} kW
-                    </p>
-                    <p>
-                      <strong>Speed:</strong> {apiResult.speed} rpm/m
-                    </p>
-                  </div>
-                </>
-              )}
+            {/* Phần bên phải (Danh sách Engine) */}
+            <div className="flex-1">
+              <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
+                Select an Engine
+              </h2>
+              <ul>
+                {engines.map((engine) => (
+                  <li
+                    key={engine.id}
+                    onClick={() => handleSelectEngine(engine.id)}
+                    className={`cursor-pointer p-3 border ${
+                      selectedEngine === engine.id ? "bg-gray-300" : ""
+                    }`}
+                  >
+                    {engine.company} - {engine.Type} - {engine.P_dc} kW
+                  </li>
+                ))}
+              </ul>
             </div>
-            */}
+          </div>
+        )}
+
+
+        {computedVariables.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
+              Computed Variables
+            </h2>
+            <ul>
+              {computedVariables.map((variable, index) => (
+                <li key={index}>
+                  {variable.name}: {variable.value}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
     </Layout>
   );
 }
+
+const InputField = ({ label, name, value, onChange }) => (
+  <div className="flex flex-row items-center gap-[10px]">
+    <label className="text-[25px] text-black">{label}</label>
+    <input
+      type="text"
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder="Value"
+      className="border pl-[15px] text-[20px] w-[250px] h-[40px] border-gray-300 rounded-[5px] px-4 py-2"
+    />
+  </div>
+);
+
+
 
 export default BuilderPage;
