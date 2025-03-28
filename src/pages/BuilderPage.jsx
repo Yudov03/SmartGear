@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Layout from "../components/Layout.jsx";
 
@@ -9,21 +9,18 @@ function BuilderPage() {
     speed: "",
     lifetime: "",
   });
-
+ 
   // State lưu danh sách động cơ nhận từ API
   const [engines, setEngines] = useState([]);
 
   // State lưu danh sách biến nhận từ API
-  const [variables, setVariables] = useState([]);
-
-  // State lưu 2 biến hiển thị sau Build: P_ct và n_sb
-  const [displayVariables, setDisplayVariables] = useState({ P_ct: "", n_sb: "" });
+  const [variables, setVariables] = useState();
 
   // State lưu động cơ đã được chọn
   const [selectedEngine, setSelectedEngine] = useState(null);
 
   // State lưu kết quả tính toán tỷ số truyền (computed variables)
-  const [computedVariables, setComputedVariables] = useState([]);
+  const [computedVariables, setComputedVariables] = useState();
 
   // Xử lý thay đổi input
   const handleChange = (e) => {
@@ -51,31 +48,19 @@ function BuilderPage() {
     }
 
     try {
-      // Gửi GET request với P, n, L
-      const response = await AxiosInstance.get("build/engine", {
-        params: {
+      // Gửi POST request với P, n, L
+      const response = await AxiosInstance.post("build/engine", {
           P: params.power,
           n: params.speed,
-          L: params.lifetime,
-        },
+          L: params.lifetime
       });
-
       if (response.data) {
         // response.data[0]: danh sách động cơ, response.data[1]: danh sách biến
         const engineList = response.data[0];
         const vars = response.data[1];
 
-        // Sắp xếp động cơ sao cho động cơ có P_dc cao nhất đứng đầu
-        const sortedEngines = engineList.sort((a, b) => b.P_dc - a.P_dc);
-        setEngines(sortedEngines);
+        setEngines(engineList);
         setVariables(vars);
-
-        // Lấy 2 biến cần hiển thị: P_ct và n_sb
-        const filteredVars = {
-          P_ct: vars.find((v) => v.name === "P_ct")?.P_ct || "",
-          n_sb: vars.find((v) => v.name === "n_sb")?.n_sb || "",
-        };
-        setDisplayVariables(filteredVars);
       }
     } catch (error) {
       console.error("Error fetching engines:", error);
@@ -96,19 +81,24 @@ function BuilderPage() {
     }
 
     try {
-      // Gửi GET request đến build/{engineId} với các biến làm tham số
-      const response = await AxiosInstance.get(`build/${selectedEngine}`, {
-        params: variables,
+      // Gửi Post request đến build/{engineId} với các biến làm tham số
+      const response = await AxiosInstance.post(`build/${selectedEngine}`, {
+        ...variables,
       });
 
       if (response.data) {
-        setComputedVariables(response.data);
+        setComputedVariables(response.data); // phản hồi là object not listlist
       }
     } catch (error) {
       console.error("Error computing transmission:", error);
       alert("Lỗi khi tính toán tỷ số truyền.");
     }
   };
+  
+  // ấn xác nhận lần đầu nó không nhận phải render lại mới nhận
+  useEffect(() => {
+    console.log('computedVariables đã cập nhật:', computedVariables);
+  }, [computedVariables]); // Tự động khi state thay đổi
 
   return (
     <Layout>
@@ -161,7 +151,7 @@ function BuilderPage() {
                 This is the result based on your input
               </p>
 
-              <div className="mb-6 flex flex-col items-start gap-4">
+              {/* <div className="mb-6 flex flex-col items-start gap-4">
                 <div className="w-[400px]">
                   <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
                     P
@@ -179,7 +169,7 @@ function BuilderPage() {
                     {params.speed} rpm
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Hiển thị 2 biến: P_ct và n_sb */}
               <div className="mb-6 flex flex-col items-start gap-4">
@@ -188,7 +178,7 @@ function BuilderPage() {
                     P_ct
                   </label>
                   <div className="border mt-[15px] border-[#E2E8F0] h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {displayVariables.P_ct} kW
+                    {variables.P_ct} kW
                   </div>
                 </div>
 
@@ -197,7 +187,7 @@ function BuilderPage() {
                     n_sb
                   </label>
                   <div className="border mt-[15px] border-gray-300 h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {displayVariables.n_sb} rpm
+                    {variables.n_sb} rpm
                   </div>
                 </div>
               </div>
@@ -237,7 +227,7 @@ function BuilderPage() {
           </div>
         )}
 
-        {computedVariables.length > 0 && (
+        {computedVariables && Object.keys(computedVariables).length > 0 && (
           <div className="mt-8">
             <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
               Computed Variables Table
@@ -250,10 +240,10 @@ function BuilderPage() {
                 </tr>
               </thead>
               <tbody>
-                {computedVariables.map((variable, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">{variable.name}</td>
-                    <td className="border border-gray-300 px-4 py-2">{variable.value}</td>
+                {Object.entries(computedVariables).map(([key, value]) => (
+                  <tr key={key}>
+                    <td className="border border-gray-300 px-4 py-2">{key}</td>
+                    <td className="border border-gray-300 px-4 py-2">{value}</td>
                   </tr>
                 ))}
               </tbody>
