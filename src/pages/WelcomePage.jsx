@@ -23,7 +23,7 @@ function WelcomePage () {
                         <a className="text-[26px] text-[black] font-extrabold font-[Arial] no-underline" href="#">Blog</a>
                     </nav>
 
-
+                    
                     <div className="flex ml-[90px] items-center w-[150px] h-[70px] bg-[#4FD1C5] rounded-[10px] justify-center">
                         <a className="text-[26px] font-[800] font-[Arial] text-[white] no-underline" href="#">Sign in</a>
                     </div>
