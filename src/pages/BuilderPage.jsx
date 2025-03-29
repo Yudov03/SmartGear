@@ -3,33 +3,44 @@ import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Layout from "../components/Layout.jsx";
 
 function BuilderPage() {
+  // State lưu các tham số đầu vào (P, n, L)
   const [params, setParams] = useState({
     power: "",
     speed: "",
     lifetime: "",
   });
+ 
+  // State lưu danh sách động cơ nhận từ API
+  const [engines, setEngines] = useState([]);
 
-  const [engines, setEngines] = useState([]); // Danh sách động cơ
-  const [variables, setVariables] = useState([]); // Danh sách biến
-  const [selectedEngine, setSelectedEngine] = useState(null); // Động cơ được chọn
-  const [computedVariables, setComputedVariables] = useState([]); // Kết quả sau tính toán
+  // State lưu danh sách biến nhận từ API
+  const [variables, setVariables] = useState();
 
+  // State lưu động cơ đã được chọn
+  const [selectedEngine, setSelectedEngine] = useState(null);
+
+  // State lưu kết quả tính toán tỷ số truyền (computed variables)
+  const [computedVariables, setComputedVariables] = useState();
+
+  // Xử lý thay đổi input
   const handleChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
   };
 
+  // Validate input
   const validateParams = () => {
     const { power, speed, lifetime } = params;
     return (
       !isNaN(parseFloat(power)) &&
       !isNaN(parseFloat(speed)) &&
       !isNaN(parseFloat(lifetime)) &&
-      power > 0 &&
-      speed > 0 &&
-      lifetime > 0
+      parseFloat(power) > 0 &&
+      parseFloat(speed) > 0 &&
+      parseFloat(lifetime) > 0
     );
   };
 
+  // Xử lý khi nhấn Build: gửi GET request và nhận dữ liệu từ API
   const handleBuild = async () => {
     if (!validateParams()) {
       alert("Vui lòng nhập số hợp lệ!");
@@ -37,17 +48,19 @@ function BuilderPage() {
     }
 
     try {
-      const response = await AxiosInstance.get("build/engine", {
-        params: {
+      // Gửi POST request với P, n, L
+      const response = await AxiosInstance.post("build/engine", {
           P: params.power,
           n: params.speed,
-          L: params.lifetime,
-        },
+          L: params.lifetime
       });
-
       if (response.data) {
-        setEngines(response.data[0]); // Danh sách động cơ
-        setVariables(response.data[1]); // Danh sách biến
+        // response.data[0]: danh sách động cơ, response.data[1]: danh sách biến
+        const engineList = response.data[0];
+        const vars = response.data[1];
+
+        setEngines(engineList);
+        setVariables(vars);
       }
     } catch (error) {
       console.error("Error fetching engines:", error);
@@ -55,32 +68,47 @@ function BuilderPage() {
     }
   };
 
-  const handleSelectEngine = async (engineId) => {
+  // Xử lý khi chọn 1 động cơ từ danh sách (chỉ lưu lựa chọn, không gửi GET ngay)
+  const handleSelectEngine = (engineId) => {
     setSelectedEngine(engineId);
+  };
+
+  // Xử lý khi nhấn nút "Xác nhận" sau khi đã chọn động cơ
+  const handleConfirmEngine = async () => {
+    if (!selectedEngine) {
+      alert("Vui lòng chọn một động cơ!");
+      return;
+    }
 
     try {
-      const response = await AxiosInstance.get(`build/${engineId}`, {
-        params: variables, // Gửi toàn bộ danh sách biến
+      // Gửi Post request đến build/{engineId} với các biến làm tham số
+      const response = await AxiosInstance.post(`build/${selectedEngine}`, {
+        ...variables,
       });
 
       if (response.data) {
-        setComputedVariables(response.data);
+        setComputedVariables(response.data); // phản hồi là object not listlist
       }
     } catch (error) {
       console.error("Error computing transmission:", error);
       alert("Lỗi khi tính toán tỷ số truyền.");
     }
   };
+  
+  // ấn xác nhận lần đầu nó không nhận phải render lại mới nhận
+  useEffect(() => {
+    console.log('computedVariables đã cập nhật:', computedVariables);
+  }, [computedVariables]); // Tự động khi state thay đổi
 
   return (
     <Layout>
       <div>
-      <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
-        Gearbox Builder
-      </div>
-      <div className="mt-[20px] mb-[30px] text-[18px] ml-[20px] text-[#718096]">
-        Enter the parameters below
-      </div>
+        <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
+          Gearbox Builder
+        </div>
+        <div className="mt-[20px] mb-[30px] text-[18px] ml-[20px] text-[#718096]">
+          Enter the parameters below
+        </div>
 
         <div className="flex flex-row items-end gap-6 ml-[20px]">
           <div className="flex flex-row gap-[15px]">
@@ -114,18 +142,16 @@ function BuilderPage() {
 
         {engines.length > 0 && (
           <div className="mt-8 flex gap-8">
-            {/* Phần bên trái (Engine info) */}
+            {/* Phần bên trái: Hiển thị thông tin input và 2 biến P_ct, n_sb */}
             <div className="flex-1 border-none p-4 rounded-md shadow-md">
               <span className="text-[30px] text-[#4FD1C5] font-[800] mb-1">
-                Engine
+                Engine Info
               </span>
               <p className="text-[#A0AEC0] mb-4">
                 This is the result based on your input
               </p>
 
-              {/* Giá trị P và n hiển thị ở đây */}
-              <div className="mb-6 flex flex-col items-start gap-4">
-                {/* Giá trị P */}
+              {/* <div className="mb-6 flex flex-col items-start gap-4">
                 <div className="w-[400px]">
                   <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
                     P
@@ -135,7 +161,6 @@ function BuilderPage() {
                   </div>
                 </div>
 
-                {/* Giá trị n */}
                 <div className="w-[400px] mt-[20px]">
                   <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
                     n
@@ -144,14 +169,35 @@ function BuilderPage() {
                     {params.speed} rpm
                   </div>
                 </div>
+              </div> */}
+
+              {/* Hiển thị 2 biến: P_ct và n_sb */}
+              <div className="mb-6 flex flex-col items-start gap-4">
+                <div className="w-[400px]">
+                  <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
+                    P_ct
+                  </label>
+                  <div className="border mt-[15px] border-[#E2E8F0] h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
+                    {variables.P_ct} kW
+                  </div>
+                </div>
+
+                <div className="w-[400px] mt-[20px]">
+                  <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
+                    n_sb
+                  </label>
+                  <div className="border mt-[15px] border-gray-300 h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
+                    {variables.n_sb} rpm
+                  </div>
+                </div>
               </div>
 
               <p className="text-[#4FD1C5] font-[700]">
-                Choose your Engine based on P and n above
+                Choose your Engine based on the above input and computed variables
               </p>
             </div>
 
-            {/* Phần bên phải (Danh sách Engine) */}
+            {/* Phần bên phải: Danh sách động cơ để người dùng lựa chọn */}
             <div className="flex-1">
               <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
                 Select an Engine
@@ -165,27 +211,43 @@ function BuilderPage() {
                       selectedEngine === engine.id ? "bg-gray-300" : ""
                     }`}
                   >
-                    {engine.company} - {engine.Type} - {engine.P_dc} kW
+                    {engine.company} - {engine.Type} - {engine.P_dc} kW - {engine.n_dc} rpm
                   </li>
                 ))}
               </ul>
+              {selectedEngine && (
+                <button
+                  onClick={handleConfirmEngine}
+                  className="mt-4 border-none bg-green-500 hover:bg-green-400 w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                >
+                  Xác nhận
+                </button>
+              )}
             </div>
           </div>
         )}
 
-
-        {computedVariables.length > 0 && (
+        {computedVariables && Object.keys(computedVariables).length > 0 && (
           <div className="mt-8">
             <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
-              Computed Variables
+              Computed Variables Table
             </h2>
-            <ul>
-              {computedVariables.map((variable, index) => (
-                <li key={index}>
-                  {variable.name}: {variable.value}
-                </li>
-              ))}
-            </ul>
+            <table className="min-w-full border-collapse border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Name</th>
+                  <th className="border border-gray-300 px-4 py-2">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(computedVariables).map(([key, value]) => (
+                  <tr key={key}>
+                    <td className="border border-gray-300 px-4 py-2">{key}</td>
+                    <td className="border border-gray-300 px-4 py-2">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
@@ -193,6 +255,7 @@ function BuilderPage() {
   );
 }
 
+// Component InputField cho các trường nhập liệu
 const InputField = ({ label, name, value, onChange }) => (
   <div className="flex flex-row items-center gap-[10px]">
     <label className="text-[25px] text-black">{label}</label>
@@ -206,7 +269,5 @@ const InputField = ({ label, name, value, onChange }) => (
     />
   </div>
 );
-
-
 
 export default BuilderPage;
