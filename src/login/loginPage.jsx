@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 import gear from "../assets/gear.svg";
 import gear1 from "../assets/gear-1.svg";
 import "./login.css";
