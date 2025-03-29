@@ -99,7 +99,7 @@ function WelcomePage() {
               <Marquee
                 className="blueprint-marquee"
                 style={{
-                  transform: "rotate(-30deg) translateX(-200px)",
+                  transform: "rotate(-30deg) translateX(-600px)",
                   width: "400px", // tùy chỉnh
                   //   height: "500px", // tùy chỉnh
                   overflow: "visible", // cho hình lướt ra ngoài
