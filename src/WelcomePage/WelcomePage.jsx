@@ -1,6 +1,4 @@
 import "../App.css";
-import gear from "../assets/gear.svg";
-import gear1 from "../assets/gear-1.svg";
 import Marquee from "react-fast-marquee";
 import { useNavigate } from "react-router-dom";
 function WelcomePage() {
@@ -18,9 +16,8 @@ function WelcomePage() {
             <div
               className="navbar-brand d-flex align-items-center p-2 rounded-3"
               style={{ backgroundColor: "#4FD1C5" }}
-              //   onClick={navigate(`/`)}
+              onClick={navigate(`/`)}
             >
-              {/* Ví dụ dùng ảnh logo, hoặc có thể thay bằng SVG */}
               {/* <img src={gear1} alt="logo" style={{ marginRight: "8px" }} /> */}
               <img
                 alt="SmartGear logo"
@@ -40,24 +37,16 @@ function WelcomePage() {
             >
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li className="nav-item mx-2">
-                  <a className="nav-link" href="#service">
-                    Service
-                  </a>
+                  <a className="nav-link">Service</a>
                 </li>
                 <li className="nav-item mx-2">
-                  <a className="nav-link" href="#equipment">
-                    Equipment
-                  </a>
+                  <a className="nav-link">Equipment</a>
                 </li>
                 <li className="nav-item mx-2">
-                  <a className="nav-link" href="#about">
-                    About Us
-                  </a>
+                  <a className="nav-link">About Us</a>
                 </li>
                 <li className="nav-item mx-2">
-                  <a className="nav-link" href="#blog">
-                    Blog
-                  </a>
+                  <a className="nav-link">Blog</a>
                 </li>
               </ul>
               {/* Nút Sign In */}
@@ -116,6 +105,7 @@ function WelcomePage() {
                   overflow: "visible", // cho hình lướt ra ngoài
                   //   marginTop: "50px",
                 }}
+                autoFill
               >
                 <img
                   src="/public/Image 2.png"
@@ -155,6 +145,7 @@ function WelcomePage() {
                   marginTop: "200px",
                 }}
                 direction="right"
+                autoFill
               >
                 <img
                   src="/public/Image 1.png"

@@ -86,17 +86,17 @@ const LoginPage = () => {
                 </div>
 
                 <div className="mb-3">
-                  <div class="form-check form-switch">
+                  <div className="form-check form-switch">
                     <input
-                      class="form-check-input "
+                      className="form-check-input "
                       type="checkbox"
                       role="switch"
                       //   style={{ backgroundColor: "#4fd1c5" }}
                       //   checked
                     />
                     <label
-                      class="form-check-label"
-                      for="flexSwitchCheckDefault"
+                      className="form-check-label"
+                      // for="flexSwitchCheckDefault"
                     >
                       Remember me
                     </label>
