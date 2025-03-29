@@ -3,13 +3,7 @@ import axios from "axios";
 import Layout from "../components/Layout.jsx";
 
 function HistoryPage() {
-    return (
-        <Layout>
-            <div>
-                
-            </div>
-        </Layout>
-    )
+  return <div></div>;
 }
 
-export default HistoryPage
+export default HistoryPage;

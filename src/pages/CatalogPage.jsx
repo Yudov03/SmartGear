@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout.jsx";
 
-function CatalogPage() {
+export default function CatalogPage() {
   const [catalogData, setCatalogData] = useState([
     {
       name: "Oliver Liam",
@@ -35,10 +35,11 @@ function CatalogPage() {
   };
 
   return (
-    <Layout>
+    <>
       <GlobalStyle />
-      <div className="my-5">
-        <h4 className="mb-4 fw-bold">Catalog Information</h4>
+      <Header />
+      <div className="mt-3 ms-3">
+        <h6 className="mb-4 fw-bold">Catalog Information</h6>
         {catalogData.map((item, idx) => (
           <CatalogItem
             key={idx}
@@ -51,11 +52,10 @@ function CatalogPage() {
           />
         ))}
       </div>
-    </Layout>
+      <Footer />
+    </>
   );
 }
-
-export default CatalogPage;
 
 const CatalogItem = ({ name, company, email, vat, onDelete, onEdit }) => {
   return (
@@ -112,6 +112,8 @@ const CatalogItem = ({ name, company, email, vat, onDelete, onEdit }) => {
 };
 
 import { createGlobalStyle } from "styled-components";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const GlobalStyle = createGlobalStyle`
  body {

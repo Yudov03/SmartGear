@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Layout from "../components/Layout.jsx";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 function BuilderPage() {
   // State lưu các tham số đầu vào (P, n, L)
@@ -9,7 +11,7 @@ function BuilderPage() {
     speed: "",
     lifetime: "",
   });
- 
+
   // State lưu danh sách động cơ nhận từ API
   const [engines, setEngines] = useState([]);
 
@@ -50,9 +52,9 @@ function BuilderPage() {
     try {
       // Gửi POST request với P, n, L
       const response = await AxiosInstance.post("build/engine", {
-          P: params.power,
-          n: params.speed,
-          L: params.lifetime
+        P: params.power,
+        n: params.speed,
+        L: params.lifetime,
       });
       if (response.data) {
         // response.data[0]: danh sách động cơ, response.data[1]: danh sách biến
@@ -94,15 +96,16 @@ function BuilderPage() {
       alert("Lỗi khi tính toán tỷ số truyền.");
     }
   };
-  
+
   // ấn xác nhận lần đầu nó không nhận phải render lại mới nhận
   useEffect(() => {
-    console.log('computedVariables đã cập nhật:', computedVariables);
+    console.log("computedVariables đã cập nhật:", computedVariables);
   }, [computedVariables]); // Tự động khi state thay đổi
 
   return (
-    <Layout>
-      <div>
+    <>
+      <Header />
+      <div className="h-screen">
         <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
           Gearbox Builder
         </div>
@@ -193,7 +196,8 @@ function BuilderPage() {
               </div>
 
               <p className="text-[#4FD1C5] font-[700]">
-                Choose your Engine based on the above input and computed variables
+                Choose your Engine based on the above input and computed
+                variables
               </p>
             </div>
 
@@ -211,7 +215,8 @@ function BuilderPage() {
                       selectedEngine === engine.id ? "bg-gray-300" : ""
                     }`}
                   >
-                    {engine.company} - {engine.Type} - {engine.P_dc} kW - {engine.n_dc} rpm
+                    {engine.company} - {engine.Type} - {engine.P_dc} kW -{" "}
+                    {engine.n_dc} rpm
                   </li>
                 ))}
               </ul>
@@ -243,7 +248,9 @@ function BuilderPage() {
                 {Object.entries(computedVariables).map(([key, value]) => (
                   <tr key={key}>
                     <td className="border border-gray-300 px-4 py-2">{key}</td>
-                    <td className="border border-gray-300 px-4 py-2">{value}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {value}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -251,7 +258,8 @@ function BuilderPage() {
           </div>
         )}
       </div>
-    </Layout>
+      <Footer />
+    </>
   );
 }
 
