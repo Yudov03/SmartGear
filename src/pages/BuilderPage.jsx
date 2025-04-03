@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import AxiosInstance from "../axios/AxiosInstance.jsx";
-import Layout from "../components/Layout.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -16,13 +15,10 @@ function BuilderPage() {
     return engines.slice(0, 5);
   };
 
-  const [engines, setEngines] = useState([10,10,10,10,10,10,10,10]);
-
-  const [variables, setVariables] = useState(10);
-
-  const [selectedEngine, setSelectedEngine] = useState(10);
-
-  const [computedVariables, setComputedVariables] = useState(10);
+  const [engines, setEngines] = useState([]);
+  const [variables, setVariables] = useState();
+  const [selectedEngine, setSelectedEngine] = useState();
+  const [computedVariables, setComputedVariables] = useState();
 
   const handleChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
@@ -67,7 +63,7 @@ function BuilderPage() {
     }
   };
 
-  // Xử lý khi chọn 1 động cơ từ danh sách (chỉ lưu lựa chọn, không gửi GET ngay)
+  // Khi người dùng chọn engine, xóa bảng thông số cũ để cập nhật sau khi xác nhận lại
   const handleSelectEngine = (engineId) => {
     setSelectedEngine(engineId);
   };
@@ -78,31 +74,32 @@ function BuilderPage() {
       alert("Vui lòng chọn một động cơ!");
       return;
     }
-
     try {
-      // Gửi Post request đến build/{engineId} với các biến làm tham số
       const response = await AxiosInstance.post(`build/${selectedEngine}`, {
         ...variables,
       });
-
+  
+      console.log("Dữ liệu nhận về từ API:", response.data); // Debug xem API trả về gì
+  
       if (response.data) {
-        setComputedVariables(response.data); // phản hồi là object not listlist
+        setComputedVariables(response.data); // Cập nhật bảng thông số mới
       }
     } catch (error) {
       console.error("Error computing transmission:", error);
       alert("Lỗi khi tính toán tỷ số truyền.");
     }
   };
+  
 
-  // ấn xác nhận lần đầu nó không nhận phải render lại mới nhận
+  // Log để kiểm tra state computedVariables khi thay đổi
   useEffect(() => {
     console.log("computedVariables đã cập nhật:", computedVariables);
-  }, [computedVariables]); // Tự động khi state thay đổi
+  }, [computedVariables]);
 
   return (
     <>
       <Header />
-      <div className="h-screen">
+      <div className="min-h-screen">
         <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
           Gearbox Builder
         </div>
@@ -134,7 +131,7 @@ function BuilderPage() {
 
           <button
             onClick={handleBuild}
-            className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-[white] text-[20px] rounded-[5px] shadow-md transition-all"
+            className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
           >
             Build
           </button>
@@ -150,26 +147,6 @@ function BuilderPage() {
               <p className="text-[#A0AEC0] mb-4">
                 This is the result based on your input
               </p>
-
-              {/* <div className="mb-6 flex flex-col items-start gap-4">
-                <div className="w-[400px]">
-                  <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
-                    P
-                  </label>
-                  <div className="border mt-[15px] border-[#E2E8F0] h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {params.power} kW
-                  </div>
-                </div>
-
-                <div className="w-[400px] mt-[20px]">
-                  <label className="block text-[20px] font-semibold text-[#4A5568] mb-2">
-                    n
-                  </label>
-                  <div className="border mt-[15px] border-gray-300 h-[45px] rounded-[8px] px-4 text-[18px] text-[#A0AEC0] bg-white flex items-center">
-                    {params.speed} rpm
-                  </div>
-                </div>
-              </div> */}
 
               {/* Hiển thị 2 biến: P_ct và n_sb */}
               <div className="mb-6 flex flex-col items-start gap-4">
@@ -203,24 +180,30 @@ function BuilderPage() {
               <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4 mt-[30px]">
                 Select an Engine
               </h2>
-              <ul className="list-none">
-                {getTopEngines().map((engine) => (
-                  <li
-                    key={engine.id}
-                    onClick={() => handleSelectEngine(engine.id)}
-                    className={`cursor-pointer rounded-[20px] p-3 border ${
-                      selectedEngine === engine.id ? "bg-gray-300" : ""
-                    }`}
-                  >
-                    {engine.company} - {engine.Type} - {engine.P_dc} kW - {engine.n_dc} rpm
-                  </li>
-                ))}
+
+              <ul className="list-none space-y-[20px]">
+                {getTopEngines().map((engine) => {
+                  const isSelected = selectedEngine === engine.id;
+                  return (
+                    <li
+                      key={engine.id}
+                      onClick={() => handleSelectEngine(engine.id)}
+                      className={`w-[700px] cursor-pointer rounded-[20px] p-3 border transition-all ${
+                        isSelected
+                          ? "bg-[#3BAFA2] hover:bg-[#3BAFA2] text-white shadow-md"
+                          : "bg-[#56D3C7] hover:bg-[#3BAFA2] text-white shadow-md"
+                      }`}
+                    >
+                      {engine.company} - {engine.Type} - {engine.P_dc} kW - {engine.n_dc} rpm
+                    </li>
+                  );
+                })}
               </ul>
 
               {selectedEngine && (
                 <button
                   onClick={handleConfirmEngine}
-                  className="mt-4 border-none bg-green-500 hover:bg-green-400 w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  className="mt-4 border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[15px] shadow-md transition-all"
                 >
                   Xác nhận
                 </button>
@@ -230,30 +213,102 @@ function BuilderPage() {
         )}
 
         {computedVariables && Object.keys(computedVariables).length > 0 && (
-          <div className="mt-8 ">
+          <div className="mt-8 ml-[20px]">
             <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
               Computed Variables Table
             </h2>
-            <table className="min-w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2">Name</th>
-                  <th className="border border-gray-300 px-4 py-2">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(computedVariables).map(([key, value]) => (
-                  <tr key={key}>
-                    <td className="border border-gray-300 px-4 py-2">{key}</td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {value}
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="table-auto h-[400px] border-collapse border border-gray-300">
+                <thead>
+                  <tr>
+                    <th
+                      className="text-center border border-gray-300 px-4 py-2 bg-gray-100"
+                      rowSpan="2"
+                    >
+                      Thông số
+                    </th>
+                    <th
+                      className="text-center border border-gray-300 px-4 py-2 bg-gray-100"
+                      colSpan="5"
+                    >
+                      Trục
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  <tr>
+                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                      Động cơ
+                    </th>
+                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                      I
+                    </th>
+                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                      II
+                    </th>
+                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                      III
+                    </th>
+                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                      Công tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    {
+                      label: "Công suất P (kW)",
+                      keys: ["P_real", "P1", "P2", "P3", "P_ct"],
+                    },
+                    {
+                      label: "Tỷ số truyền u",
+                      keys: ["u_d", "u_brc", "u_brt", "u_kn"],
+                    },
+                    {
+                      label: "Moment xoắn M (N.mm)",
+                      keys: ["T_dc", "T1", "T2", "T3", "T_tt"],
+                    },
+                    {
+                      label: "Số vòng quay n (vg/ph)",
+                      keys: ["n_real", "n1", "n2", "n3", "n"],
+                    },
+                  ].map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {row.label}
+                      </td>
+                      {row.keys.length === 4 ? (
+                        <td colSpan="5" className="border border-gray-300 px-4 py-2">
+                          <div className="flex text-center justify-around">
+                            {row.keys.map((key, index) => {
+                              const value = computedVariables[key];
+                              const displayValue =
+                                Number.isInteger(parseFloat(value)) ? value : parseFloat(value).toFixed(4);
+                        
+                              return <span key={index}>{displayValue}</span>;
+                            })}
+                          </div>
+                        </td>
+                      ) : (
+                        row.keys.map((key, index) => {
+                          const value = computedVariables[key];
+                          const displayValue =
+                            Number.isInteger(parseFloat(value)) ? value : parseFloat(value).toFixed(4);
+                        
+                          return (
+                            <td key={index} className="text-center border border-gray-300 px-4 py-2">
+                              {displayValue}
+                            </td>
+                          );
+                        })                        
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
+
+
       </div>
       <Footer />
     </>

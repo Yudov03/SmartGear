@@ -26,19 +26,23 @@ const Header = () => {
               />
             </div>
             <div className="flex items-center gap-2 ">
-              <img
-                src="../public/Profile.svg"
-                className="w-[20px] h-[20px]"
-                alt="User"
-              />
+              <button className="btn">
+                <img
+                  src="../public/Profile.svg"
+                  className="w-[20px] h-[20px]"
+                  alt="User"
+                />
+              </button>
               <span className="ml-[5px] text-gray-700">Duy Vo</span>
             </div>
             <div className="">
-              <img
-                src="../public/Notification.svg"
-                className="w-[25px]"
-                alt="Notification"
-              />
+              <button className="btn mt-[4px]">
+                <img
+                  src="../public/Notification.svg"
+                  className="w-[25px]"
+                  alt="Notification"
+                />
+              </button>
             </div>
           </div>
         </div>
