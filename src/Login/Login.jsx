@@ -1,377 +1,352 @@
-// import React from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Switch } from "../components/ui/switch";
 
-// export const Login = () => {
-//   // Navigation menu items data
-//   const navItems = [
-//     { icon: "/service.svg", label: "SERVICE" },
-//     { icon: "/icon-1.svg", label: "EQUIPMENT" },
-//     { icon: "/icon.svg", label: "ABOUT US" },
-//     { icon: "/blog.svg", label: "BLOG" },
-//   ];
+export const Login = () => {
+  // Navigation menu items data
+  const navItems = [
+    {
+      icon: "https://c.animaapp.com/m8qroov3KCtN5L/img/service.svg",
+      label: "SERVICE",
+    },
+    {
+      icon: "https://c.animaapp.com/m8qroov3KCtN5L/img/icon-1.svg",
+      label: "EQUIPMENT",
+    },
+    {
+      icon: "https://c.animaapp.com/m8qroov3KCtN5L/img/icon.svg",
+      label: "ABOUT US",
+    },
+    {
+      icon: "https://c.animaapp.com/m8qroov3KCtN5L/img/blog.svg",
+      label: "BLOG",
+    },
+  ];
 
-//   // Footer creators data
-//   const creators = [
-//     { name: "Duy", separator: "&" },
-//     { name: "Vy", separator: "&" },
-//     { name: "Khoa", separator: "&" },
-//     { name: "Anh", separator: null },
-//   ];
+  // Footer credits data
+  const creators = [
+    { name: "Duy", link: true },
+    { name: "Vy", link: true },
+    { name: "Khoa", link: true },
+    { name: "Anh", link: true },
+  ];
 
-//   return (
-//     <div className="bg-transparent d-flex justify-content-center w-100">
-//       <div className="w-100" style={{ maxWidth: "1920px", height: "1080px" }}>
-//         <div className="position-relative" style={{ height: "1080px" }}>
-//           <div
-//             className="w-100 position-absolute top-0 start-0"
-//             style={{
-//               maxWidth: "1920px",
-//               height: "1052px",
-//               backgroundImage:
-//                 "url(/screencapture-demos-creative-tim-soft-ui-dashboard-pages-sign-in.png)",
-//               backgroundSize: "cover",
-//               backgroundPosition: "50% 50%",
-//             }}
-//           />
+  // const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
 
-//           <div
-//             className="position-absolute w-100 top-0 start-0"
-//             style={{ maxWidth: "1920px", height: "1080px" }}
-//           >
-//             <div className="position-relative h-100 bg-white">
-//               {/* Footer */}
-//               <div
-//                 className="position-absolute bottom-0 start-50 translate-middle-x"
-//                 style={{ width: "985px", height: "18px", marginBottom: "42px" }}
-//               >
-//                 <div
-//                   className="position-absolute top-0 end-0"
-//                   style={{ width: "114px", height: "18px" }}
-//                 >
-//                   <div className="position-absolute top-0 end-0 text-muted small">
-//                     License
-//                   </div>
-//                   <div className="position-absolute top-0 start-0 text-muted small">
-//                     Group 6
-//                   </div>
-//                 </div>
+  const handleLogin = (e) => {
+    e.preventDefault();
 
-//                 <div
-//                   className="position-absolute top-0 start-0"
-//                   style={{ width: "423px", height: "18px" }}
-//                 >
-//                   <div className="text-muted small">
-//                     @ 2025, Made with ❤ by{" "}
-//                     {creators.map((creator, index) => (
-//                       <React.Fragment key={index}>
-//                         <span className="fw-bold text-info">
-//                           {creator.name}{" "}
-//                         </span>
-//                         {creator.separator && (
-//                           <span className="text-muted">
-//                             {creator.separator}{" "}
-//                           </span>
-//                         )}
-//                       </React.Fragment>
-//                     ))}
-//                     for helping HCMUT student
-//                   </div>
-//                 </div>
-//               </div>
+    AxiosInstance.post(`auth/signin/`, {
+      email: email,
+      pass: pass,
+    })
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("Token", res.data);
+        // navigate(`/home`);
+        toast.success("Login successful!");
+      })
+      .catch((error) => {
+        console.error("There was an error logging in: ", error);
+        toast.error("Login failed!");
+      });
+  };
 
-//               <div
-//                 className="position-absolute top-0 end-0"
-//                 style={{ width: "1454px", height: "895px" }}
-//               >
-//                 <div className="position-absolute w-100 h-100 top-0 start-0">
-//                   {/* Hero image */}
-//                   <img
-//                     className="position-absolute end-0"
-//                     alt="Login hero image"
-//                     src="/image.png"
-//                     style={{ width: "862px", height: "895px" }}
-//                   />
+  return (
+    <>
+      {/* <GlobalStyle /> */}
+      <div className="bg-transparent flex flex-row justify-center w-full">
+        <div className=" h-[1080px]">
+          <div className="relative h-[1080px]">
+            <div className="absolute  h-[1080px] top-0 left-0">
+              <div className="relative h-[1080px] bg-white">
+                <div className="absolute w-[985px] h-[18px] top-[1020px] left-[169px] flex justify-between">
+                  <div className="w-[423px] h-[18px]">
+                    <div className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-xs tracking-[0] leading-[12.0px]">
+                      <span className="text-[#a0aec0] leading-[18.0px]">
+                        @ 2025, Made with ❤ by
+                      </span>
+                      {creators.map((creator, index) => (
+                        <React.Fragment key={index}>
+                          <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#38b2ac] leading-[18.0px]">
+                            {creator.name}
+                          </span>
+                          {index < creators.length - 1 && (
+                            <span className="text-[#a0aec0] leading-[18.0px]">
+                              &amp;
+                            </span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                      <span className="text-[#a0aec0] leading-[18.0px]">
+                        for helping HCMUT student
+                      </span>
+                    </div>
+                  </div>
 
-//                   {/* Navigation bar */}
-//                   <div
-//                     className="position-absolute top-0 start-0 card"
-//                     style={{
-//                       width: "988px",
-//                       height: "72px",
-//                       marginTop: "25px",
-//                       borderRadius: "15px",
-//                       border: "1.5px solid white",
-//                       boxShadow: "0px 7px 23px rgba(0, 0, 0, 0.05)",
-//                       backdropFilter: "blur(10.5px)",
-//                       background:
-//                         "linear-gradient(137deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.8) 100%)",
-//                     }}
-//                   >
-//                     <div className="card-body p-0 h-100">
-//                       {/* Sign up button */}
-//                       <button
-//                         className="btn position-absolute top-0 end-0 mt-3 me-3"
-//                         style={{
-//                           height: "37px",
-//                           width: "150px",
-//                           borderRadius: "34.5px",
-//                           background:
-//                             "linear-gradient(41deg, rgba(49,56,96,1) 0%, rgba(21,25,40,1) 100%)",
-//                           color: "white",
-//                           fontSize: "10px",
-//                           fontWeight: "bold",
-//                         }}
-//                       >
-//                         FREE SIGN UP!
-//                       </button>
+                  <div className="w-[114px] h-[18px] flex justify-between">
+                    <div className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-xs tracking-[0] leading-[18.0px] whitespace-nowrap">
+                      Group 6
+                    </div>
+                    <div className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-xs tracking-[0] leading-[18.0px] whitespace-nowrap">
+                      License
+                    </div>
+                  </div>
+                </div>
 
-//                       {/* Navigation menu */}
-//                       <div
-//                         className="position-absolute d-flex gap-4"
-//                         style={{
-//                           top: "26px",
-//                           left: "333px",
-//                           width: "350px",
-//                           height: "24px",
-//                         }}
-//                       >
-//                         {navItems.map((item, index) => (
-//                           <button
-//                             key={index}
-//                             className="btn btn-link p-2 d-flex align-items-center gap-1"
-//                             style={{ height: "24px", borderRadius: "12px" }}
-//                           >
-//                             <img
-//                               style={{ width: "11px", height: "11px" }}
-//                               alt={item.label}
-//                               src={item.icon}
-//                             />
-//                             <span
-//                               className="text-secondary fw-bold"
-//                               style={{ fontSize: "10px" }}
-//                             >
-//                               {item.label}
-//                             </span>
-//                           </button>
-//                         ))}
-//                       </div>
+                <div className="absolute w-[50px] h-[895px] top-0 left-[56px]">
+                  <div className="absolute w-[50px] h-[895px] top-0 left-0">
+                    <img
+                      className="absolute w-[862px] h-[895px] top-0 left-[592px]"
+                      alt="Login background"
+                      src="https://c.animaapp.com/m8qroov3KCtN5L/img/image.png"
+                    />
 
-//                       {/* Logo */}
-//                       <div
-//                         className="position-absolute d-flex align-items-center"
-//                         style={{ height: "23px", top: "26px", left: "23px" }}
-//                       >
-//                         <div
-//                           className="position-relative"
-//                           style={{ width: "22px", height: "23px" }}
-//                         >
-//                           <img
-//                             className="position-absolute"
-//                             alt="Fill"
-//                             src="/fill-1.svg"
-//                             style={{
-//                               width: "15px",
-//                               height: "16px",
-//                               top: "4px",
-//                               left: "3px",
-//                             }}
-//                           />
-//                           <img
-//                             className="position-absolute"
-//                             alt="Fill"
-//                             src="/fill-2.svg"
-//                             style={{
-//                               width: "3px",
-//                               height: "3px",
-//                               top: "10px",
-//                               left: "9px",
-//                             }}
-//                           />
-//                           <div
-//                             className="position-absolute w-100 h-100 top-0 start-0"
-//                             style={{
-//                               background: "url(/mask-group.png) 100% 100%",
-//                             }}
-//                           >
-//                             <img
-//                               className="position-absolute w-100 h-100 top-0 start-0"
-//                               alt="Mask group"
-//                               src="/mask-group-1.png"
-//                             />
-//                           </div>
-//                         </div>
-//                         <span
-//                           className="ms-3 fw-bold text-secondary"
-//                           style={{ fontSize: "14px" }}
-//                         >
-//                           SMARTGEAR
-//                         </span>
-//                       </div>
-//                     </div>
-//                   </div>
+                    <div
+                      className="absolute top-[25px] left-[200px]
+                        w-[988px] h-[72px]
+                        rounded-[15px]
+                        border border-white
+                        shadow-[0_7px_23px_rgba(0,0,0,0.05)]
+                        backdrop-blur-[10.5px]
+                        [background:linear-gradient(137deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.8)_100%)]
+                        flex items-center px-4"
+                    >
+                      <div className="flex items-center h-[23px]">
+                        <div className="w-[22px] h-[23px] relative">
+                          <img
+                            className="absolute w-[15px] h-4 top-1 left-[3px]"
+                            alt="Fill"
+                            src="https://c.animaapp.com/m8qroov3KCtN5L/img/fill-1.svg"
+                          />
+                          <img
+                            className="absolute w-[3px] h-[3px] top-2.5 left-[9px]"
+                            alt="Fill"
+                            src="https://c.animaapp.com/m8qroov3KCtN5L/img/fill-2.svg"
+                          />
+                          <div className="absolute w-[22px] h-[23px] top-0 left-0 bg-[100%_100%]">
+                            <img
+                              className="absolute w-[22px] h-[23px] top-0 left-0"
+                              alt="Mask group"
+                              src="https://c.animaapp.com/m8qroov3KCtN5L/img/mask-group-1.png"
+                            />
+                          </div>
+                        </div>
+                        <div className="ml-[12px] [font-family:'Arial-Bold',Helvetica] font-bold text-[#2d3748] text-sm">
+                          SMARTGEAR
+                        </div>
+                      </div>
 
-//                   {/* Login form */}
-//                   <div
-//                     className="position-absolute"
-//                     style={{
-//                       width: "355px",
-//                       height: "457px",
-//                       top: "289px",
-//                       left: "0",
-//                     }}
-//                   >
-//                     {/* Sign up link */}
-//                     <div
-//                       className="position-absolute text-center text-muted"
-//                       style={{
-//                         width: "202px",
-//                         top: "437px",
-//                         left: "77px",
-//                         fontSize: "14px",
-//                       }}
-//                     >
-//                       Don't have an account?{" "}
-//                       <a
-//                         href="#"
-//                         className="text-info fw-bold text-decoration-none"
-//                       >
-//                         Sign up
-//                       </a>
-//                     </div>
+                      <div className="flex gap-4 ml-8">
+                        {navItems.map((item, index) => (
+                          <StyledButton
+                            key={index}
+                            className="h-6 rounded-xl flex items-center justify-center px-2 py-0 bg-transparent"
+                          >
+                            <img
+                              className="w-[11px] h-[11px]"
+                              alt={item.label}
+                              src={item.icon}
+                            />
+                            <span className="ml-1 text-[#2d3748] font-bold text-[10px] leading-[15px]">
+                              {item.label}
+                            </span>
+                          </StyledButton>
+                        ))}
+                      </div>
 
-//                     {/* Sign in button */}
-//                     <button
-//                       className="btn btn-info position-absolute text-white fw-bold"
-//                       style={{
-//                         width: "350px",
-//                         height: "47px",
-//                         top: "385px",
-//                         left: "3px",
-//                         borderRadius: "12px",
-//                         fontSize: "10px",
-//                       }}
-//                     >
-//                       SIGN IN
-//                     </button>
+                      <StyledButton
+                        className="ml-auto w-[150px] h-[37px] rounded-[34.5px]
+                [background:linear-gradient(41deg,rgba(49,56,96,1)_0%,rgba(21,25,40,1)_100%)]
+                flex items-center justify-center"
+                      >
+                        <div className="w-[89.5px] h-[15px] text-white font-bold text-[10px] leading-[15px]">
+                          FREE SIGN UP!
+                        </div>
+                      </StyledButton>
+                    </div>
+                  </div>
 
-//                     {/* Remember me toggle */}
-//                     <div
-//                       className="position-absolute d-flex align-items-center"
-//                       style={{ height: "35px", top: "312px", left: "3px" }}
-//                     >
-//                       <div className="form-check">
-//                         <input
-//                           className="form-check-input"
-//                           type="checkbox"
-//                           id="remember-me"
-//                         />
-//                         <label
-//                           className="form-check-label text-secondary small"
-//                           htmlFor="remember-me"
-//                         >
-//                           Remember me
-//                         </label>
-//                       </div>
-//                     </div>
+                  <form onSubmit={handleLogin}>
+                    <div className="absolute w-[355px] h-[457px] top-[289px] left-0">
+                      <div className="absolute w-[202px] top-[437px] left-[77px] [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-400 text-sm text-center tracking-[0] leading-[14.0px]">
+                        <span className="text-[#a0aec0] leading-[19.6px]">
+                          Don&#39;t have an account?
+                        </span>
+                        <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#a0aec0] leading-[19.6px]">
+                          &nbsp;
+                        </span>
+                        <span className="[font-family:'Arial-Bold',Helvetica] font-bold text-[#4fd1c5] leading-[0.1px] cursor-pointer">
+                          Sign up
+                        </span>
+                      </div>
 
-//                     {/* Password field */}
-//                     <div
-//                       className="position-absolute"
-//                       style={{
-//                         width: "352px",
-//                         height: "92px",
-//                         top: "210px",
-//                         left: "3px",
-//                       }}
-//                     >
-//                       <label
-//                         htmlFor="password"
-//                         className="form-label text-secondary"
-//                         style={{ marginLeft: "4px" }}
-//                       >
-//                         Password
-//                       </label>
-//                       <input
-//                         type="password"
-//                         className="form-control"
-//                         id="password"
-//                         placeholder="Your password"
-//                         style={{
-//                           height: "53px",
-//                           width: "350px",
-//                           borderRadius: "15px",
-//                         }}
-//                       />
-//                     </div>
+                      <Button
+                        type="submit"
+                        className="w-[350px] h-[47px] absolute top-[385px] left-[3px] !bg-[#4fd1c5] rounded-xl text-white [font-family:'Arial-Bold',Helvetica] font-bold text-[10px] text-center tracking-[0] leading-[15px]"
+                      >
+                        SIGN IN
+                      </Button>
 
-//                     {/* Email field */}
-//                     <div
-//                       className="position-absolute"
-//                       style={{
-//                         width: "352px",
-//                         height: "89px",
-//                         top: "109px",
-//                         left: "3px",
-//                       }}
-//                     >
-//                       <label
-//                         htmlFor="email"
-//                         className="form-label text-secondary"
-//                         style={{ marginLeft: "4px" }}
-//                       >
-//                         Email
-//                       </label>
-//                       <input
-//                         type="email"
-//                         className="form-control"
-//                         id="email"
-//                         placeholder="Your email address"
-//                         style={{
-//                           height: "53px",
-//                           width: "350px",
-//                           borderRadius: "15px",
-//                         }}
-//                       />
-//                     </div>
+                      <div className="absolute w-32 h-[35px] top-[312px] left-[3px] flex items-center">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            id="remember-me"
+                            type="checkbox"
+                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <Label
+                            htmlFor="remember-me"
+                            className="[font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-xs tracking-[0] leading-[18px]"
+                          >
+                            Remember me
+                          </Label>
+                        </div>
+                      </div>
 
-//                     {/* Heading */}
-//                     <div
-//                       className="position-absolute"
-//                       style={{
-//                         width: "283px",
-//                         height: "72px",
-//                         top: "0",
-//                         left: "0",
-//                       }}
-//                     >
-//                       <h2
-//                         className="position-absolute text-muted text-center fw-bold"
-//                         style={{
-//                           width: "274px",
-//                           top: "52px",
-//                           left: "4px",
-//                           fontSize: "14px",
-//                         }}
-//                       >
-//                         Enter your email and password to sign in
-//                       </h2>
-//                       <h1
-//                         className="position-absolute text-info text-center fw-bold"
-//                         style={{
-//                           width: "226px",
-//                           fontSize: "32px",
-//                         }}
-//                       >
-//                         Welcome Back
-//                       </h1>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+                      <div className="absolute w-[352px] h-[92px] top-[210px] left-[3px]">
+                        <Label
+                          htmlFor="password"
+                          className="absolute w-[62px] top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
+                        >
+                          Password
+                        </Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Your password"
+                          className="w-[350px] h-[53px] absolute top-[39px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
+                          value={pass}
+                          onChange={(e) => setPass(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="absolute w-[352px] h-[89px] top-[109px] left-[3px]">
+                        <Label
+                          htmlFor="email"
+                          className="absolute w-9 top-0 left-1 [font-family:'Arial-Regular',Helvetica] font-normal text-graygray-700 text-sm tracking-[0] leading-[19.6px]"
+                        >
+                          Email
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Your email address"
+                          className="w-[350px] h-[53px] absolute top-[37px] left-0 bg-blackampwhitewhite rounded-[15px] border border-solid border-slate-200 px-5"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+
+                      <div className="absolute w-[283px] h-[72px] top-0 left-0">
+                        <div className="text-[#a0aec0] absolute w-[274px] top-[52px] left-1 [font-family:'Arial-Bold',Helvetica] font-bold text-graygray-400 text-sm text-center tracking-[0] leading-[19.6px]">
+                          Enter your email and password to sign in
+                        </div>
+                        <span className="text-[#4fd1c5] absolute w-[226px] top-0 left-0 [font-family:'Arial-Bold',Helvetica] font-bold text-tealteal-300 text-[32px] text-center tracking-[0] leading-[41.6px]">
+                          Welcome Back
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      ;
+    </>
+  );
+};
+
+import styled, { createGlobalStyle } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import AxiosInstance from "../axios/AxiosInstance";
+import { toast } from "react-toastify";
+
+// Tạo global styles (thay thế cho :root và body)
+const GlobalStyle = createGlobalStyle`
+    :root {
+      font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      color-scheme: light dark;
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #242424;
+
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      place-items: center;
+      min-width: 320px;
+      min-height: 100vh;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        color: #213547;
+        background-color: #ffffff;
+      }
+    }
+  `;
+
+// Tạo styled components cho các phần tử
+const StyledLink = styled.a`
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+
+  &:hover {
+    color: #535bf2;
+  }
+
+  @media (prefers-color-scheme: light) {
+    &:hover {
+      color: #747bff;
+    }
+  }
+`;
+
+const StyledHeading = styled.h1`
+  font-size: 3.2em;
+  line-height: 1.1;
+`;
+
+const StyledButton = styled.button`
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+
+  &:hover {
+    border-color: #646cff;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f9f9f9;
+  }
+`;
