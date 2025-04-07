@@ -1,9 +1,16 @@
 import { useState } from "react";
-import axios from "axios";
-import Layout from "../components/Layout.jsx";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+
 
 function Homepage() {
-  return <div></div>;
+  return (
+    <div>
+      <Header/>
+      <div></div>
+      <Footer />
+    </div>
+  )
 }
 
 export default Homepage;

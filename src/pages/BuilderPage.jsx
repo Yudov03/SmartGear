@@ -99,15 +99,15 @@ function BuilderPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen">
-        <div className="text-[30px] ml-[20px] font-[700] mt-[20px] text-black">
+      <div className="mt-[50px] min-h-screen">
+        <div className="text-[30px] ml-[50px] font-[700] mt-[20px] text-black">
           Gearbox Builder
         </div>
-        <div className="mt-[20px] mb-[30px] text-[18px] ml-[20px] text-[#718096]">
+        <div className="mt-[20px] mb-[30px] text-[18px] ml-[50px] text-[#718096]">
           Enter the parameters below
         </div>
 
-        <div className="flex flex-row items-end gap-6 ml-[20px]">
+        <div className="flex flex-row items-end gap-6 ml-[50px]">
           <div className="flex flex-row gap-[15px]">
             <InputField
               label="P [kW]"
@@ -213,7 +213,7 @@ function BuilderPage() {
         )}
 
         {computedVariables && Object.keys(computedVariables).length > 0 && (
-          <div className="mt-8 ml-[20px]">
+          <div className="mt-8 ml-[50px]">
             <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
               Computed Variables Table
             </h2>

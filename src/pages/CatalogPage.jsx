@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout.jsx";
+import { createGlobalStyle } from "styled-components";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 export default function CatalogPage() {
   const [catalogData, setCatalogData] = useState([
@@ -38,8 +41,10 @@ export default function CatalogPage() {
     <>
       <GlobalStyle />
       <Header />
-      <div className="mt-3 ms-3">
-        <h6 className="mb-4 fw-bold">Catalog Information</h6>
+      <div className="mt-[50px] ml-[50px] mr-[50px]">
+        <div className="text-[30px] font-[700] mt-[20px] mb-[20px] text-black">
+          Catalog Information
+        </div>
         {catalogData.map((item, idx) => (
           <CatalogItem
             key={idx}
@@ -111,9 +116,7 @@ const CatalogItem = ({ name, company, email, vat, onDelete, onEdit }) => {
   );
 };
 
-import { createGlobalStyle } from "styled-components";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
+
 
 const GlobalStyle = createGlobalStyle`
  body {
