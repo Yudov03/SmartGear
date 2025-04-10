@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import ChatBox from "../components/ChatBox.jsx"
+
 
 function BuilderPage() {
   // State lưu các tham số đầu vào (P, n, L)
@@ -308,9 +310,17 @@ function BuilderPage() {
           </div>
         )}
 
+        {/* Phần cho Chatbox */}
+        <div className="fixed bottom-[50px] right-[50px] z-50">
+          <ChatBox />
+        </div>
+
+
+
 
       </div>
       <Footer />
+      
     </>
   );
 }
