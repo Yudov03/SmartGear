@@ -7,12 +7,22 @@ import gear from "../assets/gear.svg";
 import gear1 from "../assets/gear-1.svg";
 import "./login.css";
 import AxiosInstance from "../axios/AxiosInstance";
-import { toast } from "react-toastify";
+import { cssTransition, toast } from "react-toastify";
 
 const LoginPage = () => {
   // const navigate = useNavigate();
+  const [form, setForm] = useState(false);
+  const [img, setImg] = useState(true);
+
+  const togglePosition = () => {
+    setForm(!form);
+    setImg(!img);
+  };
+
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -24,7 +34,7 @@ const LoginPage = () => {
       .then((res) => {
         console.log(res);
         localStorage.setItem("Token", res.data);
-        // navigate(`/home`);
+        navigate(`/home`);
         toast.success("Login successful!");
       })
       .catch((error) => {
@@ -32,106 +42,240 @@ const LoginPage = () => {
         toast.error("Login failed!");
       });
   };
+
+  const handleRegister = (e) => {
+    AxiosInstance.post(`auth/signup/`, {
+      email: email,
+      pass: pass,
+      firstName: firstName,
+      lastName: lastName,
+    })
+      .then((res) => {
+        console.log(res);
+        navigate(`/home`);
+        toast.success("Sign Up successful!");
+      })
+      .catch((error) => {
+        console.error("There was an error register in: ", error);
+        toast.error("Sign Up failed!");
+      });
+  };
   return (
     <div className="login-page">
       {/* Thanh điều hướng (Navbar) */}
       <div>
-        <FixedTopNavbar />
+        <FixedTopNavbar togglePosition={togglePosition} form={form} />
       </div>
 
       {/* Nội dung chính: Form + Hình */}
       <div className="container-fluid" style={{ minHeight: "100vh" }}>
         <div className="row">
-          {/* Cột bên trái: Form đăng nhập */}
-          <div className="col-md-6 d-flex align-items-center justify-content-center p-5">
-            <div className="w-75">
-              <div className="mb-5">
-                <h1 className="fw-bold" style={{ color: "#4fd1c5" }}>
-                  Welcome Back
-                </h1>
-                <p
-                  className="fw-bold"
-                  style={{ color: "#a0aec0", fontSize: "12px" }}
-                >
-                  Enter your email and password to sign in
-                </p>
-              </div>
-
-              <form onSubmit={handleLogin}>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label mb-3">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder="Your email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+          <div
+            className={`col-md-6 d-flex align-items-center justify-content-center p-5 `}
+            style={
+              form
+                ? {
+                    transform: "translateX(0%)",
+                    transition: "transform 0.3s ease-in-out",
+                  }
+                : {
+                    transform: "translateX(100%)",
+                    transition: "transform 0.3s ease-in-out",
+                  }
+            }
+          >
+            {form ? (
+              <div className="w-75">
+                <div className="mb-5">
+                  <h1 className="fw-bold" style={{ color: "#4fd1c5" }}>
+                    Welcome Back
+                  </h1>
+                  <p
+                    className="fw-bold"
+                    style={{ color: "#a0aec0", fontSize: "12px" }}
+                  >
+                    Enter your email and password to sign in
+                  </p>
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label mb-3">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    placeholder="Your password"
-                    value={pass}
-                    onChange={(e) => setPass(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <div className="form-check form-switch">
-                    <input
-                      className="form-check-input "
-                      type="checkbox"
-                      role="switch"
-                      //   style={{ backgroundColor: "#4fd1c5" }}
-                      //   checked
-                    />
-                    <label
-                      className="form-check-label"
-                      // for="flexSwitchCheckDefault"
-                    >
-                      Remember me
+                <form onSubmit={handleLogin}>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label mb-3">
+                      Email
                     </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      placeholder="Your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
                   </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label mb-3">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      placeholder="Your password"
+                      value={pass}
+                      onChange={(e) => setPass(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <div className="form-check form-switch">
+                      <input
+                        className="form-check-input "
+                        type="checkbox"
+                        role="switch"
+                      />
+                      <label className="form-check-label">Remember me</label>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn w-100 font-Arial fw-bold text-white"
+                    style={{ backgroundColor: "#4fd1c5", fontSize: "15px" }}
+                  >
+                    Sign In
+                  </button>
+                </form>
+
+                <div className="text-center mt-3">
+                  <p href="#signup" style={{ color: "#a0aec0" }}>
+                    Don't have an account?{" "}
+                    <a
+                      href="#"
+                      style={{ color: "#4fd1c5" }}
+                      onClick={togglePosition}
+                    >
+                      Sign up
+                    </a>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="w-75">
+                <div className="mb-3">
+                  <h1 className="fw-bold" style={{ color: "#4fd1c5" }}>
+                    Create an Account
+                  </h1>
+                  <p
+                    className="fw-bold"
+                    style={{ color: "#a0aec0", fontSize: "12px" }}
+                  >
+                    Fill in your details to register
+                  </p>
                 </div>
 
-                <button
-                  type="submit"
-                  className="btn w-100 font-Arial fw-bold text-white"
-                  style={{ backgroundColor: "#4fd1c5", fontSize: "15px" }}
-                >
-                  Sign In
-                </button>
-              </form>
+                <form onSubmit={handleRegister}>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label mb-3">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      placeholder="Your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
 
-              <div className="text-center mt-3">
-                <p href="#signup" style={{ color: "#a0aec0" }}>
-                  Don't have an account?{" "}
-                  <a href="#" style={{ color: "#4fd1c5" }}>
-                    Sign up
-                  </a>
-                </p>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label mb-3">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      placeholder="Your password"
+                      value={pass}
+                      onChange={(e) => setPass(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="firstName" className="form-label mb-3">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="firstName"
+                      placeholder="Your first name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="lastName" className="form-label mb-3">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="lastName"
+                      placeholder="Your last name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn w-100 font-Arial fw-bold text-white"
+                    style={{ backgroundColor: "#4fd1c5", fontSize: "15px" }}
+                  >
+                    Sign Up
+                  </button>
+                </form>
+
+                <div className="text-center mt-3">
+                  <p href="#login" style={{ color: "#a0aec0" }}>
+                    Already have an account?{" "}
+                    <a
+                      href="#"
+                      style={{ color: "#4fd1c5" }}
+                      onClick={togglePosition}
+                    >
+                      Sign in
+                    </a>
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Cột bên phải: Icon hoặc hình ảnh */}
-          <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
-            {/* Ví dụ dùng icon Font Awesome hoặc SVG thay thế */}
+          <div
+            className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light"
+            style={
+              img
+                ? {
+                    transform: "scaleX(-1) translateX(100%)",
+                    transition: "transform 0.3s ease-in-out",
+                  }
+                : {
+                    transform: "scaleX(1) translateX(0%)",
+                    transition: "transform 0.3s ease-in-out",
+                  }
+            }
+          >
             <div className="text-center">
               <img src={gear} className="img-fluid" />
-              {/* <p className="mt-3">Your Icon / Image Here</p> */}
             </div>
           </div>
         </div>
@@ -162,7 +306,7 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-const FixedTopNavbar = () => {
+const FixedTopNavbar = ({ togglePosition, form }) => {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light shadow d-flex fixed-top rounded-4 container-xxl mt-3 w-75"
@@ -208,8 +352,9 @@ const FixedTopNavbar = () => {
                 background:
                   "linear-gradient(41deg, rgba(49,56,96,1) 0%, rgba(21,25,40,1) 100%)",
               }}
+              onClick={togglePosition}
             >
-              Free Sign Up!
+              {form ? "Free Sign Up!" : "Sign In!"}
             </button>
           </ul>
         </div>

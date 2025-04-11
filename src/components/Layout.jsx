@@ -5,25 +5,19 @@ import kinhlup from "../assets/kinhlup.svg";
 
 function Layout({ content }) {
   const navigate = useNavigate();
-
-  // Lưu trạng thái trang đang active, khởi tạo từ localStorage hoặc mặc định "Home"
   const [activeNav, setActiveNav] = useState(() => {
     return localStorage.getItem("activeNav") || "Home";
   });
-  // State để theo dõi nav item đang được hover
   const [hoveredNav, setHoveredNav] = useState(null);
 
-  // Khi activeNav thay đổi, lưu vào localStorage
   useEffect(() => {
     localStorage.setItem("activeNav", activeNav);
   }, [activeNav]);
 
-  // Hàm xử lý khi nhấn vào một nav item
   const handleNavClick = useCallback(
     (navItem) => {
       setActiveNav(navItem);
       setHoveredNav(navItem);
-      // Sử dụng requestAnimationFrame để chuyển hướng mượt hơn
       requestAnimationFrame(() => {
         navigate(`/${navItem.toLowerCase()}`);
       });
@@ -42,13 +36,13 @@ function Layout({ content }) {
           onTouchStart={() => handleNavClick(navItem)}
           onMouseEnter={() => setHoveredNav(navItem)}
           onMouseLeave={() => setHoveredNav(null)}
-          className={`p-2 px-4 flex items-center rounded-3 transition-all duration-150 cursor-pointer ${
+          className={`h-[64px] p-3 px-5 flex items-center rounded-[20px] transition-all duration-150 cursor-pointer ${
             activeNav === navItem ? "bg-white" : "bg-transparent hover:bg-white"
           }`}
         >
           <img
             src={isActiveOrHovered ? afterIcon : beforeIcon}
-            className="transition-all duration-150 w-25"
+            className="w-10 h-8 object-contain transition-opacity duration-150"
             alt={`${navItem} Icon`}
           />
           <span
@@ -118,9 +112,27 @@ function Layout({ content }) {
             "/public/Logout_After.svg"
           )}
         </ul>
-      </nav>
+        <div className="mt-4 bg-[#4FD1C5] rounded-[20px] w-[90%] max-w-sm p-4  relative">
+          <div className="w-[25%] h-[30%] bg-white rounded-[15px] flex items-center justify-center">
+            <img
+              src="/needhelp.svg"
+              alt="Help Icon"
+              className="w-8 h-8 scale-125"
+            />
+          </div>
 
-      {/* Phần nội dung chính */}
+          <div className="mt-4">
+            <h2 className="text-white text-[20px] font-semibold">Need help?</h2>
+            <p className="text-white text-[15px] mt-1">Please check our docs</p>
+          </div>
+
+          <div className="mt-6">
+            <button className="w-full flex items-center justify-center gap-2 border-none rounded-[15px] bg-white text-black px-4 py-2 mb-3 font-bold shadow-sm hover:bg-gray-100 active:scale-[0.97] active:translate-y-[1px] transition duration-150 ease-in-out">
+              <span className="text-[14px]">DOCUMENTATION</span>
+            </button>
+          </div>
+        </div>
+      </nav>
       <div className="flex-1 p-6 overflow-auto">{content}</div>
     </div>
   );
