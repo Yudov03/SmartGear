@@ -1,21 +1,18 @@
 import { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import ChatIcon from "./ChatIcon";
 
 const ChatBox = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // Danh sách tin nhắn (không xoá tin cũ)
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Xin chào! Bạn cần giúp gì?" },
   ]);
   const [input, setInput] = useState("");
 
   const messagesEndRef = useRef(null);
-  // Ref để khóa sendMessage, tránh gửi 2 tin nhắn liên tiếp do event bị gọi 2 lần
   const isSendingRef = useRef(false);
-  // Ref lưu timeout của bot để đảm bảo bot chỉ gửi 1 tin phản hồi
   const replyTimeoutRef = useRef(null);
 
-  // Hàm cuộn xuống cuối danh sách tin nhắn
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -26,7 +23,6 @@ const ChatBox = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Lắng nghe sự kiện keydown toàn cục để tắt chatbox khi nhấn ESC
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -40,7 +36,7 @@ const ChatBox = () => {
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [isOpen]);
 
-  const sendMessage = (text) => {
+  const sendMessage = async (text) => {
     if (isSendingRef.current) return;
   
     isSendingRef.current = true;
@@ -57,32 +53,51 @@ const ChatBox = () => {
       replyTimeoutRef.current = null;
     }
   
-    replyTimeoutRef.current = setTimeout(() => {
-      const botReply = {
-        sender: "bot",
-        text: "Cảm ơn bạn, chúng tôi sẽ phản hồi sớm!",
-      };
-      setMessages((prev) => [...prev, botReply]);
-      replyTimeoutRef.current = null;
+    replyTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await axios.post("https://your-api-url.com/chat", {
+          message: text,
+        });
+  
+        const botReply = {
+          sender: "bot",
+          text:
+            response.data.reply ||
+            "Cảm ơn bạn, chúng tôi sẽ phản hồi sớm!",
+        };
+  
+        setMessages((prev) => [...prev, botReply]);
+      } catch (error) {
+        console.error("Error calling bot API:", error);
+        const errorReply = {
+          sender: "bot",
+          text: "Có lỗi xảy ra, vui lòng thử lại sau!",
+        };
+        setMessages((prev) => [...prev, errorReply]);
+      } finally {
+        replyTimeoutRef.current = null;
+      }
     }, 1000);
   };
-  
-  
-  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      
-      // Lấy input hiện tại rồi gọi sendMessage với input đó
       const currentInput = input.trim();
       if (currentInput !== "") {
-        sendMessage(currentInput); // Gửi input hiện tại
-        setInput("");              // Xoá ngay input
+        sendMessage(currentInput);
+        setInput("");
       }
     }
   };
-  
+
+  const handleSendClick = () => {
+    const currentInput = input.trim();
+    if (currentInput !== "") {
+      sendMessage(currentInput);
+      setInput("");
+    }
+  };
 
   return (
     <div className="fixed bottom-[30px] right-[20px] z-50">
@@ -105,7 +120,6 @@ const ChatBox = () => {
                 {msg.text}
               </div>
             ))}
-            {/* Thẻ này giúp cuộn xuống cuối */}
             <div ref={messagesEndRef} />
           </div>
           <div className="p-3 border-t flex gap-2">
@@ -118,7 +132,7 @@ const ChatBox = () => {
               className="flex-1 border rounded-[15px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#56D3C7]"
             />
             <button
-              onClick={sendMessage}
+              onClick={handleSendClick}
               className="bg-[#56D3C7] border-none text-white px-4 py-2 rounded-[15px] hover:bg-[#3BAFA2] transition-all text-sm"
             >
               Gửi
