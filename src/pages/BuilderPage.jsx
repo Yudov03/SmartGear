@@ -4,7 +4,6 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import ChatBox from "../components/ChatBox.jsx"
 
-
 function BuilderPage() {
   // State lưu các tham số đầu vào (P, n, L)
   const [params, setParams] = useState({
@@ -315,7 +314,7 @@ function BuilderPage() {
           <ChatBox />
         </div>
 
-
+                    
 
 
       </div>
