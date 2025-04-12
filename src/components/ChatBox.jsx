@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ChatIcon from "./ChatIcon";
+import ReactMarkdown from "react-markdown";
 
 const ChatBox = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,39 @@ const ChatBox = () => {
   const messagesEndRef = useRef(null);
   const isSendingRef = useRef(false);
   const replyTimeoutRef = useRef(null);
+
+  // Mẫu trả lời của Bot với Markdown
+  const sampleReply = `**Giá hộp giảm tốc** phụ thuộc vào nhiều yếu tố như:  
+
+1. *Loại hộp giảm tốc*:  
+   - *Hộp giảm tốc bánh răng trụ* (Helical, Spur Gear)  
+   - *Hộp giảm tốc hành tinh* (Planetary Gearbox)  
+   - *Hộp giảm tốc Cycloid*  
+   - *Hộp giảm tốc Worm* (Trục vít - bánh vít)  
+
+2. *Công suất và tỷ số truyền*:  
+   - Công suất càng cao, giá càng đắt (từ vài trăm nghìn đến hàng trăm triệu đồng).  
+   - Tỷ số truyền phức tạp (ví dụ 1:100, 1:200) thường đắt hơn tỷ số đơn giản (1:10, 1:20).  
+
+3. *Thương hiệu và xuất xứ*:  
+   - *Hàng Việt Nam* (Hồng Ký, Nhật Minh, Thiên Phú): 2–50 triệu đồng.  
+   - *Hàng Trung Quốc* (SEW, Nord, Bonfiglioli): 5–100 triệu đồng.  
+   - *Hàng Nhật/Đức* (Sumitomo, Siemens, Rexroth): 10–200 triệu đồng.  
+
+4. *Kích thước và vật liệu*:  
+   - Hộp nhỏ (dùng cho motor công suất dưới 1kW) có giá từ 1–5 triệu đồng.  
+   - Hộp lớn (công nghiệp nặng) có thể lên tới 50–200 triệu đồng.  
+
+### Báo giá tham khảo (tùy model):
+- *Hộp giảm tốc mini (0.1–1kW)*: 1–5 triệu đồng.  
+- *Hộp giảm tốc công nghiệp (3–20kW)*: 10–50 triệu đồng.  
+- *Hộp giảm tốc cao cấp (30–100kW)*: 50–200 triệu đồng.  
+
+**Lời khuyên**:  
+- Liên hệ nhà cung cấp để được báo giá chính xác theo nhu cầu.  
+- Kiểm tra thông số kỹ thuật trước khi mua.  
+
+Bạn cần hộp giảm tốc cho ứng dụng cụ thể nào? Mình có thể tư vấn chi tiết hơn!`;
 
   // Hàm cuộn xuống cuối tin nhắn
   const scrollToBottom = () => {
@@ -47,7 +81,6 @@ const ChatBox = () => {
     const userMessage = { sender: "user", text };
     setMessages((prev) => [...prev, userMessage]);
 
-    // Reset sending flag ngay sau khi gửi tin người dùng
     setTimeout(() => {
       isSendingRef.current = false;
     }, 0);
@@ -69,7 +102,6 @@ const ChatBox = () => {
         }`;
 
         const botReply = { sender: "bot", text: formattedReply };
-
         setMessages((prev) => [...prev, botReply]);
       } catch (error) {
         console.error("Error calling bot API:", error);
@@ -122,11 +154,26 @@ const ChatBox = () => {
                     : "bg-[#F1F1F1] border border-gray-300 self-start"
                 }`}
               >
-                {msg.text}
+                {msg.sender === "bot" ? (
+                  <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="mb-1">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc ml-4">{children}</ul>,
+                    li: ({ children }) => <li className="mb-1">{children}</li>,
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+                
+                ) : (
+                  msg.text
+                )}
               </div>
             ))}
             {isBotTyping && (
-              <div className="text-gray-400 italic text-sm animate-pulse">Bot đang trả lời...</div>
+              <div className="text-gray-400 italic text-sm animate-pulse">
+                Bot đang trả lời...
+              </div>
             )}
             <div ref={messagesEndRef} />
           </div>
