@@ -4,6 +4,7 @@ import ChatIcon from "./ChatIcon";
 
 const ChatBox = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isBotTyping, setIsBotTyping] = useState(false);
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Xin chào! Bạn cần giúp gì?" },
   ]);
@@ -13,6 +14,7 @@ const ChatBox = () => {
   const isSendingRef = useRef(false);
   const replyTimeoutRef = useRef(null);
 
+  // Hàm cuộn xuống cuối tin nhắn
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -21,7 +23,7 @@ const ChatBox = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isBotTyping]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
@@ -36,45 +38,83 @@ const ChatBox = () => {
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [isOpen]);
 
+  // Mẫu trả lời của Bot theo yêu cầu
+  const sampleReply = `Giá hộp giảm tốc phụ thuộc vào nhiều yếu tố như:  
+
+1. *Loại hộp giảm tốc*:  
+   - *Hộp giảm tốc bánh răng trụ* (Helical, Spur Gear)  
+   - *Hộp giảm tốc hành tinh* (Planetary Gearbox)  
+   - *Hộp giảm tốc Cycloid*  
+   - *Hộp giảm tốc Worm* (Trục vít - bánh vít)  
+
+2. *Công suất và tỷ số truyền*:  
+   - Công suất càng cao, giá càng đắt (từ vài trăm nghìn đến hàng trăm triệu đồng).  
+   - Tỷ số truyền phức tạp (ví dụ 1:100, 1:200) thường đắt hơn tỷ số đơn giản (1:10, 1:20).  
+
+3. *Thương hiệu và xuất xứ*:  
+   - *Hàng Việt Nam* (Hồng Ký, Nhật Minh, Thiên Phú): 2–50 triệu đồng.  
+   - *Hàng Trung Quốc* (SEW, Nord, Bonfiglioli): 5–100 triệu đồng.  
+   - *Hàng Nhật/Đức* (Sumitomo, Siemens, Rexroth): 10–200 triệu đồng.  
+
+4. *Kích thước và vật liệu*:  
+   - Hộp nhỏ (dùng cho motor công suất dưới 1kW) có giá từ 1–5 triệu đồng.  
+   - Hộp lớn (công nghiệp nặng) có thể lên tới 50–200 triệu đồng.  
+
+### *Báo giá tham khảo (tùy model)*:
+- *Hộp giảm tốc mini (0.1–1kW)*: 1–5 triệu đồng.  
+- *Hộp giảm tốc công nghiệp (3–20kW)*: 10–50 triệu đồng.  
+- *Hộp giảm tốc cao cấp (30–100kW)*: 50–200 triệu đồng.  
+
+**Lời khuyên**:  
+- Liên hệ nhà cung cấp (Công ty TNHH Thiết Bị Công nghiệp, SEW Mekong, Nhật Minh Gearbox) để được báo giá chính xác theo nhu cầu.  
+- Kiểm tra thông số kỹ thuật (tải trọng, tốc độ, kiểu lắp) trước khi mua.  
+
+Bạn cần hộp giảm tốc cho ứng dụng cụ thể nào? Mình có thể tư vấn chi tiết hơn!`;
+
+  // Hàm gửi tin nhắn, gọi API và cập nhật trả lời từ Bot
   const sendMessage = async (text) => {
-    if (isSendingRef.current) return;
-  
+    if (isSendingRef.current || isBotTyping) return;
+
     isSendingRef.current = true;
-  
+    setIsBotTyping(true);
+
     const userMessage = { sender: "user", text };
     setMessages((prev) => [...prev, userMessage]);
-  
+
+    // Reset sending flag ngay sau khi gửi tin người dùng
     setTimeout(() => {
       isSendingRef.current = false;
     }, 0);
-  
+
     if (replyTimeoutRef.current) {
       clearTimeout(replyTimeoutRef.current);
       replyTimeoutRef.current = null;
     }
-  
+
     replyTimeoutRef.current = setTimeout(async () => {
       try {
         const response = await axios.post("https://your-api-url.com/chat", {
           message: text,
         });
-  
-        const botReply = {
-          sender: "bot",
-          text:
-            response.data.reply ||
-            "Cảm ơn bạn, chúng tôi sẽ phản hồi sớm!",
-        };
-  
+
+        // Lấy reply từ API, nếu không có thì dùng mẫu trả lời
+        const replyText = response.data.reply?.trim();
+        const formattedReply = `🤖 Bot: ${
+          replyText && replyText !== "." ? replyText : sampleReply
+        }`;
+
+        const botReply = { sender: "bot", text: formattedReply };
+
         setMessages((prev) => [...prev, botReply]);
       } catch (error) {
         console.error("Error calling bot API:", error);
         const errorReply = {
           sender: "bot",
-          text: "Có lỗi xảy ra, vui lòng thử lại sau!",
+          text: "❗ Có lỗi xảy ra, vui lòng thử lại sau!",
         };
         setMessages((prev) => [...prev, errorReply]);
       } finally {
+        setIsBotTyping(false);
         replyTimeoutRef.current = null;
       }
     }, 1000);
@@ -84,7 +124,7 @@ const ChatBox = () => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const currentInput = input.trim();
-      if (currentInput !== "") {
+      if (currentInput !== "" && !isBotTyping) {
         sendMessage(currentInput);
         setInput("");
       }
@@ -93,7 +133,7 @@ const ChatBox = () => {
 
   const handleSendClick = () => {
     const currentInput = input.trim();
-    if (currentInput !== "") {
+    if (currentInput !== "" && !isBotTyping) {
       sendMessage(currentInput);
       setInput("");
     }
@@ -120,6 +160,9 @@ const ChatBox = () => {
                 {msg.text}
               </div>
             ))}
+            {isBotTyping && (
+              <div className="text-gray-400 italic text-sm animate-pulse">Bot đang trả lời...</div>
+            )}
             <div ref={messagesEndRef} />
           </div>
           <div className="p-3 border-t flex gap-2">
@@ -129,11 +172,15 @@ const ChatBox = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 border rounded-[15px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#56D3C7]"
+              disabled={isBotTyping}
+              className="flex-1 border rounded-[15px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#56D3C7] disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
             <button
               onClick={handleSendClick}
-              className="bg-[#56D3C7] border-none text-white px-4 py-2 rounded-[15px] hover:bg-[#3BAFA2] transition-all text-sm"
+              disabled={isBotTyping}
+              className={`${
+                isBotTyping ? "bg-gray-300 cursor-not-allowed" : "bg-[#56D3C7] hover:bg-[#3BAFA2]"
+              } border-none text-white px-4 py-2 rounded-[15px] transition-all text-sm`}
             >
               Gửi
             </button>
