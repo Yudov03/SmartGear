@@ -99,4 +99,51 @@ export class BuildService {
 
         return dto
     }
+
+    async duongkinhbanhdai (dto: BuildDto){
+        dto.d1=160 
+        dto.v1=(3.14*dto.d1*dto.n1)/60000
+        let hesotruot=0.02
+        let u=4
+        dto.d2=dto.d1*u*(1-hesotruot)
+        
+        return dto
+    }
+    async khoangcachtruc(dto:BuildDto){
+        let temp=0.96*dto.d2
+        let h=8
+        if (temp <= 2*(dto.d1+dto.d2)  && temp>=h+0.55*(dto.d1+dto.d2) )
+            dto.a=temp
+        dto.L = 2 * dto.a + (3.14 * (dto.d1 + dto.d2)) / 2 + Math.pow(dto.d2 - dto.d1, 2) / (4 * dto.a);
+        let lambda = dto.L-3.14*(dto.d1+dto.d2)/2
+        let delta = (dto.d2-dto.d1)/2
+        let temp_2=Math.pow(lambda,2) - 8*Math.pow(delta,2)
+        dto.a=(lambda+ Math.sqrt(temp_2) )/4
+        let check_alpha_1 = (180 - 57)*((dto.d2-dto.d1)/dto.a)
+        if (check_alpha_1 > 120) {
+            dto.alpha_1 = check_alpha_1;
+        }
+    }
+
+    async sodai(dto:BuildDto){
+        let right = (7.5 * 1.2) / (4.059 * 0.872 * 1.081 * 1.14 * 0.9575);
+        dto.z = Math.ceil(right);
+    }
+
+    async kichthuocbanhdai(dto:BuildDto){
+        let t=15
+        let e=10
+        dto.B=(dto.z-1)*15+2*e
+        let h0=3.3
+        dto.d_a_1=dto.d1+2*h0
+        dto.d_a_2=dto.d2+2*h0
+    }
+
+    async luctacdunglenbotruyen(dto:BuildDto){
+        let F_v=63.049  
+
+    }
+
+
+
 }
