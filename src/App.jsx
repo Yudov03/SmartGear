@@ -7,7 +7,6 @@ import BuilderPage from "./pages/BuilderPage";
 import CatalogPage from "./pages/CatalogPage";
 import HistoryPage from "./pages/HistoryPage";
 import Homepage from "./pages/Homepage"
-import LogoutConfirmModal from './components/popup'
 
 export default function App() {
   const location = useLocation();
