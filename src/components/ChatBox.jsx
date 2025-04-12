@@ -38,40 +38,6 @@ const ChatBox = () => {
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, [isOpen]);
 
-  // Mẫu trả lời của Bot theo yêu cầu
-  const sampleReply = `Giá hộp giảm tốc phụ thuộc vào nhiều yếu tố như:  
-
-1. *Loại hộp giảm tốc*:  
-   - *Hộp giảm tốc bánh răng trụ* (Helical, Spur Gear)  
-   - *Hộp giảm tốc hành tinh* (Planetary Gearbox)  
-   - *Hộp giảm tốc Cycloid*  
-   - *Hộp giảm tốc Worm* (Trục vít - bánh vít)  
-
-2. *Công suất và tỷ số truyền*:  
-   - Công suất càng cao, giá càng đắt (từ vài trăm nghìn đến hàng trăm triệu đồng).  
-   - Tỷ số truyền phức tạp (ví dụ 1:100, 1:200) thường đắt hơn tỷ số đơn giản (1:10, 1:20).  
-
-3. *Thương hiệu và xuất xứ*:  
-   - *Hàng Việt Nam* (Hồng Ký, Nhật Minh, Thiên Phú): 2–50 triệu đồng.  
-   - *Hàng Trung Quốc* (SEW, Nord, Bonfiglioli): 5–100 triệu đồng.  
-   - *Hàng Nhật/Đức* (Sumitomo, Siemens, Rexroth): 10–200 triệu đồng.  
-
-4. *Kích thước và vật liệu*:  
-   - Hộp nhỏ (dùng cho motor công suất dưới 1kW) có giá từ 1–5 triệu đồng.  
-   - Hộp lớn (công nghiệp nặng) có thể lên tới 50–200 triệu đồng.  
-
-### *Báo giá tham khảo (tùy model)*:
-- *Hộp giảm tốc mini (0.1–1kW)*: 1–5 triệu đồng.  
-- *Hộp giảm tốc công nghiệp (3–20kW)*: 10–50 triệu đồng.  
-- *Hộp giảm tốc cao cấp (30–100kW)*: 50–200 triệu đồng.  
-
-**Lời khuyên**:  
-- Liên hệ nhà cung cấp (Công ty TNHH Thiết Bị Công nghiệp, SEW Mekong, Nhật Minh Gearbox) để được báo giá chính xác theo nhu cầu.  
-- Kiểm tra thông số kỹ thuật (tải trọng, tốc độ, kiểu lắp) trước khi mua.  
-
-Bạn cần hộp giảm tốc cho ứng dụng cụ thể nào? Mình có thể tư vấn chi tiết hơn!`;
-
-  // Hàm gửi tin nhắn, gọi API và cập nhật trả lời từ Bot
   const sendMessage = async (text) => {
     if (isSendingRef.current || isBotTyping) return;
 
@@ -97,7 +63,6 @@ Bạn cần hộp giảm tốc cho ứng dụng cụ thể nào? Mình có thể
           message: text,
         });
 
-        // Lấy reply từ API, nếu không có thì dùng mẫu trả lời
         const replyText = response.data.reply?.trim();
         const formattedReply = `🤖 Bot: ${
           replyText && replyText !== "." ? replyText : sampleReply
