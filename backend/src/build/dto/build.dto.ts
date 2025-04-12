@@ -112,4 +112,54 @@ export class BuildDto {
     @IsNumber()
     T_tt: number;
 
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    v1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    a: number;
+
+   
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    alpha_1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    z: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    B: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_a_1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_a_2: number;
+
+   
+
+   
 }
