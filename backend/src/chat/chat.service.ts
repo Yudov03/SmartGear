@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ChatService {
   constructor(private config: ConfigService) {}
-  async sendMessage(userMessage: string) {
+  async sendMessage(userMessage: string){
     const messages = userMessage
     const client = new InferenceClient(this.config.get("HUGGING_FACE_API_KEY"));
     const chatCompletion = await client.chatCompletion({
@@ -18,6 +18,6 @@ export class ChatService {
             },
         ],
     });
-    return chatCompletion.choices[0].message;
+    return chatCompletion.choices[0].message.content;
   }
 }

@@ -7,8 +7,6 @@ export class ChatController {
 
   @Post('send')
   async sendMessage(@Body('message') message: string) {
-    return {
-      response: await this.chatService.sendMessage(message),
-    };
+    return this.chatService.sendMessage(message)
   }
 }
