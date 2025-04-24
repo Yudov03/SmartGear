@@ -141,8 +141,31 @@ export class BuildService {
 
     async luctacdunglenbotruyen(dto:BuildDto){
         let F_v=63.049  
+        let F_0= (1/dto.z )*((780*7.5*1.2)/24.504*0.872)+F_v
+        dto.F_0_final=3 *F_0
+        dto.P_real=7.5
+        dto.F_t=1000*dto.P_real/24.504
+        dto.F_r =2 *F_0*dto.z*Math.sin((dto.alpha_1*Math.PI)/(180*2))
+        let z = dto.alpha_1*Math.PI/180
+        dto.f= (1/z)* Math.log((2*dto.F_0_final+dto.F_t)/(2*dto.F_0_final-dto.F_t))
+        return dto
 
     }
+
+    
+    async ungsuatmax(dto:BuildDto){
+        dto.P_real=7.5
+        let tmp=dto.alpha_1*Math.PI/180
+        let phi_1= ((1000*dto.P_real)*Math.pow(Math.E,dto.f*tmp))/(24.504*3*81*(Math.pow(Math.E,dto.f*tmp)-1))
+        let phi_v=1100*Math.pow(24.54,2)*Math.pow(10,-6)
+        let phi_f_1=2*2.8*100/dto.d1
+        dto.phi_max=phi_1+phi_v+phi_f_1
+        dto.circle=9.8
+
+        return dto
+
+    }
+
 
 
 
