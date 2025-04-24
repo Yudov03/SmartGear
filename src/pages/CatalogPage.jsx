@@ -11,24 +11,71 @@ const GlobalStyle = createGlobalStyle`
   }
   
   .table-container {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px 0;
   }
 
   .table-container thead {
     position: sticky;
     top: 0;
-    background-color: #fff;
+    background-color: #f8f9fa;
     z-index: 1;
   }
 
   .sort-icon {
     cursor: pointer;
     margin-left: 5px;
+    opacity: 0.6;
   }
 
   .sort-icon:hover {
+    opacity: 1;
     color: #0d6efd;
+  }
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table thead th {
+    border-top: none;
+    background-color: #198754;
+    color: white;
+    vertical-align: middle;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+  }
+
+  .table td {
+    vertical-align: middle;
+  }
+
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .search-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+
+  .search-input {
+    padding-left: 35px;
+    border-radius: 20px;
+  }
+
+  .select-container {
+    border-radius: 20px;
   }
 `;
 
@@ -186,117 +233,121 @@ export default function CatalogPage() {
 
       <div className="container mt-4">
         <div className="row align-items-center mb-4">
-          <div className="col-md-4">{/* <h3>Catalog</h3> */}</div>
+          <div className="col-md-4">
+            <h4 className="mb-0 text-primary"></h4>
+          </div>
           <div className="col-md-4">
             <select
-              className="form-select"
+              className="form-select select-container"
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
             >
-              <option value="engine">Engine</option>
-              <option value="bearing">Bearing</option>
+              <option value="engine">Engines</option>
+              <option value="bearing">Bearings</option>
             </select>
           </div>
           <div className="col-md-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by type..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="search-container mb-0">
+              <i className="bi bi-search"></i>
+              <input
+                type="text"
+                className="form-control search-input"
+                placeholder="Search by type..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
         {activeTab === "engine" ? (
           <div className="table-container table-responsive text-center">
             <table className="table table-hover table-striped table-bordered">
-              <thead className="table-success fw-bolder">
+              <thead className="fw-bolder">
                 <tr>
                   <th
                     onClick={() => handleSort("Type")}
                     style={{ cursor: "pointer" }}
                   >
-                    Kiểu {getSortIcon("Type")}
+                    Type {getSortIcon("Type")}
                   </th>
                   <th
                     onClick={() => handleSort("P_dc")}
                     style={{ cursor: "pointer" }}
                   >
-                    Công Suất {getSortIcon("P_dc")}
+                    Power {getSortIcon("P_dc")}
                   </th>
                   <th
                     onClick={() => handleSort("n_dc")}
                     style={{ cursor: "pointer" }}
                   >
-                    Tốc độ {getSortIcon("n_dc")}
+                    Speed {getSortIcon("n_dc")}
                   </th>
                   <th
                     onClick={() => handleSort("Voltage")}
                     style={{ cursor: "pointer" }}
                   >
-                    Điện áp {getSortIcon("Voltage")}
+                    Voltage {getSortIcon("Voltage")}
                   </th>
                   <th
                     onClick={() => handleSort("Current")}
                     style={{ cursor: "pointer" }}
                   >
-                    Dòng điện {getSortIcon("Current")}
+                    Current {getSortIcon("Current")}
                   </th>
                   <th
                     onClick={() => handleSort("Efficiency")}
                     style={{ cursor: "pointer" }}
                   >
-                    Hiệu suất {getSortIcon("Efficiency")}
+                    Efficiency {getSortIcon("Efficiency")}
                   </th>
                   <th
                     onClick={() => handleSort("Power_Fractor")}
                     style={{ cursor: "pointer" }}
                   >
-                    Hệ số công suất {getSortIcon("Power_Fractor")}
+                    Power Factor {getSortIcon("Power_Fractor")}
                   </th>
                   <th
                     onClick={() => handleSort("Max_Torque_Ratio")}
                     style={{ cursor: "pointer" }}
                   >
-                    Bội số mô men cực đại {getSortIcon("Max_Torque_Ratio")}
+                    Max Torque Ratio {getSortIcon("Max_Torque_Ratio")}
                   </th>
                   <th
                     onClick={() => handleSort("Start_Torque_Ratio")}
                     style={{ cursor: "pointer" }}
                   >
-                    Bội số mô men khởi động {getSortIcon("Start_Torque_Ratio")}
+                    Start Torque Ratio {getSortIcon("Start_Torque_Ratio")}
                   </th>
                   <th
                     onClick={() => handleSort("Start_Current_Ratio")}
                     style={{ cursor: "pointer" }}
                   >
-                    Bội số dòng điện khởi động{" "}
-                    {getSortIcon("Start_Current_Ratio")}
+                    Start Current Ratio {getSortIcon("Start_Current_Ratio")}
                   </th>
                   <th
                     onClick={() => handleSort("Weight")}
                     style={{ cursor: "pointer" }}
                   >
-                    Khối lượng {getSortIcon("Weight")}
+                    Weight {getSortIcon("Weight")}
                   </th>
                 </tr>
                 <tr>
                   <th></th>
                   <th>P (kW)</th>
-                  <th>n (vg/ph)</th>
+                  <th>n (rpm)</th>
                   <th>U (V)</th>
                   <th>I (A)</th>
                   <th>&eta; (%)</th>
                   <th>cos&phi;</th>
                   <th>
-                    M<sub>max</sub>/M<sub>đm</sub>
+                    M<sub>max</sub>/M<sub>n</sub>
                   </th>
                   <th>
-                    M<sub>kđ</sub>/M<sub>đm</sub>
+                    M<sub>s</sub>/M<sub>n</sub>
                   </th>
                   <th>
-                    I<sub>kđ</sub>/I<sub>đm</sub>
+                    I<sub>s</sub>/I<sub>n</sub>
                   </th>
                   <th>m (kg)</th>
                 </tr>
@@ -304,12 +355,7 @@ export default function CatalogPage() {
               <tbody className="table-group-divider">
                 {filteredData.map((engine, idx) => (
                   <tr key={engine.id}>
-                    <td
-                      style={{ color: "pr" }}
-                      className="fw-bold text-primary"
-                    >
-                      {engine.Type}
-                    </td>
+                    <td className="fw-bold text-primary">{engine.Type}</td>
                     <td>{engine.P_dc}</td>
                     <td>{engine.n_dc}</td>
                     <td>{engine.Voltage}</td>
@@ -328,91 +374,91 @@ export default function CatalogPage() {
         ) : (
           <div className="table-container table-responsive text-center">
             <table className="table table-hover table-striped table-bordered">
-              <thead className="table-success fw-bolder">
+              <thead className="fw-bolder">
                 <tr>
                   <th
                     onClick={() => handleSort("Type")}
                     style={{ cursor: "pointer" }}
                   >
-                    Kiểu {getSortIcon("Type")}
+                    Type {getSortIcon("Type")}
                   </th>
                   <th
                     onClick={() => handleSort("d")}
                     style={{ cursor: "pointer" }}
                   >
-                    Đường kính trong {getSortIcon("d")}
+                    Inner Diameter {getSortIcon("d")}
                   </th>
                   <th
                     onClick={() => handleSort("D")}
                     style={{ cursor: "pointer" }}
                   >
-                    Đường kính ngoài {getSortIcon("D")}
+                    Outer Diameter {getSortIcon("D")}
                   </th>
                   <th
                     onClick={() => handleSort("T")}
                     style={{ cursor: "pointer" }}
                   >
-                    Chiều rộng {getSortIcon("T")}
+                    Width {getSortIcon("T")}
                   </th>
                   <th
                     onClick={() => handleSort("d1")}
                     style={{ cursor: "pointer" }}
                   >
-                    Đường kính vai trong {getSortIcon("d1")}
+                    Inner Shoulder Dia. {getSortIcon("d1")}
                   </th>
                   <th
                     onClick={() => handleSort("B")}
                     style={{ cursor: "pointer" }}
                   >
-                    Chiều rộng trong {getSortIcon("B")}
+                    Inner Width {getSortIcon("B")}
                   </th>
                   <th
                     onClick={() => handleSort("C_m")}
                     style={{ cursor: "pointer" }}
                   >
-                    Chiều rộng bạc {getSortIcon("C_m")}
+                    Bearing Width {getSortIcon("C_m")}
                   </th>
                   <th
                     onClick={() => handleSort("r1")}
                     style={{ cursor: "pointer" }}
                   >
-                    Bán kính lượn {getSortIcon("r1")}
+                    Radius {getSortIcon("r1")}
                   </th>
                   <th
                     onClick={() => handleSort("a")}
                     style={{ cursor: "pointer" }}
                   >
-                    Khoảng hở {getSortIcon("a")}
+                    Clearance {getSortIcon("a")}
                   </th>
                   <th
                     onClick={() => handleSort("C_k")}
                     style={{ cursor: "pointer" }}
                   >
-                    Tải trọng động {getSortIcon("C_k")}
+                    Dynamic Load {getSortIcon("C_k")}
                   </th>
                   <th
                     onClick={() => handleSort("C_o")}
                     style={{ cursor: "pointer" }}
                   >
-                    Tải trọng tĩnh {getSortIcon("C_o")}
+                    Static Load {getSortIcon("C_o")}
                   </th>
                   <th
                     onClick={() => handleSort("e")}
                     style={{ cursor: "pointer" }}
                   >
-                    Số e {getSortIcon("e")}
+                    e Factor {getSortIcon("e")}
                   </th>
                   <th
                     onClick={() => handleSort("Y")}
                     style={{ cursor: "pointer" }}
                   >
-                    Hệ số Y {getSortIcon("Y")}
+                    Y Factor {getSortIcon("Y")}
                   </th>
                   <th
                     onClick={() => handleSort("Y_o")}
                     style={{ cursor: "pointer" }}
                   >
-                    Hệ số Yo {getSortIcon("Y_o")}
+                    Y<sub>o</sub> Factor {getSortIcon("Y_o")}
                   </th>
                 </tr>
                 <tr>
