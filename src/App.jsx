@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import BuilderPage from "./pages/BuilderPage";
 import CatalogPage from "./pages/CatalogPage";
 import HistoryPage from "./pages/HistoryPage";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 export default function App() {
   const location = useLocation();
