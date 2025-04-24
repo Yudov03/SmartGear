@@ -90,12 +90,6 @@ function BuilderPage() {
       alert("Lỗi khi tính toán tỷ số truyền.");
     }
   };
-  
-
-  // Log để kiểm tra state computedVariables khi thay đổi
-  useEffect(() => {
-    console.log("computedVariables đã cập nhật:", computedVariables);
-  }, [computedVariables]);
 
   return (
     <>
