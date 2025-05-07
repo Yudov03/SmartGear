@@ -2,34 +2,38 @@ import "../App.css";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-function Layout({ content }) {
+function Layout({ content, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [activeNav, setActiveNav] = useState(() => {
     return localStorage.getItem("activeNav") || "Home";
   });
-
   const [hoveredNav, setHoveredNav] = useState(null);
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const currentPath = location.pathname.toLowerCase();
-  
+
     let navName = "Home";
     if (currentPath.startsWith("/builder")) navName = "Builder";
     else if (currentPath.startsWith("/catalog")) navName = "Catalog";
-    else if (currentPath.startsWith("/setting")) navName = "Setting";
     else if (currentPath.startsWith("/profile")) navName = "Profile";
     else if (currentPath.startsWith("/history")) navName = "History";
     else if (currentPath.startsWith("/logout")) navName = "Logout";
-  
+
     setActiveNav(navName);
     localStorage.setItem("activeNav", navName);
   }, [location.pathname]);
-  
 
   const handleNavClick = useCallback(
     (navItem) => {
+      if (navItem === "Logout") {
+        setShowLogoutModal(true);
+        return;
+      }
+
       setActiveNav(navItem);
       setHoveredNav(navItem);
       localStorage.setItem("activeNav", navItem);
@@ -37,6 +41,16 @@ function Layout({ content }) {
     },
     [navigate]
   );
+
+  // Confirm logout: close modal, invoke onLogout or navigate
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
+    if (onLogout) {
+      onLogout();
+    } else {
+      navigate('/');
+    }
+  };
 
   const renderNavItem = useCallback(
     (navItem, beforeIcon, afterIcon) => {
@@ -85,7 +99,6 @@ function Layout({ content }) {
           {renderNavItem("Home", "/public/Home_Before.svg", "/public/Home_After.svg")}
           {renderNavItem("Builder", "/public/Builder_Before.svg", "/public/Builder_After.svg")}
           {renderNavItem("Catalog", "/public/Catalog_Before.svg", "/public/Catalog_After.svg")}
-          {renderNavItem("Setting", "/public/Setting_Before.svg", "/public/Setting_After.svg")}
 
           <span className="text-black my-4">Account Pages</span>
 
@@ -113,8 +126,35 @@ function Layout({ content }) {
         </div>
       </nav>
 
-      {/* Main content */}
-      <div className="flex-1 p-6 overflow-auto">{content}</div>
+      <div className="flex-1 p-6 overflow-auto relative">
+        <div>
+        {showLogoutModal && (
+          <div className="absolute mt-[200px] ml-[450px] inset-0  flex items-center justify-center z-50">
+            <div className="bg-[#4FD1C5] rounded-[20px] p-6 shadow-lg w-[600px] h-[400px] text-center">
+              <p className="mt-[50px] text-[30px] text-[white] mb-4">Bạn có chắc chắn muốn đăng xuất không?</p>
+              <div className="flex justify-around mt-[150px]">
+                <button
+                  onClick={confirmLogout}
+                  className="px-4 py-2 rounded-[15px] bg-[#27c4b5] text-black text-[30px] hover:bg-[#23b8a9] active:scale-[0.97] transition"
+                >
+                  Có
+                </button>
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="px-4 py-2 rounded-[15px] bg-[#a4aeb3] text-black text-[30px] hover:bg-[#808080] active:scale-[0.97] transition"
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        </div>
+        {content}
+        <div>
+        
+        </div>
+      </div>
     </div>
   );
 }
