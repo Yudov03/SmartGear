@@ -37,12 +37,14 @@ export class ProjectController {
   }
 
   // POST http://localhost:3000/projects (Header Beare token, Body dto)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   createProject(@GetUser('id') userId: number, @Body() dto: CreateProjectDto) {
     return this.projectService.createProject(userId, dto);
   }
 
   // PATCH http://localhost:3000/projects/1 (Header Beare token, Body dto)
+  @HttpCode(HttpStatus.OK)
   @Patch(':id')
   editProjectById(
     @GetUser('id') userId: number,
@@ -53,7 +55,7 @@ export class ProjectController {
   }
 
   // DELETE http://localhost:3000/projects/1 (Header Beare token)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @Delete(':id')
   deleteProjectById(
     @GetUser('id') userId: number,
