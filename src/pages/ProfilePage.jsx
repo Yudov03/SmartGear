@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Sun, Moon, Edit2, Save, User, Info, BookOpen, Mail } from "lucide-react";
-import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import { motion } from "framer-motion";
@@ -68,7 +67,6 @@ export default function ProfilePage() {
     { key: 'education', title: 'Education', icon: <BookOpen size={20} /> },
     { key: 'contact', title: 'Contact', icon: <Mail size={20} /> },
   ];
-  const [activeTab, setActiveTab] = useState(sections[0].key);
 
   return (
     <div className={darkMode ? 'bg-dark text-light' : ''}>
@@ -97,7 +95,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Hero & Profile Section */}
-        <div className={`py-5 text-center ${darkMode ? 'bg-secondary text-light' : 'bg-light text-white'}`}>
+        <div className={`py-1 text-center ${darkMode ? 'bg-secondary text-light' : 'bg-light text-white'}`}>
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -180,174 +178,174 @@ export default function ProfilePage() {
           </motion.div>
         </div>
 
-        {/* Main Content with Tabs */}
-        <main className="flex-grow-1 container py-4">
-          {/* Tab Nav */}
-          <ul className="nav nav-tabs mb-3 justify-content-center">
-            {sections.map(({ key, title, icon }) => (
-              <li className="nav-item" key={key}>
-                <button
-                  className={`nav-link text-secondary ${activeTab === key ? 'active' : ''}`}
-                  onClick={() => setActiveTab(key)}
-                >
-                  <span className="me-2">{icon}</span>
-                  {title}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {/* Sections */}
-          {activeTab === 'about' && (
+        {/* Main Content Section */}
+        <main className="container py-4">
+          <div className="row g-4">
+            {/* About Me Section */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.4 }}
-              className="card mb-4"
+              className="col-12"
             >
-              <div className="card-header">
-                <h2 className="h5 mb-0 d-flex align-items-center gap-2">
-                  <User size={20} /> About Me
-                </h2>
-              </div>
-              <div className="card-body">
-                <p className="mb-0">
-                  I am a passionate developer with a keen interest in building innovative solutions. Currently pursuing my education at Ho Chi Minh City University of Technology, I specialize in full-stack development and have a particular fondness for creating intuitive user interfaces.
-                </p>
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="h5 mb-0 d-flex align-items-center gap-2">
+                    <User size={20} /> About Me
+                  </h2>
+                </div>
+                <div className="card-body">
+                  <p className="mb-0">
+                    I am a passionate developer with a keen interest in building innovative solutions. Currently pursuing my education at Ho Chi Minh City University of Technology, I specialize in full-stack development and have a particular fondness for creating intuitive user interfaces.
+                  </p>
+                </div>
               </div>
             </motion.div>
-          )}
 
-          {['info', 'education', 'contact'].includes(activeTab) && (
-            <div className="row g-3 d-flex align-items-center justify-content-center">
-              {[
-                {
-                  key: 'info',
-                  title: 'Personal Info',
-                  icon: <Info size={20} />,
-                  items: [
+            {/* Personal Info Section */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="col-md-4"
+            >
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <Info size={20} /> Personal Info
+                </div>
+                <ul className="list-group list-group-flush">
+                  {[
                     { label: 'First Name', value: user?.firstName || 'N/A', editable: true },
                     { label: 'Last Name', value: user?.lastName || 'N/A', editable: true },
                     { label: 'Email', value: user?.email || 'N/A', editable: true },
-                    {
-                      label: 'Password',
-                      value: '********',
-                      action: () => setChangePasswordMode(true)
-                    },
-                  ],
-                },
-                {
-                  key: 'education',
-                  title: 'Education',
-                  icon: <BookOpen size={20} />,
-                  items: [
+                    { label: 'Password', value: '********', action: () => setChangePasswordMode(true) },
+                  ].map(({ label, value, editable, action }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      {editable && editMode ? (
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser[label.toLowerCase().replace(' ', '')] || ''}
+                          onChange={(e) => setEditedUser({
+                            ...editedUser,
+                            [label.toLowerCase().replace(' ', '')]: e.target.value
+                          })}
+                        />
+                      ) : action ? (
+                        <button 
+                          className="btn btn-link p-0" 
+                          onClick={action}
+                        >
+                          Change Password
+                        </button>
+                      ) : (
+                        <span>{value}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Education Section */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="col-md-4"
+            >
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <BookOpen size={20} /> Education
+                </div>
+                <ul className="list-group list-group-flush">
+                  {[
                     { label: 'University', value: 'HCMUT' },
                     { label: 'Major', value: 'Computer Science' },
                     { label: 'Graduation', value: '2025' },
-                  ],
-                },
-                {
-                  key: 'contact',
-                  title: 'Contact',
-                  icon: <Mail size={20} />,
-                  items: [
+                  ].map(({ label, value }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      <span>{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Contact Section */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="col-md-4"
+            >
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <Mail size={20} /> Contact
+                </div>
+                <ul className="list-group list-group-flush">
+                  {[
                     { label: 'Email', value: user?.email, isLink: true, href: `mailto:${user?.email}` },
                     { label: 'GitHub', value: 'github.com/duydottrue', isLink: true, href: 'https://github.com/duydottrue' },
                     { label: 'LinkedIn', value: 'vo-ly-dac-duy', isLink: true, href: '#'},
-                  ],
-                },
-              ]
-                .filter(sec => sec.key === activeTab)
-                .map((section) => (
-                  <motion.div
-                    key={section.key}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="col-md-4"
-                  >
-                    <div className="card h-100">
-                      <div className="card-header d-flex align-items-center gap-2">
-                        {section.icon} {section.title}
-                      </div>
-                      <ul className="list-group list-group-flush">
-                        {section.items.map(({ label, value, isLink, href, editable, action }) => (
-                          <li className="list-group-item d-flex justify-content-between" key={label}>
-                            <strong>{label}:</strong>
-                            {editable && editMode ? (
-                              <input
-                                type="text"
-                                className="form-control"
-                                value={editedUser[label.toLowerCase().replace(' ', '')] || ''}
-                                onChange={(e) => setEditedUser({
-                                  ...editedUser,
-                                  [label.toLowerCase().replace(' ', '')]: e.target.value
-                                })}
-                              />
-                            ) : isLink ? (
-                              <a href={href} target="_blank" rel="noopener noreferrer">
-                                {value}
-                              </a>
-                            ) : action ? (
-                              <button 
-                                className="btn btn-link p-0" 
-                                onClick={action}
-                              >
-                                Change Password
-                              </button>
-                            ) : (
-                              <span>{value}</span>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </motion.div>
-                ))}
-            </div>
-          )}
-          
-          {/* Password Change Modal */}
-          {changePasswordMode && (
-            <div className="modal" style={{ display: 'block' }} tabIndex="-1">
-              <div className="modal-dialog">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className={`modal-title ${darkMode ? "text-dark" : "text-dark"}`}>Change Password</h5>
-                    <button type="button" className="btn-close" onClick={() => setChangePasswordMode(false)}></button>
+                  ].map(({ label, value, isLink, href }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      {isLink ? (
+                        <a href={href} target="_blank" rel="noopener noreferrer">
+                          {value}
+                        </a>
+                      ) : (
+                        <span>{value}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </div>
+        </main>
+
+        {/* Password Change Modal */}
+        {changePasswordMode && (
+          <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className={`modal-title ${darkMode ? "text-dark" : "text-dark"}`}>Change Password</h5>
+                  <button type="button" className="btn-close" onClick={() => setChangePasswordMode(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>Current Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      value={passwords.oldPassword}
+                      onChange={(e) => setPasswords({...passwords, oldPassword: e.target.value})}
+                    />
                   </div>
-                  <div className="modal-body">
-                    <div className="mb-3">
-                      <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>Current Password</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        value={passwords.oldPassword}
-                        onChange={(e) => setPasswords({...passwords, oldPassword: e.target.value})}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>New Password</label>
-                      <input
-                        type="password"
-                        className="form-control"
-                        value={passwords.newPassword}
-                        onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
-                      />
-                    </div>
+                  <div className="mb-3">
+                    <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>New Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      value={passwords.newPassword}
+                      onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                    />
                   </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={() => setChangePasswordMode(false)}>Cancel</button>
-                    <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>Update Password</button>
-                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setChangePasswordMode(false)}>Cancel</button>
+                  <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>Update Password</button>
                 </div>
               </div>
             </div>
-          )}
-        </main>
-        <div className="fixed bottom-[50px] right-[50px] z-50">
-          {<ChatBox />}
-        </div>
+          </div>
+        )}
+
         <Footer />
       </div>
     </div>
