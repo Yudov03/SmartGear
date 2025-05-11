@@ -75,7 +75,7 @@ export class BuildService {
     dto.u_brt = u_h / dto.u_brc;
 
     dto.P_real = 7.5;
-    dto.P1 = dto.P_real * 0.99 * 0.95;
+    dto.P1 = dto.P_real * 0.99 * 0.955;
     dto.P2 = dto.P_real * 0.99 * 0.96;
     dto.P3 = dto.P_real * 0.99 * 0.955;
 
@@ -97,7 +97,7 @@ export class BuildService {
     return dto;
   }
 
-  async duongkinhbanhdai(dto: BuildDto) {
+  duongkinhbanhdai(dto: BuildDto) {
     dto.d1 = 160;
     dto.v1 = (3.14 * dto.d1 * dto.n1) / 60000;
     const hesotruot = 0.02;
@@ -106,7 +106,8 @@ export class BuildService {
 
     return dto;
   }
-  async khoangcachtruc(dto: BuildDto) {
+
+  khoangcachtruc(dto: BuildDto) {
     const temp = 0.96 * dto.d2;
     const h = 8;
     if (temp <= 2 * (dto.d1 + dto.d2) && temp >= h + 0.55 * (dto.d1 + dto.d2))
@@ -123,23 +124,26 @@ export class BuildService {
     if (check_alpha_1 > 120) {
       dto.alpha_1 = check_alpha_1;
     }
+    return dto;
   }
 
-  async sodai(dto: BuildDto) {
+  sodai(dto: BuildDto) {
     const right = (7.5 * 1.2) / (4.059 * 0.872 * 1.081 * 1.14 * 0.9575);
     dto.z = Math.ceil(right);
+    return dto;
   }
 
-  async kichthuocbanhdai(dto: BuildDto) {
-    const t = 15;
+  kichthuocbanhdai(dto: BuildDto) {
+    //const t = 15;
     const e = 10;
     dto.B = (dto.z - 1) * 15 + 2 * e;
     const h0 = 3.3;
     dto.d_a_1 = dto.d1 + 2 * h0;
     dto.d_a_2 = dto.d2 + 2 * h0;
+    return dto;
   }
 
-  async luctacdunglenbotruyen(dto: BuildDto) {
+  luctacdunglenbotruyen(dto: BuildDto) {
     const F_v = 63.049;
     const F_0 = (1 / dto.z) * (((780 * 7.5 * 1.2) / 24.504) * 0.872) + F_v;
     dto.F_0_final = 3 * F_0;
@@ -153,7 +157,7 @@ export class BuildService {
     return dto;
   }
 
-  async ungsuatmax(dto: BuildDto) {
+  ungsuatmax(dto: BuildDto) {
     dto.P_real = 7.5;
     const tmp = (dto.alpha_1 * Math.PI) / 180;
     const phi_1 =
@@ -167,7 +171,17 @@ export class BuildService {
     return dto;
   }
 
-  async banhdan(dto: BuildDto) {
+  calculateStep2(dto: BuildDto) {
+    const duongkinhbanhdai = this.duongkinhbanhdai(dto);
+    const khoangcachtruc = this.khoangcachtruc(duongkinhbanhdai);
+    const sodai = this.sodai(khoangcachtruc);
+    const kichthuocbanhdai = this.kichthuocbanhdai(sodai);
+    const luctacdunglenbotruyen = this.luctacdunglenbotruyen(kichthuocbanhdai);
+    const ungsuatmax = this.ungsuatmax(luctacdunglenbotruyen);
+    return ungsuatmax;
+  }
+
+  banhdan(dto: BuildDto) {
     const R_e_tmp = 136.54;
     const d_e1_tmp = (2 * R_e_tmp) / Math.sqrt(Math.pow(2.97, 2) + 1);
     const K_be = 0.28;
@@ -208,7 +222,7 @@ export class BuildService {
       dto.h_ae1 * Math.sin((dto.goc_2 * Math.PI) / 180);
 
     dto.theta_f1 = Math.atan(dto.h_fe1 / dto.R_e);
-    dto.theta_f2 = dto.theta_f2;
+    //dto.theta_f2 = dto.theta_f2;
 
     dto.goc_a1 = dto.goc_1 + dto.theta_f1;
     dto.goc_a2 = dto.goc_2 + dto.theta_f2;
@@ -219,7 +233,12 @@ export class BuildService {
     return dto;
   }
 
-  async banhchudong(dto: BuildDto) {
+  calculateStep3(dto: BuildDto) {
+    const banhdan = this.banhdan(dto);
+    return banhdan;
+  }
+
+  banhchudong(dto: BuildDto) {
     dto.a_w = 225;
     const m = 3;
     const z1 = 33;
@@ -238,5 +257,10 @@ export class BuildService {
     dto.d_b2 = dto.d2_cd * Math.cos((20 * Math.PI) / 180);
     dto.profin_rang = 20;
     dto.alpha_tw = 20;
+  }
+
+  calculateStep4(dto: BuildDto) {
+    const banhchudong = this.banhchudong(dto);
+    return banhchudong;
   }
 }

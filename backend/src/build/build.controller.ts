@@ -20,4 +20,16 @@ export class BuildController {
   ) {
     return this.buildService.transmissionRate(engineId, dto);
   }
+  @Post('step2')
+  calculateStep2(@Body() dto: BuildDto) {
+    return this.buildService.calculateStep2(dto);
+  }
+  @Post('step3')
+  calculateStep3(@Body() dto: BuildDto) {
+    return this.buildService.calculateStep3(dto);
+  }
+  @Post('step4')
+  calculateStep4(@Body() dto: BuildDto) {
+    return this.buildService.calculateStep4(dto);
+  }
 }
