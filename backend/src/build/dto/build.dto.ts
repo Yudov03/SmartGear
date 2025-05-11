@@ -189,6 +189,201 @@ export class BuildDto {
     @IsNumber()
     circle: number;
 
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_e1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_e2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_m1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_m2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    h_ae1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_ae1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_ae2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    h_e: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    h_fe1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    R_e: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    b: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    R_m: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    B_1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    B_2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    theta_f1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    theta_f2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_a1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_a2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_f1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    goc_f2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    a_w: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d1_cd: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d2_cd: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    b_w: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_w1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_w2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_a1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_a2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_f1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_f2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_b1: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    d_b2: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    profin: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    profin_rang: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    alpha_tw: number;
+
+
+
+
+
+
+    
+
+
+
+
    
 
    

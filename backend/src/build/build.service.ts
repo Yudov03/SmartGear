@@ -166,6 +166,92 @@ export class BuildService {
 
     }
 
+    async banhdan(dto:BuildDto){
+        let R_e_tmp=136.540
+        let d_e1_tmp= (2*R_e_tmp)/Math.sqrt(Math.pow(2.97,2)+1)
+        let K_be=0.28
+        let z_1=30
+        let dm1_tmp=(1-0.5*K_be)*d_e1_tmp
+        let mtm=dm1_tmp/z_1
+        let mte=Math.round(mtm/(1-0.5*K_be))
+        let mtm_tb=mte*(1-0.5*K_be)
+        z_1=dm1_tmp/mtm
+        let z_2=Math.round(2.97*z_1)
+        let i= z_2/z_1
+        let deltau=(i-2.97)/2.97
+        if (deltau > (2 / 0.03 )) {
+            throw new Error("Error");
+            
+        }
+        dto.d_e1=mte*z_1
+        dto.d_e2=mte*z_2
+        dto.d_m1=mtm_tb*z_1
+        dto.d_m2=mtm_tb*z_2
+        dto.goc_1=Math.atan(z_1/z_2)
+        dto.goc_2=90-dto.goc_1
+
+       
+        dto.h_ae1=mte
+        dto.d_ae1=dto.d_e1+2*dto.h_ae1*Math.sin(dto.goc_1)
+        dto.d_ae2=dto.d_e2+2*dto.h_ae1*Math.sin(dto.goc_2)
+        dto.h_e=2.2*mte
+        dto.h_fe1=dto.h_e-dto.h_ae1
+
+        dto.R_e=0.5*mte*Math.sqrt(Math.pow(z_1,2)+ Math.pow(z_2,2))
+        dto.b=K_be*dto.R_e
+        dto.R_m=dto.R_e-0.5*dto.b
+
+        dto.B_1=dto.R_e*Math.cos(dto.goc_1*Math.PI/180)-dto.h_ae1*Math.sin(dto.goc_1*Math.PI/180)
+        dto.B_1=dto.R_e*Math.cos(dto.goc_2*Math.PI/180)-dto.h_ae1*Math.sin(dto.goc_2*Math.PI/180)
+
+        dto.theta_f1=Math.atan(dto.h_fe1/dto.R_e)
+        dto.theta_f2=dto.theta_f2
+
+        dto.goc_a1=dto.goc_1+dto.theta_f1
+        dto.goc_a2=dto.goc_2+dto.theta_f2
+
+        dto.goc_f1=dto.goc_1-dto.theta_f1
+        dto.goc_f2=dto.goc_2-dto.theta_f2
+
+
+
+
+
+
+
+        return dto
+
+    }
+
+    async banhchudong(dto:BuildDto){
+        dto.a_w=225
+        let m =3
+        let z1= 33
+        let z2= 116
+        dto.d1_cd=m*z1
+        dto.d2_cd=m*z2
+        dto.b_w=0.25*dto.a_w
+        dto.d_w1=2*dto.a_w/(3.52+1)
+        dto.d_w2=dto.d_w1*3.52
+        dto.d_a1=dto.d1_cd+2*m
+        dto.d_a2=dto.d2_cd+2*m
+        dto.d_f1=dto.d1_cd-2.5*m
+        dto.d_f2=dto.d2_cd-2.5*m
+        dto.profin=20
+        dto.d_b1=dto.d1_cd*Math.cos(20*Math.PI/180)
+        dto.d_b2=dto.d2_cd*Math.cos(20*Math.PI/180)
+        dto.profin_rang=20
+        dto.alpha_tw=20
+
+        
+
+
+
+
+
+
+    }
+
 
 
 
