@@ -7,18 +7,16 @@ import ProgressBar from "../components/ProgressBar.jsx";
 
 function BuilderPage({ readOnly = false, initialData = null, projectId = null }) {
   const [params, setParams] = useState({ power: "", speed: "", lifetime: "" });
-  const [engines, setEngines] = useState([10,10,10,10,10],[10,10,10,10,10],[10,10,10,10,10],[10,10,10,10,10]);
-  const [variables, setVariables] = useState({
-    P_ct: 10,
-    n_sb: 10
-  });
-  const [selectedEngine, setSelectedEngine] = useState(10,10,10,10,10);
-  const [computedVariables, setComputedVariables] = useState(10,10,10,10,10);
+  const [engines, setEngines] = useState([]);
+  const [variables, setVariables] = useState({});
+  const [selectedEngine, setSelectedEngine] = useState();
+  const [computedVariables, setComputedVariables] = useState({});
   const [step, setStep] = useState(1);
   const totalSteps = 5
   const [isEngineConfirmed, setIsEngineConfirmed] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [built, setBuilt] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -70,6 +68,9 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
         setEngines(engineList);
         setVariables(vars);
         setBuilt(true);
+        setComputedVariables({});
+        setIsEngineConfirmed(false);
+        setSelectedEngine(null);
       }
     } catch (error) {
       console.error("Error fetching engines:", error);
@@ -104,6 +105,24 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
     setIsEngineConfirmed(true);
   };
 
+  useEffect(() => {
+    if (readOnly || !selectedEngine || step !== 2) return;
+    setLoading(true);
+    AxiosInstance.post(`build/step2`, variables)
+      .then(({ data }) => {
+        console.log("API Step2 trả về:", data);
+        setComputedVariables(data);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [selectedEngine, variables, readOnly, step]);
+
+
+  useEffect(() => {
+    console.log("computedVariables hiện tại:", computedVariables);
+  }, [computedVariables]);
+    
+
   const handleNext = () => !readOnly && setStep(s => Math.min(s + 1, totalSteps));
   const handlePrev = () => !readOnly && setStep(s => Math.max(s - 1, 1));
   const handleSave = async () => {
@@ -131,30 +150,28 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
           Enter the parameters below
         </div>
 
-        <div className="flex flex-row items-end gap-6 ml-[50px]">
-          <div className="flex flex-row gap-[15px]">
-            <InputField
-              label="P [kW]"
-              name="power"
-              value={params.power}
-              onChange={handleChange}
-              disabled={readOnly || built}
-            />
-            <InputField
-              label="n [vg/ph]"
-              name="speed"
-              value={params.speed}
-              onChange={handleChange}
-              disabled={readOnly || built}
-            />
-            <InputField
-              label="L [year]"
-              name="lifetime"
-              value={params.lifetime}
-              onChange={handleChange}
-              disabled={readOnly || built}
-            />
-          </div>
+        <div className="flex flex-row items-end justify-between ml-[50px] mr-[50px]">
+          <InputField
+            label="P [kW]"
+            name="power"
+            value={params.power}
+            onChange={handleChange}
+            disabled={readOnly || step>=2}
+          />
+          <InputField
+            label="n [vg/ph]"
+            name="speed"
+            value={params.speed}
+            onChange={handleChange}
+            disabled={readOnly || step>=2}
+          />
+          <InputField
+            label="L [year]"
+            name="lifetime"
+            value={params.lifetime}
+            onChange={handleChange}
+            disabled={readOnly || step>=2}
+          />
 
           {!readOnly && (
             <button
@@ -203,13 +220,9 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                       </div>
                     </div>
 
-                    <p className="text-[#4FD1C5] font-[700] mt-[50px]">
-                      Choose your Engine based on the above input and computed
-                      variables
-                    </p>
+                    
                   </div>
 
-                  {/* Phần bên phải: Danh sách động cơ để người dùng lựa chọn */}
                   <div className="flex-1 mr-[100px]">
                     <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4 mt-[30px]">
                       Select an Engine
@@ -234,21 +247,26 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                       })}
                     </ul>
 
+                    
                     {selectedEngine && !readOnly && (
-                      <button
-                        onClick={handleConfirmEngine}
-                        className="mt-4 border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[15px] shadow-md transition-all"
-                      >
-                        Xác nhận
-                      </button>
+                      <div className="flex justify-center">
+                        <button
+                          onClick={handleConfirmEngine}
+                          className="mt-4 border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[15px] shadow-md transition-all"
+                        >
+                          Confirm
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
               )}
 
               {computedVariables && Object.keys(computedVariables).length > 0 && (
-                <div className="mt-8 ml-[50px]">
-                  <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">
+                <>
+                <div className="mt-8 ml-[50px] mr-[50px]">
+                  <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                  <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4 mt-[25px]">
                     Computed Variables Table
                   </h2>
                   <div className="overflow-x-auto">
@@ -340,21 +358,26 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                     </table>
                   </div>
                 </div>
+              </>
+                
               )}
               {isEngineConfirmed && (
-                <div className="flex items-center justify-center gap-4 mt-[30px]">
-                  <button
-                    onClick={handlePrev}
-                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                  >
-                    Next
-                  </button>
+                <div className ="m-[50px]">
+                  <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                  <div className="flex items-center justify-center gap-4 mt-[30px]">
+                    <button
+                      onClick={handlePrev}
+                      className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -364,17 +387,18 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
 
           {step === 2 && (
             <>
-              <div className ="w-3/4 mx-auto">
-                <h2 className ="text-[30px] text-[#4FD1C5] font-[800] mb-4">Belt Drive Parameters Table</h2>
-                <table className="mt-[10px] border-collapse border border-gray-300 w-[1000px]">
+              <div className="flex justify-center m-[50px]">
+                <BeltTable />
+              </div>
+              <div className ="m-[50px] ">
+                <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Belt Drive Parameters Table</h2>
+                <div className = "flex justify-center">
+                <table className="mt-10 w-[1000px] mx-auto border border-gray-300 border-collapse">
                   <thead>
                     <tr>
-                      <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
-                        Thông số
-                      </th>
-                      <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
-                        Giá trị
-                      </th>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Thông số</th>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Giá trị</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -390,34 +414,57 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                       { label: "Ứng suất lớn nhất", keys: "phi_max" },
                       { label: "Lực căng đai ban đầu", keys: "F_0_final" },
                       { label: "Lực tác dụng lên trục", keys: "F_r" },
-                    ].map((item, index) => {
-                      let value;
-                      if (item.value !== undefined) {
-                        value = item.value;
-                      } else {
-                        const raw = computedVariables[item.keys];
-                        value = Number.isInteger(parseFloat(raw))
-                          ? raw
-                          : parseFloat(raw).toFixed(4);
-                      }
-
+                    ].map((item, i) => {
+                      const raw = item.value != null
+                        ? item.value
+                        : computedVariables[item.keys];
+                      const display = item.value != null
+                        ? item.value
+                        : Number.isFinite(+raw)
+                          ? parseFloat(raw).toFixed(4)
+                          : raw ?? "--";
                       return (
-                        <tr key={index}>
-                          <td className="border border-gray-300 px-4 py-2">{item.label}</td>
-                          <td className="text-center border border-gray-300 px-4 py-2">
-                            {value}
-                          </td>
+                        <tr key={i} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 border border-gray-300 text-center">{item.label}</td>
+                          <td className="px-4 py-2 border border-gray-300 text-center">{display}</td>
                         </tr>
                       );
                     })}
                   </tbody>
                 </table>
+
+                </div>
               </div>
 
-              <div className="flex items-center justify-center gap-4 mt-[40px]">
+              <div className ="m-[50px]">
+                  <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                  <div className="flex items-center justify-center gap-4 mt-[30px]">
+                    <button
+                      onClick={handlePrev}
+                      className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+            </>
+          )}
+
+          {step === 3 && (
+          <>
+            <ConicalGearTable />
+            <div className ="m-[50px]">
+              <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+              <div className="flex items-center justify-center gap-4 mt-[30px]">
                 <button
-                    onClick={handlePrev}
-                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  onClick={handlePrev}
+                  className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
                 >
                   Back
                 </button>
@@ -428,67 +475,53 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                   Next
                 </button>
               </div>
-            </>
-          )}
-
-
-
-
-
-          {step === 3 && (
-          <>
-            <ConicalGearTable />
-            <div className="flex items-center justify-center gap-4 mt-[40px]">
-              <button
-                onClick={handlePrev}
-                className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleNext}
-                className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-              >
-                Next
-              </button>
             </div>
           </>)}
 
           {step === 4 && (
           <>
             <CylindricalGearTable />
-            <div className="flex items-center justify-center gap-4 mt-[40px]">
-              <button
-                onClick={handlePrev}
-                className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleNext}
-                className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-              >
-                Next
-              </button>
+            <div className ="m-[50px]">
+              <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+              <div className="flex items-center justify-center gap-4 mt-[30px]">
+                <button
+                  onClick={handlePrev}
+                  className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </>)}
 
           {step === 5 && (
-            <div className ="w-3/4 mx-auto ml-[50px] mt-[10px]">
-                <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Expected Price</h2>
-                <div className="flex items-center justify-center gap-4 mt-[40px]">
-                  <button
-                    onClick={handlePrev}
-                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                  >
-                    Next
-                  </button>
+            <div className ="mx-auto ml-[50px] mt-[10px]">
+                <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Expected Price</h2>
+                <div className ="flex justify-center">
+
+                </div>
+                <div className ="m-[50px]">
+                  <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                  <div className="flex items-center justify-center gap-4 mt-[30px]">
+                    <button
+                      onClick={handlePrev}
+                      className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
             </div>
           )}
@@ -525,78 +558,163 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
-const ConicalGearTable = () => {
-  const data = [
-    ["Chiều dài côn ngoài", "Rₑ = 0.5mₜₑ√z₁²+z₂² = 142.3 (mm)"],
-    ["Chiều rộng vành răng", "b = K_beRₑ = 39.84 (mm)"],
-    ["Chiều dài côn trung bình", "Rₘ = Rₑ - 0.5b = 122.38 (mm)"],
-    ["Đường kính vòng chia ngoài", "dₑ₁ = 90, dₑ₂ = 270 (mm)"],
-    ["Góc chia mặt côn", "δ₁ = 18.43°, δ₂ = 71.57°"],
-    ["Chiều cao răng ngoài", "hₑ = 6.6 (mm)"],
-    ["Chiều cao đầu răng ngoài", "hₐc = 3 (mm)"],
-    ["Chiều cao chân răng ngoài", "h_fₑ = 3.6 (mm)"],
-    ["Đường kính trung bình", "dₘ₁ = 77.4, dₘ₂ = 232.2 (mm)"],
-    ["Khoảng cách đến mặt phẳng vòng ngoài", "B₁ = 134.05, B₂ = 42.15 (mm)"],
-    ["Đường kính đỉnh răng ngoài", "dₐₑ₁ = 95.69, dₐₑ₂ = 271.90 (mm)"],
-    ["Góc chân răng", "θ_f = 1.45°"],
-    ["Góc côn đỉnh", "δₐ = 19.88°, 73.01°"],
-    ["Góc côn đáy", "δ_f = 16.99°, 70.12°"],
-  ];
+const DEFAULT_BELT_DATA = {
+  type: "A",
+  bp: 11,
+  b0: 13,
+  h: 8,
+  y0: 2.8,
+  area: 81,
+  diameterRange: "100 ÷ 200",
+  lengthRange: "560 ÷ 4000",
+};
+
+const BeltTable = () => {
+  const beltData = DEFAULT_BELT_DATA;
+
   return (
-    <div className ="w-3/4 mx-auto ml-[50px] mt-[10px] ">
-      <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Conical Gear Details</h2>
-      <table className="border-collapse border border-gray-300 w-[1000px]">
+    <div className="overflow-x-auto my-5">
+      <table className="w-auto mx-auto border-collapse border border-gray-400 text-center text-sm">
         <thead>
           <tr>
-            <th className="border px-4 py-2 bg-gray-100">Thông số</th>
-            <th className="border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
+            <th rowSpan="2" className="border border-gray-400 px-3 py-1 bg-gray-100">Loại đai</th>
+            <th colSpan="4" className="border border-gray-400 px-3 py-1 bg-gray-100">Kích thước tiết diện, mm</th>
+            <th rowSpan="2" className="border border-gray-400 px-3 py-1 bg-gray-100">Diện tích tiết diện A, mm²</th>
+            <th rowSpan="2" className="border border-gray-400 px-3 py-1 bg-gray-100">Đường kính bánh đai nhỏ d1, mm</th>
+            <th rowSpan="2" className="border border-gray-400 px-3 py-1 bg-gray-100">Chiều dài giới hạn l, mm</th>
+          </tr>
+          <tr>
+            <th className="border border-gray-400 px-3 py-1 bg-gray-100">bp</th>
+            <th className="border border-gray-400 px-3 py-1 bg-gray-100">b0</th>
+            <th className="border border-gray-400 px-3 py-1 bg-gray-100">h</th>
+            <th className="border border-gray-400 px-3 py-1 bg-gray-100">y0</th>
           </tr>
         </thead>
         <tbody>
-          {data.map(([l, v], i) => (
-            <tr key={i}>
-              <td className="border px-4 py-2">{l}</td>
-              <td className="border px-4 py-2">{v}</td>
-            </tr>
-          ))}
+          <tr>
+            <td className="border border-gray-400 px-3 py-1">{beltData.type}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.bp}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.b0}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.h}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.y0}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.area}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.diameterRange}</td>
+            <td className="border border-gray-400 px-3 py-1">{beltData.lengthRange}</td>
+          </tr>
         </tbody>
       </table>
     </div>
   );
 };
 
-const CylindricalGearTable = () => {
-  const data = [
-    ["Khoảng cách trục", "a_w = 223.5 (mm)"],
-    ["Đường kính vòng chia", "d₁ = 99, d₂ = 348 (mm)"],
-    ["Chiều rộng vành răng", "b_w = 55.875 (mm)"],
-    ["Đường kính lăn", "d_w1 = 99, d_w2 = 348 (mm)"],
-    ["Đường kính đỉnh răng", "d_a1 = 105, d_a2 = 354 (mm)"],
-    ["Đường kính đáy răng", "d_f1 = 91.5, d_f2 = 340.5 (mm)"],
-    ["Đường kính cơ sở", "d_b1 = 93.03, d_b2 = 327.01 (mm)"],
-    ["Góc profin gốc", "α = 20°"],
-    ["Góc profin răng", "α_t = 20°"],
-    ["Góc ăn khớp", "α_tw = 20°"],
-  ];
+const DEFAULT_CONICAL_DATA = [
+  ["Chiều dài côn ngoài", "Rₑ = 0.5mₜₑ√z₁²+z₂² = 142.3 (mm)"],
+  ["Chiều rộng vành răng", "b = K_beRₑ = 39.84 (mm)"],
+  ["Chiều dài côn trung bình", "Rₘ = Rₑ - 0.5b = 122.38 (mm)"],
+  ["Đường kính vòng chia ngoài", "dₑ₁ = 90, dₑ₂ = 270 (mm)"],
+  ["Góc chia mặt côn", "δ₁ = 18.43°, δ₂ = 71.57°"],
+  ["Chiều cao răng ngoài", "hₑ = 6.6 (mm)"],
+  ["Chiều cao đầu răng ngoài", "hₐc = 3 (mm)"],
+  ["Chiều cao chân răng ngoài", "h_fₑ = 3.6 (mm)"],
+  ["Đường kính trung bình", "dₘ₁ = 77.4, dₘ₂ = 232.2 (mm)"],
+  ["Khoảng cách đến mặt phẳng vòng ngoài", "B₁ = 134.05, B₂ = 42.15 (mm)"],
+  ["Đường kính đỉnh răng ngoài", "dₐₑ₁ = 95.69, dₐₑ₂ = 271.90 (mm)"],
+  ["Góc chân răng", "θ_f = 1.45°"],
+  ["Góc côn đỉnh", "δₐ = 19.88°, 73.01°"],
+  ["Góc côn đáy", "δ_f = 16.99°, 70.12°"],
+];
+
+const ConicalGearTable = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    AxiosInstance.get("/api/gear/conical")
+      .then((res) => {
+        setData(res.data || DEFAULT_CONICAL_DATA);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy dữ liệu bánh côn:", err);
+        setData(DEFAULT_CONICAL_DATA);
+      });
+  }, []);
+
+  if (!data) return <div className="text-center">Đang tải dữ liệu...</div>;
+
   return (
-    <div className="w-3/4 mx-auto ml-[50px] mt-[10px]">
-      <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Cylindrical Gear Details</h2>
-      <table className="border-collapse border border-gray-300 w-[1000px]">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>
-            <th className="border px-4 py-2 bg-gray-100">Bánh chủ động – Bánh bị động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(([l, v], i) => (
-            <tr key={i}>
-              <td className="border px-4 py-2">{l}</td>
-              <td className="border px-4 py-2">{v}</td>
+    <div className=" mx-auto m-[50px] mt-[10px]">
+      <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Conical Gear Details</h2>
+      <div className="flex justify-center">
+        <table className="border-collapse border border-gray-300 w-[1000px]">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2 bg-gray-100">Thông số</th>
+              <th className="border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map(([label, value], i) => (
+              <tr key={i}>
+                <td className="border px-4 py-2">{label}</td>
+                <td className="border px-4 py-2">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const DEFAULT_CYLINDRICAL_DATA = [
+  ["Khoảng cách trục", "a_w = 223.5 (mm)"],
+  ["Đường kính vòng chia", "d₁ = 99, d₂ = 348 (mm)"],
+  ["Chiều rộng vành răng", "b_w = 55.875 (mm)"],
+  ["Đường kính lăn", "d_w1 = 99, d_w2 = 348 (mm)"],
+  ["Đường kính đỉnh răng", "d_a1 = 105, d_a2 = 354 (mm)"],
+  ["Đường kính đáy răng", "d_f1 = 91.5, d_f2 = 340.5 (mm)"],
+  ["Đường kính cơ sở", "d_b1 = 93.03, d_b2 = 327.01 (mm)"],
+  ["Góc profin gốc", "α = 20°"],
+  ["Góc profin răng", "α_t = 20°"],
+  ["Góc ăn khớp", "α_tw = 20°"],
+];
+
+const CylindricalGearTable = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    AxiosInstance.get("/api/gear/cylindrical")
+      .then((res) => {
+        setData(res.data || DEFAULT_CYLINDRICAL_DATA);
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy dữ liệu bánh trụ:", err);
+        setData(DEFAULT_CYLINDRICAL_DATA);
+      });
+  }, []);
+
+  if (!data) return <div className="text-center">Đang tải dữ liệu...</div>;
+
+  return (
+    <div className="flex flex-col justify-center mx-auto mt-[10px]">
+      <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Cylindrical Gear Details</h2>
+      <div className="flex justify-center">
+        <table className="border-collapse border border-gray-300 w-[1000px]">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>
+              <th className="border px-4 py-2 bg-gray-100">Bánh chủ động – Bánh bị động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map(([label, value], i) => (
+              <tr key={i}>
+                <td className="border px-4 py-2">{label}</td>
+                <td className="border px-4 py-2">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

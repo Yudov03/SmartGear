@@ -7,19 +7,20 @@ import Footer from "../components/Footer.jsx";
 const PAGE_SIZE = 5;
 
 const dummyHistory = [
-  { id: 1, timestamp: "2025-05-10 14:23", systemType: "Hệ thống bánh răng nón", note: "Tính cho động cơ 5kW" },
-  { id: 2, timestamp: "2025-05-09 09:10", systemType: "Hệ thống bánh răng trụ", note: "Tải trung bình, tốc độ 1500rpm" },
-  { id: 3, timestamp: "2025-05-08 18:45", systemType: "Hệ thống hộp số hành tinh", note: "Dùng cho máy CNC công nghiệp" },
-  { id: 4, timestamp: "2025-05-07 11:15", systemType: "Hệ thống truyền đai", note: "Thiết kế đơn giản cho quạt công nghiệp" },
-  { id: 5, timestamp: "2025-05-06 16:00", systemType: "Hệ thống truyền xích", note: "Độ bền cao, môi trường nhiều bụi" },
-  { id: 6, timestamp: "2025-05-05 08:30", systemType: "Hệ thống hộp giảm tốc", note: "Tải nặng, tốc độ thấp" },
-  { id: 7, timestamp: "2025-05-04 19:20", systemType: "Hệ thống dẫn động thủy lực", note: "Ứng dụng trong máy ép thuỷ lực" },
-  { id: 8, timestamp: "2025-05-03 13:10", systemType: "Hệ thống hộp số hai cấp", note: "Tối ưu hoá mô-men xoắn" },
-  { id: 9, timestamp: "2025-05-02 10:40", systemType: "Hệ thống dẫn động điện", note: "Tính cho xe tự hành AGV" },
-  { id: 10, timestamp: "2025-05-01 15:50", systemType: "Hệ thống bánh răng hypoid", note: "Góc lệch trục 90°, tải nặng" },
-  { id: 11, timestamp: "2025-04-30 17:05", systemType: "Hệ thống bánh răng xoắn", note: "Tăng độ êm, giảm rung động" },
-  { id: 12, timestamp: "2025-04-29 09:30", systemType: "Hệ thống hộp số biến thiên vô cấp (CVT)", note: "Ứng dụng trong xe tay ga" },
+  { id: 1,  timestamp: "2025-05-12 09:15", systemType: "Hệ thống thùng trộn", note: "Trộn bê tông, công suất cao" },
+  { id: 2,  timestamp: "2025-05-11 14:45", systemType: "Hệ thống thùng trộn", note: "Trộn xi măng mịn" },
+  { id: 3,  timestamp: "2025-05-10 18:20", systemType: "Hệ thống thùng trộn", note: "Thùng trộn di động cho công trường" },
+  { id: 4,  timestamp: "2025-05-09 07:50", systemType: "Hệ thống thùng trộn", note: "Tốc độ trộn 60 vòng/phút" },
+  { id: 5,  timestamp: "2025-05-08 12:30", systemType: "Hệ thống thùng trộn", note: "Dung tích 1.2 m³" },
+  { id: 6,  timestamp: "2025-05-07 16:05", systemType: "Hệ thống thùng trộn", note: "Chống ăn mòn và dễ vệ sinh" },
+  { id: 7,  timestamp: "2025-05-06 20:40", systemType: "Hệ thống thùng trộn", note: "Chuyên dụng cho thạch cao" },
+  { id: 8,  timestamp: "2025-05-05 08:25", systemType: "Hệ thống thùng trộn", note: "Tự động bơm nước định lượng" },
+  { id: 9,  timestamp: "2025-05-04 13:55", systemType: "Hệ thống thùng trộn", note: "Có đảo chiều trộn" },
+  { id: 10, timestamp: "2025-05-03 11:10", systemType: "Hệ thống thùng trộn", note: "Trang bị bánh xe cơ động" },
+  { id: 11, timestamp: "2025-05-02 17:45", systemType: "Hệ thống thùng trộn", note: "Điều khiển PLC, màn hình cảm ứng" },
+  { id: 12, timestamp: "2025-05-01 09:00", systemType: "Hệ thống thùng trộn", note: "Tiết kiệm điện, kết cấu gọn nhẹ" }
 ];
+
 
 export default function ProjectsPage() {
   // Chỉ dùng dummy data, không cần loading hay effect

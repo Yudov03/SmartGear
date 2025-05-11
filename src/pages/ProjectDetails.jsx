@@ -243,15 +243,15 @@ export default function ProjectDetails() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="mt-[50px] ml-[50px] px-12 flex-1">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mt-[50px]  px-12 flex-1">
+      <div className="flex items-center ml-[50px] justify-between mb-4">
         <div>
           <h1 className="text-[30px] mb-[20px] font-bold">Project Details #{id}</h1>
           <p className="text-[20px] text-gray-600">{dummyHistoryItem.systemType} | {dummyHistoryItem.timestamp}</p>
         </div>
         <button
           onClick={() => navigate(`/builder/${id}`)}
-          className="bg-[#56D3C7] border-none mr-[200px] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+          className="bg-[#56D3C7] border-none mr-[50px] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
         >
           Edit
         </button>
@@ -260,7 +260,7 @@ export default function ProjectDetails() {
         <ProgressBar currentStep={step} totalSteps={steps.length} />
 
         <section className="rounded-md p-6 mt-[50px] mr-[50px] ml-[50px]">
-          <h2 className="text-[30px] font-[700] text-[#4FD1C5] ml-[150px] mb-4">{steps[step - 1].label}</h2>
+          <h2 className="text-[30px] font-[700] text-center text-[#4FD1C5] mb-4">{steps[step - 1].label}</h2>
           {steps[step - 1].content}
         </section>
 
@@ -286,13 +286,7 @@ export default function ProjectDetails() {
                 </button>
                 )}
             </div>
-            </div>
-
-
-
-      </div>
-      <div className="fixed bottom-[50px] right-[50px] z-50">
-        {<ChatBox />}
+          </div>
       </div>
       <Footer />
     </div>

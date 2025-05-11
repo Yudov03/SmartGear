@@ -65,8 +65,8 @@ function WelcomePage() {
         <div className="container h-screen" style={{ clipPath: "inset(0 -80% -0%)" }}>
           <div className="row align-items-center py-1">
             {/* Cột trái: Tiêu đề và nút */}
-            <div className="col-md-10 ">
-              <h1 className="fs-1">
+            <div className="col-md-10 mb-[200px]">
+              <h1 className="fs-1 pb-[10px]">
                 CREATE YOUR <span style={{ color: "#4fd1c5" }}>GEAR</span>
               </h1>
               <h1 className="fs-1">
