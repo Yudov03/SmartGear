@@ -24,6 +24,7 @@ export class ProjectService {
   }
 
   async createProject(userId: number, dto: CreateProjectDto) {
+    console.log('test', dto, userId);
     await this.prisma.project.create({
       data: {
         userId,

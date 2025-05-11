@@ -26,7 +26,6 @@ export class BuildService {
   }
   // nhap vao dto tu output o tren va chon dong co return dto
   async transmissionRate(engineId: number, dto: BuildDto) {
-    console.log(dto);
     const item = await this.prisma.engine.findFirst({
       where: {
         id: engineId,
@@ -200,12 +199,12 @@ export class BuildService {
     dto.d_e2 = mte * z_2;
     dto.d_m1 = mtm_tb * z_1;
     dto.d_m2 = mtm_tb * z_2;
-    dto.goc_1 = Math.atan(z_1 / z_2);
+    dto.goc_1 = (Math.atan(z_1 / z_2) * 180) / Math.PI;
     dto.goc_2 = 90 - dto.goc_1;
 
     dto.h_ae1 = mte;
-    dto.d_ae1 = dto.d_e1 + 2 * dto.h_ae1 * Math.sin(dto.goc_1);
-    dto.d_ae2 = dto.d_e2 + 2 * dto.h_ae1 * Math.sin(dto.goc_2);
+    dto.d_ae1 = dto.d_e1 + 2 * dto.h_ae1 * Math.cos(dto.goc_1);
+    dto.d_ae2 = dto.d_e2 + 2 * dto.h_ae1 * Math.cos(dto.goc_2);
     dto.h_e = 2.2 * mte;
     dto.h_fe1 = dto.h_e - dto.h_ae1;
 
@@ -216,18 +215,18 @@ export class BuildService {
     dto.B_1 =
       dto.R_e * Math.cos((dto.goc_1 * Math.PI) / 180) -
       dto.h_ae1 * Math.sin((dto.goc_1 * Math.PI) / 180);
-    dto.B_1 =
+    dto.B_2 =
       dto.R_e * Math.cos((dto.goc_2 * Math.PI) / 180) -
       dto.h_ae1 * Math.sin((dto.goc_2 * Math.PI) / 180);
 
-    dto.theta_f1 = Math.atan(dto.h_fe1 / dto.R_e);
-    //dto.theta_f2 = dto.theta_f2;
+    dto.theta_f1 = (Math.atan(dto.h_fe1 / dto.R_e) * 180) / Math.PI;
+    //dto.theta_f2 = dto.theta_f1;
 
     dto.goc_a1 = dto.goc_1 + dto.theta_f1;
-    dto.goc_a2 = dto.goc_2 + dto.theta_f2;
+    dto.goc_a2 = dto.goc_2 + dto.theta_f1;
 
     dto.goc_f1 = dto.goc_1 - dto.theta_f1;
-    dto.goc_f2 = dto.goc_2 - dto.theta_f2;
+    dto.goc_f2 = dto.goc_2 - dto.theta_f1;
 
     return dto;
   }
@@ -256,6 +255,7 @@ export class BuildService {
     dto.d_b2 = dto.d2_cd * Math.cos((20 * Math.PI) / 180);
     dto.profin_rang = 20;
     dto.alpha_tw = 20;
+    return dto;
   }
 
   calculateStep4(dto: BuildDto) {

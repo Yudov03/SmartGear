@@ -1,15 +1,15 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
@@ -40,6 +40,7 @@ export class ProjectController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   createProject(@GetUser('id') userId: number, @Body() dto: CreateProjectDto) {
+    console.log(dto);
     return this.projectService.createProject(userId, dto);
   }
 

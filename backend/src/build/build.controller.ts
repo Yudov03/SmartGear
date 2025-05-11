@@ -15,7 +15,6 @@ export class BuildController {
   // http://localhost:3000/build/step2 (body is dto)
   @Post('step2')
   calculateStep2(@Body() dto: BuildDto) {
-    console.log(dto);
     return this.buildService.calculateStep2(dto);
   }
 

@@ -30,37 +30,92 @@ model Project {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name String 
-  description String
-  status Boolean
+  name String?
+  description String?
+  status Boolean?
 
-  P Float
-  L Int
-  n_sb Float
+  P Float?
+  L Float?
+  n_sb Float?
 
-  P_real Float
-  P1 Float
-  P2 Float
-  P3 Float
-  P_ct Float
+  P_real Float?
+  P1 Float?
+  P2 Float?
+  P3 Float?
+  P_ct Float?
 
-  n_real Int
-  n1 Float
-  n2 Float
-  n3 Float
-  n Int
+  n_real Float?
+  n1 Float?
+  n2 Float?
+  n3 Float?
+  n Float?
 
-  T_dc Float
-  T1 Float
-  T2 Float
-  T3 Float
-  T_tt Float
+  T_dc Float?
+  T1 Float?
+  T2 Float?
+  T3 Float?
+  T_tt Float?
 
-  u_d Float
-  u_brc Float
-  u_brt Float
-  u_kn Float
-  
+  u_d Float?
+  u_brc Float?
+  u_brt Float?
+  u_kn Float?
+
+  d1 Float?
+  d2 Float?
+  v1 Float?
+  a Float?
+  alpha_1 Float?
+  z Float?
+  B Float?
+  d_a_1 Float?
+  d_a_2 Float?
+  F_0_final Float?
+  F_t Float?
+  F_r Float?
+  f Float?
+  phi_max Float?
+  circle Float?
+  d_e1 Float?
+  d_e2 Float?
+  d_m1 Float?
+  d_m2 Float?
+  goc_1 Float?
+  goc_2 Float?
+  h_ae1 Float?
+  d_ae1 Float?
+  d_ae2 Float?
+  h_e Float?
+  h_fe1 Float?
+  R_e Float?
+  b Float?
+  R_m Float?
+  B_1 Float?
+  B_2 Float?
+  theta_f1 Float?
+  theta_f2 Float?
+  goc_a1 Float?
+  goc_a2 Float?
+  goc_f1 Float?
+  goc_f2 Float?
+  a_w Float?
+  d1_cd Float?
+  d2_cd Float?
+  b_w Float?
+  d_w1 Float?
+  d_w2 Float?
+  d_a1 Float?
+  d_a2 Float?
+  d_f1 Float?
+  d_f2 Float?
+  d_b1 Float?
+  d_b2 Float?
+  profin Float?
+  profin_rang Float?
+  alpha_tw Float?
+
+  engineId Int?
+
   userId Int
   user User @relation(fields: [userId], references: [id])
   @@map("projects")
