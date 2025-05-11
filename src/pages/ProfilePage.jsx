@@ -5,11 +5,27 @@ import Footer from "../components/Footer.jsx";
 import { motion } from "framer-motion";
 import AxiosInstance from "../axios/AxiosInstance";
 import { toast } from "react-toastify";
+import { text } from "framer-motion/client";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    // Mock user data
+    firstName: "Duy",
+    lastName: "Vo",
+    email: "voduy2k4@gmail.com",
+    phone: "1234567890",
+    address: "123 Main St, City, Country",
+    education: "HCMUT",
+    major: "Computer Science",
+    graduationYear: "2025",
+    skills: ["JavaScript", "React", "Node.js"],
+    projects: [
+      { name: "Project 1", description: "Description of project 1" },
+      { name: "Project 2", description: "Description of project 2" },
+    ],
+  });
   const [editedUser, setEditedUser] = useState(null);
   const [changePasswordMode, setChangePasswordMode] = useState(false);
   const [passwords, setPasswords] = useState({
@@ -124,7 +140,7 @@ export default function ProfilePage() {
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="display-6 fw-bold text-dark"
+                    className={`display-6 fw-bold ${darkMode ? "text-white":"text-dark"} `}
                   >
                     {editMode ? (
                       <div className="d-flex gap-2">
@@ -151,7 +167,7 @@ export default function ProfilePage() {
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="mb-2 text-dark"
+                    className={`mb-2 ${darkMode ? "text-white":"text-dark"}`}
                   >
                     {editMode ? (
                       <input
@@ -226,7 +242,7 @@ export default function ProfilePage() {
                         <input
                           type="text"
                           className="form-control"
-                          value={editedUser[label.toLowerCase().replace(' ', '')] || ''}
+                          value={editedUser?.[label.toLowerCase().replace(' ', '')] || ''}
                           onChange={(e) => setEditedUser({
                             ...editedUser,
                             [label.toLowerCase().replace(' ', '')]: e.target.value
