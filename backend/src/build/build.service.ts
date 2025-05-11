@@ -76,8 +76,8 @@ export class BuildService {
 
     dto.P_real = 7.5;
     dto.P1 = dto.P_real * 0.99 * 0.955;
-    dto.P2 = dto.P_real * 0.99 * 0.96;
-    dto.P3 = dto.P_real * 0.99 * 0.955;
+    dto.P2 = dto.P1 * 0.99 * 0.96;
+    dto.P3 = dto.P2 * 0.99 * 0.955;
 
     dto.n_real = 2925;
     dto.u_kn = 1;
