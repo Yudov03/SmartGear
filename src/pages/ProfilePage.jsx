@@ -5,6 +5,7 @@ import Footer from "../components/Footer.jsx";
 import { motion } from "framer-motion";
 import AxiosInstance from "../axios/AxiosInstance";
 import { toast } from "react-toastify";
+import { text } from "framer-motion/client";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(false);
@@ -139,7 +140,7 @@ export default function ProfilePage() {
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="display-6 fw-bold text-dark"
+                    className={`display-6 fw-bold ${darkMode ? "text-white":"text-dark"} `}
                   >
                     {editMode ? (
                       <div className="d-flex gap-2">
@@ -166,7 +167,7 @@ export default function ProfilePage() {
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="mb-2 text-dark"
+                    className={`mb-2 ${darkMode ? "text-white":"text-dark"}`}
                   >
                     {editMode ? (
                       <input
