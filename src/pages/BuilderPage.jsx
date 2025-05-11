@@ -168,7 +168,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
           {step === 1 && (
             <>
               {engines.length > 0 && (
-                <div className="mt-8 flex gap-8">
+                <div className="mt-8 flex ml-[25px] gap-8">
                   <div className="flex-1 border-none p-4 rounded-md shadow-md">
                     <span className="text-[30px] text-[#4FD1C5] font-[800] mb-1">
                       Engine Info
@@ -205,7 +205,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                   </div>
 
                   {/* Phần bên phải: Danh sách động cơ để người dùng lựa chọn */}
-                  <div className="flex-1">
+                  <div className="flex-1 mr-[100px]">
                     <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4 mt-[30px]">
                       Select an Engine
                     </h2>
@@ -337,7 +337,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                 </div>
               )}
               {isEngineConfirmed && (
-                <div className="mt-8 text-right">
+                <div className="mt-[50px] text-right">
                   <button
                     onClick={handleNext}
                     className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"

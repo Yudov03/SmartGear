@@ -165,19 +165,19 @@ export default function ProjectDetails() {
     {
       label: "Input Parameters",
       content: (
-        <div className="flex gap-8 text-[18px] text-gray-800">
+        <div className="flex flex-col space-y-[8px] text-[20px] text-gray-800">
           <span>P: {dummyBuilderData.params.power} kW</span>
           <span>n: {dummyBuilderData.params.speed} rpm</span>
           <span>L: {dummyBuilderData.params.lifetime} years</span>
         </div>
-      )
+      )       
     },
     {
       label: "Selected Engine",
       content: (
         <ul className="list-disc ml-6 text-gray-800">
           {dummyBuilderData.engines.map((e) => (
-            <li key={e.id} className={e.id === dummyBuilderData.selectedEngine ? "font-bold text-[#3BAFA2]" : "text-gray-700"}>
+            <li key={e.id} className={e.id === dummyBuilderData.selectedEngine ? "font-[700] text-[20px] text-[#3BAFA2]" : "text-[20px] text-gray-700"}>
               {e.company} - {e.Type} - {e.P_dc} kW - {e.n_dc} rpm {e.id === dummyBuilderData.selectedEngine && " (selected)"}
             </li>
           ))}
