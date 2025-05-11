@@ -5,7 +5,8 @@ import Layout from "./components/Layout";
 import ProfilePage from "./pages/ProfilePage"
 import BuilderPage from "./pages/BuilderPage";
 import CatalogPage from "./pages/CatalogPage";
-import HistoryPage from "./pages/HistoryPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ProjectDetails from "./pages/ProjectDetails"
 import Homepage from "./pages/Homepage"
 
 export default function App() {
@@ -28,7 +29,9 @@ export default function App() {
               <Route path="/home" element={<Homepage />} />
               <Route path="/builder" element={<BuilderPage />} />
               <Route path="/catalog" element={<CatalogPage />} />
-              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectDetails />} />
+              <Route path="/builder/:id" element={<BuilderPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           }

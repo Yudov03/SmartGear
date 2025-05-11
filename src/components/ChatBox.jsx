@@ -201,7 +201,10 @@ Bạn cần hộp giảm tốc cho ứng dụng cụ thể nào? Mình có thể
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="w-[60px] h-[60px] bg-[#56D3C7] border-none rounded-full shadow-xl text-white flex items-center justify-center hover:bg-[#3BAFA2] transition-all"
+          className="w-[60px] h-[60px] bg-[#56D3C7] border-none rounded-full shadow-xl text-white flex items-center justify-center hover:bg-[#3BAFA2] transition-all
+          transform transition-transform duration-200 ease-out
+          hover:scale-110 hover:shadow-2xl
+          active:scale-95"
         >
           <span className="text-white">
             <ChatIcon />

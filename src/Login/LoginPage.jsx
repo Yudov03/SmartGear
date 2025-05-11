@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css"
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -10,7 +11,7 @@ import AxiosInstance from "../axios/AxiosInstance";
 import { cssTransition, toast } from "react-toastify";
 
 const LoginPage = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [form, setForm] = useState(false);
   const [img, setImg] = useState(true);
 
