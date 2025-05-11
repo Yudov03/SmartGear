@@ -12,6 +12,23 @@ export class BuildController {
     return this.buildService.calculateEngine(dto);
   }
 
+  // http://localhost:3000/build/step2 (body is dto)
+  @Post('step2')
+  calculateStep2(@Body() dto: BuildDto) {
+    console.log(dto);
+    return this.buildService.calculateStep2(dto);
+  }
+
+  @Post('step3')
+  calculateStep3(@Body() dto: BuildDto) {
+    return this.buildService.calculateStep3(dto);
+  }
+
+  @Post('step4')
+  calculateStep4(@Body() dto: BuildDto) {
+    return this.buildService.calculateStep4(dto);
+  }
+
   // http://localhost:3000/build/1 (body is dto)
   @Post(':id')
   transmissionRate(
@@ -19,17 +36,5 @@ export class BuildController {
     @Body() dto: BuildDto,
   ) {
     return this.buildService.transmissionRate(engineId, dto);
-  }
-  @Post('step2')
-  calculateStep2(@Body() dto: BuildDto) {
-    return this.buildService.calculateStep2(dto);
-  }
-  @Post('step3')
-  calculateStep3(@Body() dto: BuildDto) {
-    return this.buildService.calculateStep3(dto);
-  }
-  @Post('step4')
-  calculateStep4(@Body() dto: BuildDto) {
-    return this.buildService.calculateStep4(dto);
   }
 }

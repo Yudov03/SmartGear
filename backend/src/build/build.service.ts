@@ -99,28 +99,28 @@ export class BuildService {
 
   duongkinhbanhdai(dto: BuildDto) {
     dto.d1 = 160;
-    dto.v1 = (3.14 * dto.d1 * dto.n1) / 60000;
+    dto.v1 = (Math.PI * dto.d1 * dto.n_real) / 60000;
     const hesotruot = 0.02;
     const u = 4;
     dto.d2 = dto.d1 * u * (1 - hesotruot);
-
+    dto.d2 = Math.ceil(dto.d2) + 2;
     return dto;
   }
 
   khoangcachtruc(dto: BuildDto) {
-    const temp = 0.96 * dto.d2;
+    const temp = 0.95 * dto.d2;
     const h = 8;
     if (temp <= 2 * (dto.d1 + dto.d2) && temp >= h + 0.55 * (dto.d1 + dto.d2))
       dto.a = temp;
     dto.L =
       2 * dto.a +
-      (3.14 * (dto.d1 + dto.d2)) / 2 +
+      (Math.PI * (dto.d1 + dto.d2)) / 2 +
       Math.pow(dto.d2 - dto.d1, 2) / (4 * dto.a);
-    const lambda = dto.L - (3.14 * (dto.d1 + dto.d2)) / 2;
+    const lambda = dto.L - (Math.PI * (dto.d1 + dto.d2)) / 2;
     const delta = (dto.d2 - dto.d1) / 2;
     const temp_2 = Math.pow(lambda, 2) - 8 * Math.pow(delta, 2);
     dto.a = (lambda + Math.sqrt(temp_2)) / 4;
-    const check_alpha_1 = (180 - 57) * ((dto.d2 - dto.d1) / dto.a);
+    const check_alpha_1 = 180 - 57 * ((dto.d2 - dto.d1) / dto.a);
     if (check_alpha_1 > 120) {
       dto.alpha_1 = check_alpha_1;
     }
@@ -145,7 +145,7 @@ export class BuildService {
 
   luctacdunglenbotruyen(dto: BuildDto) {
     const F_v = 63.049;
-    const F_0 = (1 / dto.z) * (((780 * 7.5 * 1.2) / 24.504) * 0.872) + F_v;
+    const F_0 = (1 / dto.z) * ((780 * 7.5 * 1.2) / (24.504 * 0.872)) + F_v;
     dto.F_0_final = 3 * F_0;
     dto.P_real = 7.5;
     dto.F_t = (1000 * dto.P_real) / 24.504;
@@ -158,7 +158,6 @@ export class BuildService {
   }
 
   ungsuatmax(dto: BuildDto) {
-    dto.P_real = 7.5;
     const tmp = (dto.alpha_1 * Math.PI) / 180;
     const phi_1 =
       (1000 * dto.P_real * Math.pow(Math.E, dto.f * tmp)) /
