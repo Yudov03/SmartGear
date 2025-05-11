@@ -55,14 +55,14 @@ function WelcomePage() {
                 style={{ backgroundColor: "#4fd1c5" }}
                 onClick={handleSignin}
               >
-                Sign in
+                Sign Up
               </button>
             </div>
           </div>
         </nav>
 
         {/* HERO SECTION */}
-        <div className="container" style={{ clipPath: "inset(0 -80% -0%)" }}>
+        <div className="container h-screen" style={{ clipPath: "inset(0 -80% -0%)" }}>
           <div className="row align-items-center py-1">
             {/* Cột trái: Tiêu đề và nút */}
             <div className="col-md-10 ">
@@ -73,30 +73,22 @@ function WelcomePage() {
                 BUILD YOUR <span style={{ color: "#4fd1c5" }}>DREAM</span>
               </h1>
               <p className="lead mt-3"></p>
-              <button
-                className="btn btn-primary btn-lg rounded-3 px-4 mt-5"
-                style={{
-                  background: "#4fd1c5",
-                  border: "none",
-                }}
-              >
-                Create an account
-              </button>
             </div>
             {/* Cột phải: Hình minh họa */}
             <div
-              className="col-md-2 d-flex justify-content-center mt-md-0"
+              className="col-md-2 gap-[250px] d-flex justify-content-center mt-md-0"
               //   style={{ clipPath: "inset()", overflow: "visible" }}
               // style={{ marginTop: "-230%" }}
             >
               <Marquee
                 className="blueprint-marquee"
+                speed={120}
                 style={{
                   transform: "rotate(-30deg) translateX(-600px)",
                   // width: "400px", // tùy chỉnh
                   //   height: "500px", // tùy chỉnh
                   overflow: "visible", // cho hình lướt ra ngoài
-                  marginTop: "-150%",
+                  marginTop: "-125%",
                 }}
                 autoFill
               >
@@ -135,12 +127,13 @@ function WelcomePage() {
               </Marquee>
               <Marquee
                 className="blueprint-marquee"
+                speed={120}
                 style={{
                   transform: "rotate(-30deg) translateX(-200px)",
                   // width: "350px", // tùy chỉnh
                   //   height: "500px", // tùy chỉnh
                   overflow: "visible", // cho hình lướt ra ngoài
-                  marginTop: "160%",
+                  marginTop: "200%",
                 }}
                 direction="right"
                 autoFill

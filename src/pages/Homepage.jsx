@@ -1,218 +1,353 @@
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import ChatBox from "../components/ChatBox.jsx";
+import { useState, useEffect } from "react";
+import { Sun, Moon, Edit2, Save, User, Info, BookOpen, Mail } from "lucide-react";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion } from "framer-motion";
+import AxiosInstance from "../axios/AxiosInstance";
+import { toast } from "react-toastify";
 
-function Homepage() {
-  const navigate = useNavigate();
+export default function ProfilePage() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [user, setUser] = useState(null);
+  const [editedUser, setEditedUser] = useState(null);
+  const [changePasswordMode, setChangePasswordMode] = useState(false);
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
 
-  const handleStart = () => {
-    localStorage.setItem("activeNav", "Builder");
-    navigate("/builder");
+  // Fetch user data on component mount
+  useEffect(() => {
+    AxiosInstance.get('users/me')
+      .then(res => {
+        setUser(res.data);
+        setEditedUser(res.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user data:", error);
+        toast.error("Failed to load user data");
+      });
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await AxiosInstance.patch('users', {
+        firstName: editedUser.firstName,
+        lastName: editedUser.lastName,
+        email: editedUser.email
+      });
+      setUser(editedUser);
+      setEditMode(false);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    }
   };
 
-  const stats = [
-    { label: "Total Projects", value: "156", change: "+12%", trend: "up" },
-    { label: "Active Users", value: "2.4k", change: "+8%", trend: "up" },
-    { label: "Calculations", value: "32k", change: "+24%", trend: "up" },
-    { label: "Success Rate", value: "99.8%", change: "+2%", trend: "up" },
-  ];
-
-  const recentActivities = [
-    { user: "Nguyễn Văn A", action: "Completed gearbox calculation", time: "2 hours ago", specs: "P=75kW, n=1450rpm" },
-    { user: "Trần Thị B", action: "Started new project", time: "4 hours ago", specs: "Industrial conveyor system" },
-    { user: "Lê Văn C", action: "Modified parameters", time: "6 hours ago", specs: "Updated lifetime: 5 years" },
-  ];
-
-  const performanceData = [
-    { name: 'Success', value: 95 },
-    { name: 'Failed', value: 5 }
-  ];
-
-  const hoverEffect = {
-    scale: 1.02,
-    boxShadow: '0 8px 16px rgba(0,0,0,0.2)'
+  const handlePasswordChange = async () => {
+    try {
+      await AxiosInstance.patch('users/password', {
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword
+      });
+      setChangePasswordMode(false);
+      setPasswords({ oldPassword: "", newPassword: "" });
+      toast.success("Password updated successfully!");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast.error("Failed to change password");
+    }
   };
+
+  const sections = [
+    { key: 'about', title: 'About Me', icon: <User size={20} /> },
+    { key: 'info', title: 'Personal Info', icon: <Info size={20} /> },
+    { key: 'education', title: 'Education', icon: <BookOpen size={20} /> },
+    { key: 'contact', title: 'Contact', icon: <Mail size={20} /> },
+  ];
 
   return (
-    <div className="min-vh-100 bg-light d-flex flex-column">
-      <Header />
+    <div className={darkMode ? 'bg-dark text-light' : ''}>
+      <div className={`container-fluid min-vh-100 d-flex flex-column p-0 ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'}`}>
+        <Header />
 
-      {/* Hero Section */}
-      <div className="py-5 text-center bg-white text-dark">
-        <div className="container">
-          <motion.h1
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ scale: 1.03 }}
-            className="display-4 fw-bold mb-3"
+        {/* Theme & Edit Toggles */}
+        <div className="d-flex justify-content-end p-3">
+          <button
+            aria-label="Toggle Dark Mode"
+            onClick={() => setDarkMode(!darkMode)}
+            className="btn btn-light me-2"
           >
-            Hệ thống tính toán thiết kế hộp giảm tốc
-          </motion.h1>
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            whileHover={{ scale: 1.02 }}
-            className="lead mb-4"
+            {darkMode ? <Sun /> : <Moon />}
+          </button>
+          <button
+            aria-label="Toggle Edit Mode"
+            onClick={() => {
+              if (editMode) handleSave();
+              setEditMode(!editMode);
+            }}
+            className="btn btn-light"
           >
-            Giải pháp tự động hóa quá trình thiết kế với độ chính xác cao và thời gian thực hiện nhanh chóng
-          </motion.p>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleStart}
-            className="btn btn-light btn-lg px-4"
-          >
-            Bắt đầu thiết kế
-          </motion.button>
+            {editMode ? <Save /> : <Edit2 />}
+          </button>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="container mt-n5">
-        <div className="row g-3">
-          {stats.map((stat, idx) => (
+        {/* Hero & Profile Section */}
+        <div className={`py-1 text-center ${darkMode ? 'bg-secondary text-light' : 'bg-light text-white'}`}>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="card mx-auto" style={{ maxWidth: '900px' }}
+          >
+            <div className={`card-body ${darkMode ? 'bg-dark text-light' : ''}`}>            
+              <div className="row align-items-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="col-md-3 text-center mb-3 mb-md-0"
+                >
+                  <div className="position-relative d-inline-block">
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random`}
+                      alt="Avatar"
+                      className="rounded-circle img-fluid border border-light"
+                      style={{ width: '128px', height: '128px', objectFit: 'cover' }}
+                    />
+                  </div>
+                </motion.div>
+                <div className="col-md-9 text-md-start text-center">
+                  <motion.h1
+                    initial={{ x: -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="display-6 fw-bold text-dark"
+                  >
+                    {editMode ? (
+                      <div className="d-flex gap-2">
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser?.firstName || ''}
+                          onChange={(e) => setEditedUser({...editedUser, firstName: e.target.value})}
+                          placeholder="First Name"
+                        />
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser?.lastName || ''}
+                          onChange={(e) => setEditedUser({...editedUser, lastName: e.target.value})}
+                          placeholder="Last Name"
+                        />
+                      </div>
+                    ) : (
+                      `${user?.firstName || ''} ${user?.lastName || ''}`
+                    )}
+                  </motion.h1>
+                  <motion.p
+                    initial={{ x: -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mb-2 text-dark"
+                  >
+                    {editMode ? (
+                      <input
+                        type="email"
+                        className="form-control"
+                        value={editedUser?.email || ''}
+                        onChange={(e) => setEditedUser({...editedUser, email: e.target.value})}
+                        placeholder="Email"
+                      />
+                    ) : (
+                      user?.email
+                    )}
+                  </motion.p>
+                  <div className="d-flex justify-content-center justify-content-md-start gap-2">
+                    {['Software Engineer','Student'].map((role, idx) => (
+                      <span key={idx} className="badge bg-secondary text-wrap">
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Main Content Section */}
+        <main className="container py-4">
+          <div className="row g-4">
+            {/* About Me Section */}
             <motion.div
-              key={idx}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: idx * 0.1 }}
-              whileHover={hoverEffect}
-              className="col-6 col-md-3"
+              transition={{ duration: 0.4 }}
+              className="col-12"
             >
-              <div className="card shadow-sm">
-                <div className="card-body d-flex justify-content-between align-items-center">
-                  <div>
-                    <p className="mb-1 text-secondary small">{stat.label}</p>
-                    <h5 className="mb-0 fw-bold">{stat.value}</h5>
-                  </div>
-                  <span className={`badge ${stat.trend === 'up' ? 'bg-success' : 'bg-danger'}`}>{stat.change}</span>
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="h5 mb-0 d-flex align-items-center gap-2">
+                    <User size={20} /> About Me
+                  </h2>
+                </div>
+                <div className="card-body">
+                  <p className="mb-0">
+                    I am a passionate developer with a keen interest in building innovative solutions. Currently pursuing my education at Ho Chi Minh City University of Technology, I specialize in full-stack development and have a particular fondness for creating intuitive user interfaces.
+                  </p>
                 </div>
               </div>
             </motion.div>
-          ))}
-        </div>
 
-        <div className="row gy-4 mt-4">
-          {/* Recent Activities */}
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            whileHover={hoverEffect}
-            className="col-lg-6"
-          >
-            <div className="card shadow-sm">
-              <div className="card-header bg-white">
-                <h5 className="mb-0">Hoạt động gần đây</h5>
-              </div>
-              <div className="card-body">
-                {recentActivities.map((act, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ backgroundColor: '#56D3C7' }}
-                    className="d-flex mb-4 p-2 rounded"
-                  >
-                    <div className="flex-shrink-0 me-3">
-                      <div className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
-                        {act.user.charAt(0)}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="mb-1 fw-semibold">{act.user}</p>
-                      <p className="mb-1">{act.action}</p>
-                      <p className="mb-1 text-info small">{act.specs}</p>
-                      <p className="mb-0 text-muted small">{act.time}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Quick Stats */}
-          <motion.div
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            whileHover={hoverEffect}
-            className="col-lg-6"
-          >
-            <div className="card shadow-sm">
-              <div className="card-header bg-white">
-                <h5 className="mb-0">Thông tin hệ thống</h5>
-              </div>
-              <div className="card-body">
-                <h6>Hiệu suất tính toán</h6>
-                <ResponsiveContainer width="100%" height={100}>
-                  <BarChart data={performanceData} layout="vertical">
-                    <XAxis type="number" hide />
-                    <YAxis type="category" dataKey="name" hide />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="#56D3C7" />
-                  </BarChart>
-                </ResponsiveContainer>
-                <div className="row mt-4 g-3">
-                  {[
-                    { label: 'Avg. Processing Time', value: '1.2s' },
-                    { label: 'Total Calculations', value: '32,465' },
-                    { label: 'Active Projects', value: '89' },
-                    { label: 'System Uptime', value: '99.9%' }
-                  ].map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      whileHover={{ backgroundColor: '#f8f9fa' }}
-                      className="col-6"
-                    >
-                      <div className="p-3 bg-light rounded">
-                        <p className="mb-1 small text-secondary">{item.label}</p>
-                        <p className="mb-0 fw-semibold">{item.value}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Features */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="row gy-4 mt-4"
-        >
-          {[
-            { title: 'Tính toán nhanh chóng', desc: 'Tối ưu hóa quá trình tính toán với thuật toán hiện đại' },
-            { title: 'Độ chính xác cao', desc: 'Kết quả được kiểm chứng và tối ưu hóa theo tiêu chuẩn' },
-            { title: 'Dễ dàng sử dụng', desc: 'Giao diện thân thiện, hướng dẫn chi tiết từng bước' },
-          ].map((feat, i) => (
+            {/* Personal Info Section */}
             <motion.div
-              key={i}
-              whileHover={hoverEffect}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
               className="col-md-4"
             >
-              <div className="card text-center shadow-sm h-100">
-                <div className="card-body">
-                  <h6 className="fw-semibold mb-2">{feat.title}</h6>
-                  <p className="mb-0 text-secondary">{feat.desc}</p>
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <Info size={20} /> Personal Info
                 </div>
+                <ul className="list-group list-group-flush">
+                  {[
+                    { label: 'First Name', value: user?.firstName || 'N/A', editable: true },
+                    { label: 'Last Name', value: user?.lastName || 'N/A', editable: true },
+                    { label: 'Email', value: user?.email || 'N/A', editable: true },
+                    { label: 'Password', value: '********', action: () => setChangePasswordMode(true) },
+                  ].map(({ label, value, editable, action }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      {editable && editMode ? (
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser[label.toLowerCase().replace(' ', '')] || ''}
+                          onChange={(e) => setEditedUser({
+                            ...editedUser,
+                            [label.toLowerCase().replace(' ', '')]: e.target.value
+                          })}
+                        />
+                      ) : action ? (
+                        <button 
+                          className="btn btn-link p-0" 
+                          onClick={action}
+                        >
+                          Change Password
+                        </button>
+                      ) : (
+                        <span>{value}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
+
+            {/* Education Section */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="col-md-4"
+            >
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <BookOpen size={20} /> Education
+                </div>
+                <ul className="list-group list-group-flush">
+                  {[
+                    { label: 'University', value: 'HCMUT' },
+                    { label: 'Major', value: 'Computer Science' },
+                    { label: 'Graduation', value: '2025' },
+                  ].map(({ label, value }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      <span>{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Contact Section */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="col-md-4"
+            >
+              <div className="card h-100">
+                <div className="card-header d-flex align-items-center gap-2">
+                  <Mail size={20} /> Contact
+                </div>
+                <ul className="list-group list-group-flush">
+                  {[
+                    { label: 'Email', value: user?.email, isLink: true, href: `mailto:${user?.email}` },
+                    { label: 'GitHub', value: 'github.com/duydottrue', isLink: true, href: 'https://github.com/duydottrue' },
+                    { label: 'LinkedIn', value: 'vo-ly-dac-duy', isLink: true, href: '#'},
+                  ].map(({ label, value, isLink, href }) => (
+                    <li className="list-group-item d-flex justify-content-between" key={label}>
+                      <strong>{label}:</strong>
+                      {isLink ? (
+                        <a href={href} target="_blank" rel="noopener noreferrer">
+                          {value}
+                        </a>
+                      ) : (
+                        <span>{value}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </div>
+        </main>
+
+        {/* Password Change Modal */}
+        {changePasswordMode && (
+          <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className={`modal-title ${darkMode ? "text-dark" : "text-dark"}`}>Change Password</h5>
+                  <button type="button" className="btn-close" onClick={() => setChangePasswordMode(false)}></button>
+                </div>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>Current Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      value={passwords.oldPassword}
+                      onChange={(e) => setPasswords({...passwords, oldPassword: e.target.value})}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>New Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      value={passwords.newPassword}
+                      onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setChangePasswordMode(false)}>Cancel</button>
+                  <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>Update Password</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Footer />
       </div>
-      <div className="fixed bottom-[50px] right-[50px] z-50">
-        {<ChatBox />}
-      </div>
-      <Footer />
     </div>
   );
 }
-
-export default Homepage;

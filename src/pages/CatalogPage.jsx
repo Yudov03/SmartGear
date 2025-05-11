@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout.jsx";
-import ChatBox from "../components/ChatBox.jsx";
 import { createGlobalStyle } from "styled-components";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
@@ -43,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
 
   .table thead th {
     border-top: none;
-    background-color: #198754;
+    background-color: #56D3C7;
     color: white;
     vertical-align: middle;
   }
@@ -570,7 +569,7 @@ export default function CatalogPage() {
         {activeTab === "engine" ? (
           <div className="table-container table-responsive text-center">
             <table className="table table-hover table-striped table-bordered">
-              <thead className="fw-bolder">
+              <thead className="fw-bolder text-dark">
                 <tr>
                   <th
                     onClick={() => handleSort("Type")}
@@ -814,9 +813,6 @@ export default function CatalogPage() {
             </table>
           </div>
         )}
-      </div>
-      <div className="fixed bottom-[50px] right-[50px] z-50">
-        {<ChatBox />}
       </div>
       <Footer />
     </>
