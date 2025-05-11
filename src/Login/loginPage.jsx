@@ -10,7 +10,7 @@ import AxiosInstance from "../axios/AxiosInstance";
 import { cssTransition, toast } from "react-toastify";
 
 const LoginPage = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [form, setForm] = useState(false);
   const [img, setImg] = useState(true);
 

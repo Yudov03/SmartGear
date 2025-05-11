@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Sun, Moon, Edit2, Save, User, Info, BookOpen, Mail } from "lucide-react";
+import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import { motion } from "framer-motion";
@@ -344,7 +345,9 @@ export default function ProfilePage() {
             </div>
           )}
         </main>
-
+        <div className="fixed bottom-[50px] right-[50px] z-50">
+          {<ChatBox />}
+        </div>
         <Footer />
       </div>
     </div>

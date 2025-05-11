@@ -15,7 +15,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
   const [selectedEngine, setSelectedEngine] = useState(10,10,10,10,10);
   const [computedVariables, setComputedVariables] = useState(10,10,10,10,10);
   const [step, setStep] = useState(1);
-  const totalSteps = 4
+  const totalSteps = 5
   const [isEngineConfirmed, setIsEngineConfirmed] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [built, setBuilt] = useState(false);
@@ -156,10 +156,15 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
             />
           </div>
 
-          {!readOnly && <button
-            onClick={handleBuild}
-            className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-          >Build</button>}
+          {!readOnly && (
+            <button
+              onClick={step < 2 ? handleBuild : handleSave}
+              className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+            >
+              {step < 2 ? "Build" : "Save"}
+            </button>
+          )}
+
         </div>
 
         <ProgressBar currentStep={step} totalSteps={totalSteps} />
@@ -247,7 +252,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                     Computed Variables Table
                   </h2>
                   <div className="overflow-x-auto">
-                    <table className="table-auto h-[400px] border-collapse border border-gray-300">
+                    <table className="w-3/4 mx-auto h-[400px] border-collapse border border-gray-300">
                       <thead>
                         <tr>
                           <th
@@ -337,7 +342,13 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                 </div>
               )}
               {isEngineConfirmed && (
-                <div className="mt-[50px] text-right">
+                <div className="flex items-center justify-center gap-4 mt-[30px]">
+                  <button
+                    onClick={handlePrev}
+                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  >
+                    Back
+                  </button>
                   <button
                     onClick={handleNext}
                     className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -353,54 +364,57 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
 
           {step === 2 && (
             <>
-              <table className="ml-[50px] mt-[10px] table-auto border-collapse border border-gray-300 w-[1000px]">
-                <thead>
-                  <tr>
-                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
-                      Thông số
-                    </th>
-                    <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
-                      Giá trị
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { label: "Dạng đai", value: "Đai thẳng" },
-                    { label: "Tiết diện đai", value: "A" },
-                    { label: "Khoảng cách trục", keys: "a" },
-                    { label: "Chiều dài đai", keys: "L" },
-                    { label: "Góc ôm đai", keys: "alpha_1" },
-                    { label: "Số vòng đai chạy trong 1 giây", keys: "circle" },
-                    { label: "Đường kính bánh dẫn", keys: "d1" },
-                    { label: "Đường kính bánh bị dẫn", keys: "d2" },
-                    { label: "Ứng suất lớn nhất", keys: "phi_max" },
-                    { label: "Lực căng đai ban đầu", keys: "F_0_final" },
-                    { label: "Lực tác dụng lên trục", keys: "F_r" },
-                  ].map((item, index) => {
-                    let value;
-                    if (item.value !== undefined) {
-                      value = item.value;
-                    } else {
-                      const raw = computedVariables[item.keys];
-                      value = Number.isInteger(parseFloat(raw))
-                        ? raw
-                        : parseFloat(raw).toFixed(4);
-                    }
+              <div className ="w-3/4 mx-auto">
+                <h2 className ="text-[30px] text-[#4FD1C5] font-[800] mb-4">Belt Drive Parameters Table</h2>
+                <table className="mt-[10px] border-collapse border border-gray-300 w-[1000px]">
+                  <thead>
+                    <tr>
+                      <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                        Thông số
+                      </th>
+                      <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                        Giá trị
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { label: "Dạng đai", value: "Đai thẳng" },
+                      { label: "Tiết diện đai", value: "A" },
+                      { label: "Khoảng cách trục", keys: "a" },
+                      { label: "Chiều dài đai", keys: "L" },
+                      { label: "Góc ôm đai", keys: "alpha_1" },
+                      { label: "Số vòng đai chạy trong 1 giây", keys: "circle" },
+                      { label: "Đường kính bánh dẫn", keys: "d1" },
+                      { label: "Đường kính bánh bị dẫn", keys: "d2" },
+                      { label: "Ứng suất lớn nhất", keys: "phi_max" },
+                      { label: "Lực căng đai ban đầu", keys: "F_0_final" },
+                      { label: "Lực tác dụng lên trục", keys: "F_r" },
+                    ].map((item, index) => {
+                      let value;
+                      if (item.value !== undefined) {
+                        value = item.value;
+                      } else {
+                        const raw = computedVariables[item.keys];
+                        value = Number.isInteger(parseFloat(raw))
+                          ? raw
+                          : parseFloat(raw).toFixed(4);
+                      }
 
-                    return (
-                      <tr key={index}>
-                        <td className="border border-gray-300 px-4 py-2">{item.label}</td>
-                        <td className="text-center border border-gray-300 px-4 py-2">
-                          {value}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr key={index}>
+                          <td className="border border-gray-300 px-4 py-2">{item.label}</td>
+                          <td className="text-center border border-gray-300 px-4 py-2">
+                            {value}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
-              <div className="mt-[80px] text-right">
+              <div className="flex items-center justify-center gap-4 mt-[40px]">
                 <button
                     onClick={handlePrev}
                     className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -424,7 +438,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
           {step === 3 && (
           <>
             <ConicalGearTable />
-            <div className="mt-[80px] text-right">
+            <div className="flex items-center justify-center gap-4 mt-[40px]">
               <button
                 onClick={handlePrev}
                 className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -443,7 +457,7 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
           {step === 4 && (
           <>
             <CylindricalGearTable />
-            <div className="mt-[80px] text-right">
+            <div className="flex items-center justify-center gap-4 mt-[40px]">
               <button
                 onClick={handlePrev}
                 className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -451,14 +465,36 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
                 Back
               </button>
               <button
-                onClick={handleSave}
+                onClick={handleNext}
                 className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
               >
-                Save
+                Next
               </button>
             </div>
           </>)}
+
+          {step === 5 && (
+            <div className ="w-3/4 mx-auto ml-[50px] mt-[10px]">
+                <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Expected Price</h2>
+                <div className="flex items-center justify-center gap-4 mt-[40px]">
+                  <button
+                    onClick={handlePrev}
+                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  >
+                    Next
+                  </button>
+                </div>
+            </div>
+          )}
+
         </div>
+        
 
         <div className="fixed bottom-[50px] right-[50px] z-50">
           {!readOnly && <ChatBox />}
@@ -507,22 +543,25 @@ const ConicalGearTable = () => {
     ["Góc côn đáy", "δ_f = 16.99°, 70.12°"],
   ];
   return (
-    <table className="table-auto ml-[50px] mt-[10px] border-collapse border border-gray-300 w-[1000px]">
-      <thead>
-        <tr>
-          <th className="border px-4 py-2 bg-gray-100">Thông số</th>
-          <th className="border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(([l, v], i) => (
-          <tr key={i}>
-            <td className="border px-4 py-2">{l}</td>
-            <td className="border px-4 py-2">{v}</td>
+    <div className ="w-3/4 mx-auto ml-[50px] mt-[10px] ">
+      <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Conical Gear Details</h2>
+      <table className="border-collapse border border-gray-300 w-[1000px]">
+        <thead>
+          <tr>
+            <th className="border px-4 py-2 bg-gray-100">Thông số</th>
+            <th className="border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map(([l, v], i) => (
+            <tr key={i}>
+              <td className="border px-4 py-2">{l}</td>
+              <td className="border px-4 py-2">{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
@@ -540,22 +579,25 @@ const CylindricalGearTable = () => {
     ["Góc ăn khớp", "α_tw = 20°"],
   ];
   return (
-    <table className="table-auto ml-[50px] mt-[10px] border-collapse border border-gray-300 w-[1000px]">
-      <thead>
-        <tr>
-          <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>
-          <th className="border px-4 py-2 bg-gray-100">Bánh chủ động – Bánh bị động</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(([l, v], i) => (
-          <tr key={i}>
-            <td className="border px-4 py-2">{l}</td>
-            <td className="border px-4 py-2">{v}</td>
+    <div className="w-3/4 mx-auto ml-[50px] mt-[10px]">
+      <h2 className="text-[30px] text-[#4FD1C5] font-[800] mb-4">Cylindrical Gear Details</h2>
+      <table className="border-collapse border border-gray-300 w-[1000px]">
+        <thead>
+          <tr>
+            <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>
+            <th className="border px-4 py-2 bg-gray-100">Bánh chủ động – Bánh bị động</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map(([l, v], i) => (
+            <tr key={i}>
+              <td className="border px-4 py-2">{l}</td>
+              <td className="border px-4 py-2">{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

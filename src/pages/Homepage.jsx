@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -206,7 +207,9 @@ function Homepage() {
           ))}
         </motion.div>
       </div>
-
+      <div className="fixed bottom-[50px] right-[50px] z-50">
+        {<ChatBox />}
+      </div>
       <Footer />
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
@@ -30,6 +31,47 @@ const dummyBuilderData = {
   step: 1
 };
 
+const BeltDriveParametersTable = () => {
+  const data = dummyBuilderData.computedVariables;
+  const rows = [
+    { label: "Dạng đai", value: "Đai thẳng" },
+    { label: "Tiết diện đai", value: "A" },
+    { label: "Khoảng cách trục", value: data.a },
+    { label: "Chiều dài đai", value: data.L },
+    { label: "Góc ôm đai", value: data.alpha_1 },
+    { label: "Số vòng đai chạy trong 1 giây", value: data.circle },
+    { label: "Đường kính bánh dẫn", value: data.d1 },
+    { label: "Đường kính bánh bị dẫn", value: data.d2 },
+    { label: "Ứng suất lớn nhất", value: data.phi_max },
+    { label: "Lực căng đai ban đầu", value: data.F_0_final },
+    { label: "Lực tác dụng lên trục", value: data.F_r },
+  ];
+
+  return (
+    <div className="w-3/4 mx-auto">
+      <table className="mt-4 w-full border-collapse border border-gray-300">
+        <thead>
+          <tr>
+            <th className="border px-4 py-2 bg-gray-100">Thông số</th>
+            <th className="border px-4 py-2 bg-gray-100">Giá trị</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, idx) => (
+            <tr key={idx}>
+              <td className="border px-4 py-2">{row.label}</td>
+              <td className="border px-4 py-2 text-center">
+                {row.value !== undefined ? row.value.toString() : "-"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+
 const ConicalGearTable = () => {
   const data = [
     ["Chiều dài côn ngoài", "Rₑ = 0.5mₜₑ√z₁²+z₂² = 142.3 (mm)"],
@@ -48,7 +90,7 @@ const ConicalGearTable = () => {
     ["Góc côn đáy", "δ_f = 16.99°, 70.12°"]
   ];
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full mt-4">
+    <table className="table-auto border-collapse border border-gray-300 w-3/4 mx-auto mt-4">
       <thead>
         <tr>
           <th className="border px-4 py-2 bg-gray-100">Thông số</th>
@@ -81,7 +123,7 @@ const CylindricalGearTable = () => {
     ["Góc ăn khớp", "α_tw = 20°"]
   ];
   return (
-    <table className="table-auto border-collapse border border-gray-300 w-full mt-4">
+    <table className="table-auto border-collapse border border-gray-300 w-3/4 mx-auto mt-4">
       <thead>
         <tr>
           <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>
@@ -99,13 +141,19 @@ const CylindricalGearTable = () => {
     </table>
   );
 };
+const ExpectedPrice = () => {
+  return (
+    <div>
 
+    </div>
+  )
+}
 const ComputedVariablesTable = () => {
   const data = dummyBuilderData.computedVariables;
   return (
     <div>
       <div className="overflow-x-auto">
-        <table className="table-auto h-[400px] border-collapse border border-gray-300">
+        <table className="w-3/4 mx-auto h-[400px] border-collapse border border-gray-300">
           <thead>
             <tr>
               <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100" rowSpan="2">
@@ -165,17 +213,18 @@ export default function ProjectDetails() {
     {
       label: "Input Parameters",
       content: (
-        <div className="flex flex-col space-y-[8px] text-[20px] text-gray-800">
+        <div className="flex flex-row justify-center items-center space-x-[100px] text-[20px] text-gray-800">
           <span>P: {dummyBuilderData.params.power} kW</span>
           <span>n: {dummyBuilderData.params.speed} rpm</span>
           <span>L: {dummyBuilderData.params.lifetime} years</span>
         </div>
-      )       
+      )
+       
     },
     {
       label: "Selected Engine",
       content: (
-        <ul className="list-disc ml-6 text-gray-800">
+        <ul className="list-disc mt-[50px] space-y-[40px] ml-[200px] text-gray-800">
           {dummyBuilderData.engines.map((e) => (
             <li key={e.id} className={e.id === dummyBuilderData.selectedEngine ? "font-[700] text-[20px] text-[#3BAFA2]" : "text-[20px] text-gray-700"}>
               {e.company} - {e.Type} - {e.P_dc} kW - {e.n_dc} rpm {e.id === dummyBuilderData.selectedEngine && " (selected)"}
@@ -185,27 +234,39 @@ export default function ProjectDetails() {
       )
     },
     { label: "Computed Variables", content: <ComputedVariablesTable /> },
+    { label: "Belt Drive Parameters Table", content: <BeltDriveParametersTable />},
     { label: "Conical Gear Details", content: <ConicalGearTable /> },
-    { label: "Cylindrical Gear Details", content: <CylindricalGearTable /> }
+    { label: "Cylindrical Gear Details", content: <CylindricalGearTable /> },
+    { label: "Expected Price", content: <ExpectedPrice/>},
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <div className="mt-[50px] ml-[50px] px-12 flex-1">
-        <h1 className="text-[30px] font-bold mb-2">Project Details #{id}</h1>
-        <p className="text-[20px] mb-2">{dummyHistoryItem.systemType} | {dummyHistoryItem.timestamp}</p>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-[30px] mb-[20px] font-bold">Project Details #{id}</h1>
+          <p className="text-[20px] text-gray-600">{dummyHistoryItem.systemType} | {dummyHistoryItem.timestamp}</p>
+        </div>
+        <button
+          onClick={() => navigate(`/builder/${id}`)}
+          className="bg-[#56D3C7] border-none mr-[200px] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+        >
+          Edit
+        </button>
+      </div>
 
         <ProgressBar currentStep={step} totalSteps={steps.length} />
 
         <section className="rounded-md p-6 mt-[50px] mr-[50px] ml-[50px]">
-          <h2 className="text-[30px] font-[700] text-[#4FD1C5] mb-4">{steps[step - 1].label}</h2>
+          <h2 className="text-[30px] font-[700] text-[#4FD1C5] ml-[150px] mb-4">{steps[step - 1].label}</h2>
           {steps[step - 1].content}
         </section>
 
-        <div className="flex justify-between mt-[50px] px-[50px] w-full">
+        <div className="flex justify-between justify-center mt-[100px] gap-[500px] w-full ">
             <div className="w-[100px]">
-                {step > 1 && (
+                {step >= 1 && (
                 <button
                     onClick={() => setStep((s) => Math.max(1, s - 1))}
                     className="border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-full h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -215,8 +276,8 @@ export default function ProjectDetails() {
                 )}
             </div>
 
-            <div className="flex gap-[100px] mr-[200px]">
-                {step < steps.length && (
+            <div className="flex gap-[100px]">
+                {step <= steps.length && (
                 <button
                     onClick={() => setStep((s) => Math.min(steps.length, s + 1))}
                     className="border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -224,17 +285,14 @@ export default function ProjectDetails() {
                     Next
                 </button>
                 )}
-                <button
-                onClick={() => navigate(`/builder/${id}`)}
-                className="border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                >
-                Edit
-                </button>
             </div>
             </div>
 
 
 
+      </div>
+      <div className="fixed bottom-[50px] right-[50px] z-50">
+        {<ChatBox />}
       </div>
       <Footer />
     </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout.jsx";
+import ChatBox from "../components/ChatBox.jsx";
 import { createGlobalStyle } from "styled-components";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
@@ -813,6 +814,9 @@ export default function CatalogPage() {
             </table>
           </div>
         )}
+      </div>
+      <div className="fixed bottom-[50px] right-[50px] z-50">
+        {<ChatBox />}
       </div>
       <Footer />
     </>

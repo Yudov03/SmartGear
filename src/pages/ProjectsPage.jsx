@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -50,10 +51,10 @@ export default function ProjectsPage() {
                 <div className="text-[18px] text-gray-800 mt-1">{item.note}</div>
               </div>
               <button
-                className="px-4 py-2 bg-white text-teal-700 border border-teal-500 rounded-[15px] hover:bg-teal-50"
+                className="px-3 py-1 bg-gray-200 ml-[20px] w-[150px] h-[50px] text-[17px] rounded-[16px] disabled:opacity-50"
                 onClick={() => navigate(`/projects/${item.id}`)}
               >
-                Xem chi tiết
+                Details
               </button>
             </div>
           ))}
@@ -77,6 +78,9 @@ export default function ProjectsPage() {
             Next
           </button>
         </div>
+      </div>
+      <div className="fixed bottom-[50px] right-[50px] z-50">
+        {<ChatBox />}
       </div>
       <Footer />
     </div>
