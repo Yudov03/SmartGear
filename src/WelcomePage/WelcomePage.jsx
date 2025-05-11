@@ -9,10 +9,10 @@ function WelcomePage() {
   };
   return (
     <>
-      <div className="">
+      <div className=" overflow-hidden">
         {/* NAVBAR */}
-        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-          <div className="container">
+        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm ">
+          <div className="container ">
             {/* Logo / Thương hiệu */}
             <div
               className="navbar-brand p-2 rounded-3 w-[15%]"
@@ -55,48 +55,40 @@ function WelcomePage() {
                 style={{ backgroundColor: "#4fd1c5" }}
                 onClick={handleSignin}
               >
-                Sign in
+                Sign Up
               </button>
             </div>
           </div>
         </nav>
 
         {/* HERO SECTION */}
-        <div className="container" style={{ clipPath: "inset(0 -80% -0%)" }}>
+        <div className="container h-screen" style={{ clipPath: "inset(0 -80% -0%)" }}>
           <div className="row align-items-center py-1">
             {/* Cột trái: Tiêu đề và nút */}
-            <div className="col-md-10 ">
-              <h1 className="fs-1">
+            <div className="col-md-10 mb-[200px]">
+              <h1 className="fs-1 pb-[10px]">
                 CREATE YOUR <span style={{ color: "#4fd1c5" }}>GEAR</span>
               </h1>
               <h1 className="fs-1">
                 BUILD YOUR <span style={{ color: "#4fd1c5" }}>DREAM</span>
               </h1>
               <p className="lead mt-3"></p>
-              <button
-                className="btn btn-primary btn-lg rounded-3 px-4 mt-5"
-                style={{
-                  background: "#4fd1c5",
-                  border: "none",
-                }}
-              >
-                Create an account
-              </button>
             </div>
             {/* Cột phải: Hình minh họa */}
             <div
-              className="col-md-2 d-flex justify-content-center mt-md-0"
+              className="col-md-2 gap-[250px] d-flex justify-content-center mt-md-0"
               //   style={{ clipPath: "inset()", overflow: "visible" }}
               // style={{ marginTop: "-230%" }}
             >
               <Marquee
                 className="blueprint-marquee"
+                speed={120}
                 style={{
                   transform: "rotate(-30deg) translateX(-600px)",
                   // width: "400px", // tùy chỉnh
                   //   height: "500px", // tùy chỉnh
                   overflow: "visible", // cho hình lướt ra ngoài
-                  marginTop: "-150%",
+                  marginTop: "-125%",
                 }}
                 autoFill
               >
@@ -104,43 +96,44 @@ function WelcomePage() {
                   src="/public/Image 2.png"
                   alt="Hình 3"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 3.png"
                   alt="Hình 1"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 1.png"
                   alt="Hình 2"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 6.png"
                   alt="Hình 4"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 4.png"
                   alt="Hình 5"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
               </Marquee>
               <Marquee
                 className="blueprint-marquee"
+                speed={120}
                 style={{
                   transform: "rotate(-30deg) translateX(-200px)",
                   // width: "350px", // tùy chỉnh
                   //   height: "500px", // tùy chỉnh
                   overflow: "visible", // cho hình lướt ra ngoài
-                  marginTop: "160%",
+                  marginTop: "200%",
                 }}
                 direction="right"
                 autoFill
@@ -149,32 +142,32 @@ function WelcomePage() {
                   src="/public/Image 1.png"
                   alt="Hình 2"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 6.png"
                   alt="Hình 4"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 2.png"
                   alt="Hình 3"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 3.png"
                   alt="Hình 1"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 4.png"
                   alt="Hình 5"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
               </Marquee>
             </div>

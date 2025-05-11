@@ -18,4 +18,8 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
+<<<<<<< HEAD
 export { Input };
+=======
+export { Input };
+>>>>>>> origin/front-end

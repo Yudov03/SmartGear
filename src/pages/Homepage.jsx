@@ -20,14 +20,17 @@ function Homepage() {
   ];
 
   const recentActivities = [
-    { user: "Nguyễn Văn A", action: "Completed gearbox calculation", time: "2 hours ago", specs: "P=75kW, n=1450rpm" },
-    { user: "Trần Thị B", action: "Started new project", time: "4 hours ago", specs: "Industrial conveyor system" },
-    { user: "Lê Văn C", action: "Modified parameters", time: "6 hours ago", specs: "Updated lifetime: 5 years" },
+    { user: "Nguyen Van A", action: "Completed gearbox calculation", time: "2 hours ago", specs: "P=75kW, n=1450rpm" },
+    { user: "Tran Thi B", action: "Started new project", time: "4 hours ago", specs: "Industrial conveyor system" },
+    { user: "Le Van C", action: "Modified parameters", time: "6 hours ago", specs: "Updated lifetime: 5 years" },
   ];
 
   const performanceData = [
     { name: 'Success', value: 95 },
-    { name: 'Failed', value: 5 }
+    { name: 'Failed', value: 5 },
+    { name: 'Pending', value: 0 },
+    { name: 'In Progress', value: 0 },
+    { name: 'Completed', value: 100 },
   ];
 
   const hoverEffect = {
@@ -49,7 +52,7 @@ function Homepage() {
             whileHover={{ scale: 1.03 }}
             className="display-4 fw-bold mb-3"
           >
-            Hệ thống tính toán thiết kế hộp giảm tốc
+            Gearbox Design Calculation System
           </motion.h1>
           <motion.p
             initial={{ y: 20, opacity: 0 }}
@@ -58,7 +61,7 @@ function Homepage() {
             whileHover={{ scale: 1.02 }}
             className="lead mb-4"
           >
-            Giải pháp tự động hóa quá trình thiết kế với độ chính xác cao và thời gian thực hiện nhanh chóng
+            Automated design solution with high accuracy and quick execution time
           </motion.p>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -66,14 +69,14 @@ function Homepage() {
             onClick={handleStart}
             className="btn btn-light btn-lg px-4"
           >
-            Bắt đầu thiết kế
+            Start Design
           </motion.button>
         </div>
       </div>
 
       {/* Stats */}
       <div className="container mt-n5">
-        <div className="row g-3">
+        <div className="row g-3 gap-2 justify-content-center" >
           {stats.map((stat, idx) => (
             <motion.div
               key={idx}
@@ -81,7 +84,8 @@ function Homepage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: idx * 0.1 }}
               whileHover={hoverEffect}
-              className="col-6 col-md-3"
+              className=""
+              style={{padding: '0px', margin: '2px', width: '24%'}}
             >
               <div className="card shadow-sm">
                 <div className="card-body d-flex justify-content-between align-items-center">
@@ -96,18 +100,19 @@ function Homepage() {
           ))}
         </div>
 
-        <div className="row gy-4 mt-4">
+        <div className="row gy-4 mt-4 gap-4 justify-content-center" >
           {/* Recent Activities */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             whileHover={hoverEffect}
-            className="col-lg-6"
+            className=""
+            style={{ padding: '0px', height: '100%' , width: '48%' }}
           >
             <div className="card shadow-sm">
               <div className="card-header bg-white">
-                <h5 className="mb-0">Hoạt động gần đây</h5>
+                <h5 className="mb-0">Recent Activities</h5>
               </div>
               <div className="card-body">
                 {recentActivities.map((act, i) => (
@@ -139,15 +144,16 @@ function Homepage() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
             whileHover={hoverEffect}
-            className="col-lg-6"
+            className="col-lg-5"
+            style={{ padding: '0px',height: '100%', width: '48%' }}
           >
             <div className="card shadow-sm">
               <div className="card-header bg-white">
-                <h5 className="mb-0">Thông tin hệ thống</h5>
+                <h5 className="mb-0">System Information</h5>
               </div>
               <div className="card-body">
-                <h6>Hiệu suất tính toán</h6>
-                <ResponsiveContainer width="100%" height={100}>
+                <h6>Calculation Performance</h6>
+                <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={performanceData} layout="vertical">
                     <XAxis type="number" hide />
                     <YAxis type="category" dataKey="name" hide />
@@ -160,7 +166,8 @@ function Homepage() {
                     { label: 'Avg. Processing Time', value: '1.2s' },
                     { label: 'Total Calculations', value: '32,465' },
                     { label: 'Active Projects', value: '89' },
-                    { label: 'System Uptime', value: '99.9%' }
+                    { label: 'System Uptime', value: '99.9%' },
+                    // { label: 'System Delay', value: '0.01s' }
                   ].map((item, idx) => (
                     <motion.div
                       key={idx}
@@ -184,17 +191,19 @@ function Homepage() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="row gy-4 mt-4"
+          className="row gy-4 mt-4 gap-4 justify-content-center"
+          
         >
           {[
-            { title: 'Tính toán nhanh chóng', desc: 'Tối ưu hóa quá trình tính toán với thuật toán hiện đại' },
-            { title: 'Độ chính xác cao', desc: 'Kết quả được kiểm chứng và tối ưu hóa theo tiêu chuẩn' },
-            { title: 'Dễ dàng sử dụng', desc: 'Giao diện thân thiện, hướng dẫn chi tiết từng bước' },
+            { title: 'Quick Calculation', desc: 'Optimized calculation process with modern algorithms' },
+            { title: 'High Accuracy', desc: 'Results verified and optimized according to standards' },
+            { title: 'Easy to Use', desc: 'User-friendly interface with detailed step-by-step guidance' },
           ].map((feat, i) => (
             <motion.div
               key={i}
               whileHover={hoverEffect}
-              className="col-md-4"
+              className=""
+              style={{ padding: '0px', width: '31%' }}
             >
               <div className="card text-center shadow-sm h-100">
                 <div className="card-body">
