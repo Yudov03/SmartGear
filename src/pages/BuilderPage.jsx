@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AxiosInstance from "../axios/AxiosInstance.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import ChatBox from "../components/ChatBox.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
 
-function BuilderPage() {
+function BuilderPage({ readOnly = false, initialData = null, projectId = null }) {
   const [params, setParams] = useState({ power: "", speed: "", lifetime: "" });
   const [engines, setEngines] = useState([10,10,10,10,10],[10,10,10,10,10],[10,10,10,10,10],[10,10,10,10,10]);
   const [variables, setVariables] = useState({
@@ -17,7 +17,22 @@ function BuilderPage() {
   const [step, setStep] = useState(1);
   const totalSteps = 4
   const [isEngineConfirmed, setIsEngineConfirmed] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [built, setBuilt] = useState(false);
 
+  useEffect(() => {
+    if (initialData) {
+      const { params, engines, variables, selectedEngine, computedVariables, step: initStep } = initialData;
+      setParams(params || { power: "", speed: "", lifetime: "" });
+      setEngines(engines || []);
+      setVariables(variables || { P_ct: null, n_sb: null });
+      setSelectedEngine(selectedEngine || null);
+      setComputedVariables(computedVariables || {});
+      setStep(initStep || 1);
+      setBuilt(true);
+      setIsEngineConfirmed(!!selectedEngine);
+    }
+  }, [initialData]);
 
   const getTopEngines = () => engines.slice(0, 5);
 
@@ -36,13 +51,13 @@ function BuilderPage() {
   };
 
   const handleBuild = async () => {
+    if (readOnly) return;
     if (!validateParams()) {
       alert("Vui lòng nhập số hợp lệ!");
       return;
     }
 
     try {
-      // Gửi POST request với P, n, L
       const response = await AxiosInstance.post("build/engine", {
         P: params.power,
         n: params.speed,
@@ -54,6 +69,7 @@ function BuilderPage() {
 
         setEngines(engineList);
         setVariables(vars);
+        setBuilt(true);
       }
     } catch (error) {
       console.error("Error fetching engines:", error);
@@ -62,10 +78,11 @@ function BuilderPage() {
   };
 
   const handleSelectEngine = (engineId) => {
-    setSelectedEngine(engineId);
+    !readOnly && setSelectedEngine(engineId)
   };
 
   const handleConfirmEngine = async () => {
+    if (readOnly) return;
     if (!selectedEngine) {
       alert("Vui lòng chọn một động cơ!");
       return;
@@ -75,10 +92,10 @@ function BuilderPage() {
         ...variables,
       });
   
-      console.log("Dữ liệu nhận về từ API:", response.data); // Debug xem API trả về gì
+      console.log("Dữ liệu nhận về từ API:", response.data); 
   
       if (response.data) {
-        setComputedVariables(response.data); // Cập nhật bảng thông số mới
+        setComputedVariables(response.data); 
       }
     } catch (error) {
       console.error("Error computing transmission:", error);
@@ -87,15 +104,28 @@ function BuilderPage() {
     setIsEngineConfirmed(true);
   };
 
-  const handleNext = () => setStep((s) => Math.min(s + 1, 4));
-  const handlePrev = () => setStep((s) => Math.max(s - 1, 1));
-
+  const handleNext = () => !readOnly && setStep(s => Math.min(s + 1, totalSteps));
+  const handlePrev = () => !readOnly && setStep(s => Math.max(s - 1, 1));
+  const handleSave = async () => {
+    if (readOnly) return;
+    try {
+      const payload = { projectId: id, params, engines, variables, selectedEngine, computedVariables };
+      await AxiosInstance.post(`/builder/${id}/save`, payload);
+      await AxiosInstance.post(`/projects/${id}/builderData`, payload);
+      setSaveSuccess(true);
+      setTimeout(() => navigate(`/projects/${id}`), 1000);
+    } catch (err) {
+      console.error(err);
+      alert("Có lỗi khi lưu dữ liệu.");
+    }
+  };
+  
   return (
     <>
       <Header />
       <div className="mt-[50px] min-h-screen">
         <div className="text-[30px] ml-[50px] font-[700] mt-[20px] text-black">
-          Gearbox Builder
+          {readOnly ? "Project Details" : "Gearbox Builder"}
         </div>
         <div className="mt-[20px] mb-[30px] text-[18px] ml-[50px] text-[#718096]">
           Enter the parameters below
@@ -108,37 +138,37 @@ function BuilderPage() {
               name="power"
               value={params.power}
               onChange={handleChange}
+              disabled={readOnly || built}
             />
             <InputField
               label="n [vg/ph]"
               name="speed"
               value={params.speed}
               onChange={handleChange}
+              disabled={readOnly || built}
             />
             <InputField
               label="L [year]"
               name="lifetime"
               value={params.lifetime}
               onChange={handleChange}
+              disabled={readOnly || built}
             />
           </div>
 
-          <button
+          {!readOnly && <button
             onClick={handleBuild}
             className="ml-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-          >
-            Build
-          </button>
+          >Build</button>}
         </div>
 
         <ProgressBar currentStep={step} totalSteps={totalSteps} />
 
-        <div className="mt-[100px]">
+        <div className="mt-[50px]">
           {step === 1 && (
             <>
               {engines.length > 0 && (
                 <div className="mt-8 flex gap-8">
-                  {/* Phần bên trái: Hiển thị thông tin input và 2 biến P_ct, n_sb */}
                   <div className="flex-1 border-none p-4 rounded-md shadow-md">
                     <span className="text-[30px] text-[#4FD1C5] font-[800] mb-1">
                       Engine Info
@@ -199,7 +229,7 @@ function BuilderPage() {
                       })}
                     </ul>
 
-                    {selectedEngine && (
+                    {selectedEngine && !readOnly && (
                       <button
                         onClick={handleConfirmEngine}
                         className="mt-4 border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[150px] h-[50px] text-white text-[20px] rounded-[15px] shadow-md transition-all"
@@ -323,7 +353,7 @@ function BuilderPage() {
 
           {step === 2 && (
             <>
-              <table className="ml-[50px] mt-[150px] table-auto border-collapse border border-gray-300 w-[1000px]">
+              <table className="ml-[50px] mt-[10px] table-auto border-collapse border border-gray-300 w-[1000px]">
                 <thead>
                   <tr>
                     <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
@@ -370,7 +400,13 @@ function BuilderPage() {
                 </tbody>
               </table>
 
-              <div className="mt-8 text-right">
+              <div className="mt-[80px] text-right">
+                <button
+                    onClick={handlePrev}
+                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                >
+                  Back
+                </button>
                 <button
                   onClick={handleNext}
                   className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -388,7 +424,13 @@ function BuilderPage() {
           {step === 3 && (
           <>
             <ConicalGearTable />
-            <div className="mt-8 text-right">
+            <div className="mt-[80px] text-right">
+              <button
+                onClick={handlePrev}
+                className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+              >
+                Back
+              </button>
               <button
                 onClick={handleNext}
                 className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
@@ -401,12 +443,25 @@ function BuilderPage() {
           {step === 4 && (
           <>
             <CylindricalGearTable />
-            
+            <div className="mt-[80px] text-right">
+              <button
+                onClick={handlePrev}
+                className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleSave}
+                className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+              >
+                Save
+              </button>
+            </div>
           </>)}
         </div>
 
         <div className="fixed bottom-[50px] right-[50px] z-50">
-          <ChatBox />
+          {!readOnly && <ChatBox />}
         </div>
       </div>
       <Footer />
@@ -452,7 +507,7 @@ const ConicalGearTable = () => {
     ["Góc côn đáy", "δ_f = 16.99°, 70.12°"],
   ];
   return (
-    <table className="table-auto ml-[50px] mt-[150px] border-collapse border border-gray-300 w-[1000px]">
+    <table className="table-auto ml-[50px] mt-[10px] border-collapse border border-gray-300 w-[1000px]">
       <thead>
         <tr>
           <th className="border px-4 py-2 bg-gray-100">Thông số</th>
@@ -485,7 +540,7 @@ const CylindricalGearTable = () => {
     ["Góc ăn khớp", "α_tw = 20°"],
   ];
   return (
-    <table className="table-auto ml-[50px] mt-[150px] border-collapse border border-gray-300 w-[1000px]">
+    <table className="table-auto ml-[50px] mt-[10px] border-collapse border border-gray-300 w-[1000px]">
       <thead>
         <tr>
           <th className="border px-4 py-2 bg-gray-100">Thông số hình học</th>

@@ -1,8 +1,30 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Header = () => {
   const location = useLocation().pathname.substring(1).toUpperCase();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("Guest");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/users/me");
+        const user = response.data;
+        if (user && user.firstName && user.lastName) {
+          setUserName(`${user.firstName} ${user.lastName}`);
+        } else {
+          setUserName("Guest");
+        }
+      } catch (error) {
+        // Giữ lại "Guest" nếu có lỗi
+        console.warn("Không thể lấy thông tin người dùng, hiển thị Guest.");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div className="w-full bg-[#4FD1C5] py-4 ">
@@ -27,13 +49,13 @@ const Header = () => {
             onClick={() => navigate("/profile")}
           >
             <button className="btn">
-                <img
-                  src="../public/Profile.svg"
-                  className="w-[20px] h-[20px]"
-                  alt="User"
-                />
-              </button>
-            <span className="text-gray-700">Duy Vo</span>
+              <img
+                src="../public/Profile.svg"
+                className="w-[20px] h-[20px]"
+                alt="User"
+              />
+            </button>
+            <span className="text-gray-700">{userName}</span>
           </div>
 
           <button className="btn mt-[4px]">

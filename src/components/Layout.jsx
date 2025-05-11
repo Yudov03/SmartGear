@@ -20,7 +20,7 @@ function Layout({ content, onLogout }) {
     if (currentPath.startsWith("/builder")) navName = "Builder";
     else if (currentPath.startsWith("/catalog")) navName = "Catalog";
     else if (currentPath.startsWith("/profile")) navName = "Profile";
-    else if (currentPath.startsWith("/history")) navName = "History";
+    else if (currentPath.startsWith("/projects")) navName = "Projects";
     else if (currentPath.startsWith("/logout")) navName = "Logout";
 
     setActiveNav(navName);
@@ -103,7 +103,7 @@ function Layout({ content, onLogout }) {
           <span className="text-black my-4">Account Pages</span>
 
           {renderNavItem("Profile", "/public/Profile_Before.svg", "/public/Profile_After.svg")}
-          {renderNavItem("History", "/public/History_Before.svg", "/public/History_After.svg")}
+          {renderNavItem("Projects", "/public/History_Before.svg", "/public/History_After.svg")}
           {renderNavItem("Logout", "/public/Logout_Before.svg", "/public/Logout_After.svg")}
         </ul>
 
