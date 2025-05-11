@@ -27,7 +27,10 @@ function Homepage() {
 
   const performanceData = [
     { name: 'Success', value: 95 },
-    { name: 'Failed', value: 5 }
+    { name: 'Failed', value: 5 },
+    { name: 'Pending', value: 0 },
+    { name: 'In Progress', value: 0 },
+    { name: 'Completed', value: 100 },
   ];
 
   const hoverEffect = {
@@ -73,7 +76,7 @@ function Homepage() {
 
       {/* Stats */}
       <div className="container mt-n5">
-        <div className="row g-3 gap-2 justify-content-center">
+        <div className="row g-3 gap-2 justify-content-center" >
           {stats.map((stat, idx) => (
             <motion.div
               key={idx}
@@ -97,7 +100,7 @@ function Homepage() {
           ))}
         </div>
 
-        <div className="row gy-4 mt-4 gap-4 justify-content-center">
+        <div className="row gy-4 mt-4 gap-4 justify-content-center" >
           {/* Recent Activities */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
@@ -142,7 +145,7 @@ function Homepage() {
             transition={{ delay: 0.3 }}
             whileHover={hoverEffect}
             className="col-lg-5"
-            style={{ padding: '0px',height: '80%', width: '48%' }}
+            style={{ padding: '0px',height: '100%', width: '48%' }}
           >
             <div className="card shadow-sm">
               <div className="card-header bg-white">
@@ -150,7 +153,7 @@ function Homepage() {
               </div>
               <div className="card-body">
                 <h6>Hiệu suất tính toán</h6>
-                <ResponsiveContainer width="100%" height={100}>
+                <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={performanceData} layout="vertical">
                     <XAxis type="number" hide />
                     <YAxis type="category" dataKey="name" hide />
@@ -163,7 +166,8 @@ function Homepage() {
                     { label: 'Avg. Processing Time', value: '1.2s' },
                     { label: 'Total Calculations', value: '32,465' },
                     { label: 'Active Projects', value: '89' },
-                    { label: 'System Uptime', value: '99.9%' }
+                    { label: 'System Uptime', value: '99.9%' },
+                    // { label: 'System Delay', value: '0.01s' }
                   ].map((item, idx) => (
                     <motion.div
                       key={idx}
