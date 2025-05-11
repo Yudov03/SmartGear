@@ -11,8 +11,4 @@ const RootLayout = () => {
     </>
   );
 };
-<<<<<<< HEAD
 export default RootLayout;
-=======
-export default RootLayout;
->>>>>>> origin/front-end

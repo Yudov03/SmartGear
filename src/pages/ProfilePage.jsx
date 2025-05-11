@@ -1,127 +1,352 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Sun, Moon, Edit2, Save, User, Info, BookOpen, Mail } from "lucide-react";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import { motion } from "framer-motion";
+import AxiosInstance from "../axios/AxiosInstance";
+import { toast } from "react-toastify";
 
-function ProfilePage() {
-  const [activeTab, setActiveTab] = useState("project");
+export default function ProfilePage() {
+  const [darkMode, setDarkMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [user, setUser] = useState(null);
+  const [editedUser, setEditedUser] = useState(null);
+  const [changePasswordMode, setChangePasswordMode] = useState(false);
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    AxiosInstance.get('users/me')
+      .then(res => {
+        setUser(res.data);
+        setEditedUser(res.data);
+      })
+      .catch(error => {
+        console.error("Error fetching user data:", error);
+        toast.error("Failed to load user data");
+      });
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await AxiosInstance.patch('users', {
+        firstName: editedUser.firstName,
+        lastName: editedUser.lastName,
+        email: editedUser.email
+      });
+      setUser(editedUser);
+      setEditMode(false);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    try {
+      await AxiosInstance.patch('users/password', {
+        oldPassword: passwords.oldPassword,
+        newPassword: passwords.newPassword
+      });
+      setChangePasswordMode(false);
+      setPasswords({ oldPassword: "", newPassword: "" });
+      toast.success("Password updated successfully!");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast.error("Failed to change password");
+    }
+  };
+
+  const sections = [
+    { key: 'about', title: 'About Me', icon: <User size={20} /> },
+    { key: 'info', title: 'Personal Info', icon: <Info size={20} /> },
+    { key: 'education', title: 'Education', icon: <BookOpen size={20} /> },
+    { key: 'contact', title: 'Contact', icon: <Mail size={20} /> },
+  ];
+  const [activeTab, setActiveTab] = useState(sections[0].key);
 
   return (
-    <div className="bg-[#F8F9FA] min-h-screen">
-      <Header />
+    <div className={darkMode ? 'bg-dark text-light' : ''}>
+      <div className={`container-fluid min-vh-100 d-flex flex-column p-0 ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'}`}>
+        <Header />
 
-      <div className="mb-6 bg-[#4FD1C5] rounded-bl-[20px] rounded-br-[20px] py-9">
-        {/* Profile Card */}
-        <div className="w-[95%] px-4 h-[150px] max-w-4xl mx-auto bg-[#f0f1f2] rounded-[20px] p-6 flex items-center justify-between shadow-md">          
-          {/* Left: Avatar + Name */}
-          <div className="flex items-center">
-            <img
-              src="https://via.placeholder.com/60"
-              alt="Avatar"
-              className="rounded-full mr-4"
-            />
-            <div>
-              <h2 className=" px-4 text-black text-[20px] font-bold">Võ Lý Đắc Duy</h2>
-              <p className="px-4 text-[#718096] text-[16px]">duy.vo09042003@hcmut.edu.vn</p>
-            </div>
-          </div>
-
-          {/* Right: Tabs */}
-          <div className="flex gap-3 px-4">
-            <button
-              onClick={() => setActiveTab("project")}
-              className={`w-[120px] border-none h-[45px] rounded-[20px] font-bold px-4 py-1 transition-all duration-300 border ${
-                activeTab === "project"
-                  ? "bg-white/40 text-[#2D3748] shadow-md"
-                  : "bg-white backdrop-blur-sm text-[#2D3748]"
-              }`}
-            >
-              Projects
-            </button>
-            <button
-              onClick={() => setActiveTab("about")}
-              className={`w-[120px] border-none h-[45px] rounded-[20px] font-bold px-4 py-1 transition-all duration-300 border ${
-                activeTab === "about"
-                  ? "bg-white/40 text-[#2D3748] shadow-md"
-                  : "bg-white backdrop-blur-sm text-[#2D3748]"
-              }`}
-            >
-              About Me
-            </button>
-          </div>
+        {/* Theme & Edit Toggles */}
+        <div className="d-flex justify-content-end p-3">
+          <button
+            aria-label="Toggle Dark Mode"
+            onClick={() => setDarkMode(!darkMode)}
+            className="btn btn-light me-2"
+          >
+            {darkMode ? <Sun /> : <Moon />}
+          </button>
+          <button
+            aria-label="Toggle Edit Mode"
+            onClick={() => {
+              if (editMode) handleSave();
+              setEditMode(!editMode);
+            }}
+            className="btn btn-light"
+          >
+            {editMode ? <Save /> : <Edit2 />}
+          </button>
         </div>
-      </div>
 
-      <div className="w-full max-w-4xl mt-[50px] mx-auto">
-        {activeTab === "project" ? (
-          <div className="rounded-[20px] bg-white w-full h-[600px]">
-            <div className="pt-[30px]"> 
-              <span className="text-black text-[25px] font-[900] block ml-[50px]">Projects</span> 
-              <span className="text-[#A0AEC0] mt-[10px] text-[15px] block ml-[50px]">Architects design speed reducer</span> 
-            </div>
-          </div>
-        ) : activeTab === "about" ? (
-          <div className="rounded-[20px] bg-white w-full h-[600px]">
-            <div className="pt-[30px] px-[50px]">
-              {/* Tiêu đề Information */}
-              <p className="text-black text-[25px] font-[900] mb-6">Information</p>
-
-              <div className="flex flex-wrap">
-                {/* Cột bên trái */}
-                <div className="w-1/2 pr-[30px]">
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Full Name: </span>
-                    <span className="text-[#A0AEC0] text-[20px] mb-4">John Doe</span>
+        {/* Hero & Profile Section */}
+        <div className={`py-5 text-center ${darkMode ? 'bg-secondary text-light' : 'bg-light text-white'}`}>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="card mx-auto" style={{ maxWidth: '900px' }}
+          >
+            <div className={`card-body ${darkMode ? 'bg-dark text-light' : ''}`}>            
+              <div className="row align-items-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="col-md-3 text-center mb-3 mb-md-0"
+                >
+                  <div className="position-relative d-inline-block">
+                    <img
+                      src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random`}
+                      alt="Avatar"
+                      className="rounded-circle img-fluid border border-light"
+                      style={{ width: '128px', height: '128px', objectFit: 'cover' }}
+                    />
                   </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Email: </span>
-                    <span className="text-[#A0AEC0] text-[20px] mb-4">johndoe@example.com</span>
-                  </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Phone Number: </span>
-                    <span className="text-[#A0AEC0] text-[20px]  mb-4">+123 456 789</span>
-                  </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Address: </span>
-                    <span className="text-[#A0AEC0] text-[20px]  mb-4">123 Main St, City, Country</span>
-                  </div>
-                </div>
-
-                {/* Cột bên phải */}
-                <div className="w-1/2 pl-[30px]">
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Date of Birth: </span>
-                    <span className="text-[#A0AEC0] text-[20px]  mb-4">January 1, 1990</span>
-                  </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Gender: </span>
-                    <span className="text-[#A0AEC0] text-[20px]  mb-4">Male</span>
-                  </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Occupation: </span>
-                    <span className="text-[#A0AEC0] text-[20px]  mb-4">Software Engineer</span>
-                  </div>
-
-                  <div className="py-2">
-                    <span className="text-[#718096] text-[20px] font-[800] mb-4">Nationality: </span>
-                    <span className="text-[#A0AEC0] text-[20px] = mb-4">American</span>
+                </motion.div>
+                <div className="col-md-9 text-md-start text-center">
+                  <motion.h1
+                    initial={{ x: -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="display-6 fw-bold text-dark"
+                  >
+                    {editMode ? (
+                      <div className="d-flex gap-2">
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser?.firstName || ''}
+                          onChange={(e) => setEditedUser({...editedUser, firstName: e.target.value})}
+                          placeholder="First Name"
+                        />
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editedUser?.lastName || ''}
+                          onChange={(e) => setEditedUser({...editedUser, lastName: e.target.value})}
+                          placeholder="Last Name"
+                        />
+                      </div>
+                    ) : (
+                      `${user?.firstName || ''} ${user?.lastName || ''}`
+                    )}
+                  </motion.h1>
+                  <motion.p
+                    initial={{ x: -10, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mb-2 text-dark"
+                  >
+                    {editMode ? (
+                      <input
+                        type="email"
+                        className="form-control"
+                        value={editedUser?.email || ''}
+                        onChange={(e) => setEditedUser({...editedUser, email: e.target.value})}
+                        placeholder="Email"
+                      />
+                    ) : (
+                      user?.email
+                    )}
+                  </motion.p>
+                  <div className="d-flex justify-content-center justify-content-md-start gap-2">
+                    {['Software Engineer','Student'].map((role, idx) => (
+                      <span key={idx} className="badge bg-secondary text-wrap">
+                        {role}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
+        </div>
 
+        {/* Main Content with Tabs */}
+        <main className="flex-grow-1 container py-4">
+          {/* Tab Nav */}
+          <ul className="nav nav-tabs mb-3 justify-content-center">
+            {sections.map(({ key, title, icon }) => (
+              <li className="nav-item" key={key}>
+                <button
+                  className={`nav-link text-secondary ${activeTab === key ? 'active' : ''}`}
+                  onClick={() => setActiveTab(key)}
+                >
+                  <span className="me-2">{icon}</span>
+                  {title}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-        ) : null}
+          {/* Sections */}
+          {activeTab === 'about' && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="card mb-4"
+            >
+              <div className="card-header">
+                <h2 className="h5 mb-0 d-flex align-items-center gap-2">
+                  <User size={20} /> About Me
+                </h2>
+              </div>
+              <div className="card-body">
+                <p className="mb-0">
+                  I am a passionate developer with a keen interest in building innovative solutions. Currently pursuing my education at Ho Chi Minh City University of Technology, I specialize in full-stack development and have a particular fondness for creating intuitive user interfaces.
+                </p>
+              </div>
+            </motion.div>
+          )}
+
+          {['info', 'education', 'contact'].includes(activeTab) && (
+            <div className="row g-3 d-flex align-items-center justify-content-center">
+              {[
+                {
+                  key: 'info',
+                  title: 'Personal Info',
+                  icon: <Info size={20} />,
+                  items: [
+                    { label: 'First Name', value: user?.firstName || 'N/A', editable: true },
+                    { label: 'Last Name', value: user?.lastName || 'N/A', editable: true },
+                    { label: 'Email', value: user?.email || 'N/A', editable: true },
+                    {
+                      label: 'Password',
+                      value: '********',
+                      action: () => setChangePasswordMode(true)
+                    },
+                  ],
+                },
+                {
+                  key: 'education',
+                  title: 'Education',
+                  icon: <BookOpen size={20} />,
+                  items: [
+                    { label: 'University', value: 'HCMUT' },
+                    { label: 'Major', value: 'Computer Science' },
+                    { label: 'Graduation', value: '2025' },
+                  ],
+                },
+                {
+                  key: 'contact',
+                  title: 'Contact',
+                  icon: <Mail size={20} />,
+                  items: [
+                    { label: 'Email', value: user?.email, isLink: true, href: `mailto:${user?.email}` },
+                    { label: 'GitHub', value: 'github.com/duydottrue', isLink: true, href: 'https://github.com/duydottrue' },
+                    { label: 'LinkedIn', value: 'vo-ly-dac-duy', isLink: true, href: '#'},
+                  ],
+                },
+              ]
+                .filter(sec => sec.key === activeTab)
+                .map((section) => (
+                  <motion.div
+                    key={section.key}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="col-md-4"
+                  >
+                    <div className="card h-100">
+                      <div className="card-header d-flex align-items-center gap-2">
+                        {section.icon} {section.title}
+                      </div>
+                      <ul className="list-group list-group-flush">
+                        {section.items.map(({ label, value, isLink, href, editable, action }) => (
+                          <li className="list-group-item d-flex justify-content-between" key={label}>
+                            <strong>{label}:</strong>
+                            {editable && editMode ? (
+                              <input
+                                type="text"
+                                className="form-control"
+                                value={editedUser[label.toLowerCase().replace(' ', '')] || ''}
+                                onChange={(e) => setEditedUser({
+                                  ...editedUser,
+                                  [label.toLowerCase().replace(' ', '')]: e.target.value
+                                })}
+                              />
+                            ) : isLink ? (
+                              <a href={href} target="_blank" rel="noopener noreferrer">
+                                {value}
+                              </a>
+                            ) : action ? (
+                              <button 
+                                className="btn btn-link p-0" 
+                                onClick={action}
+                              >
+                                Change Password
+                              </button>
+                            ) : (
+                              <span>{value}</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                ))}
+            </div>
+          )}
+          
+          {/* Password Change Modal */}
+          {changePasswordMode && (
+            <div className="modal" style={{ display: 'block' }} tabIndex="-1">
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className={`modal-title ${darkMode ? "text-dark" : "text-dark"}`}>Change Password</h5>
+                    <button type="button" className="btn-close" onClick={() => setChangePasswordMode(false)}></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="mb-3">
+                      <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>Current Password</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        value={passwords.oldPassword}
+                        onChange={(e) => setPasswords({...passwords, oldPassword: e.target.value})}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className={`form-label ${darkMode ? "text-dark" : "text-dark"}`}>New Password</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        value={passwords.newPassword}
+                        onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setChangePasswordMode(false)}>Cancel</button>
+                    <button type="button" className="btn btn-primary" onClick={handlePasswordChange}>Update Password</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+
+        <Footer />
       </div>
-
-      <Footer />
     </div>
   );
 }
-
-export default ProfilePage;
