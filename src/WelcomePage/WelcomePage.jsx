@@ -9,10 +9,10 @@ function WelcomePage() {
   };
   return (
     <>
-      <div className="">
+      <div className=" overflow-hidden">
         {/* NAVBAR */}
-        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-          <div className="container">
+        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm ">
+          <div className="container ">
             {/* Logo / Thương hiệu */}
             <div
               className="navbar-brand p-2 rounded-3 w-[15%]"
@@ -55,7 +55,7 @@ function WelcomePage() {
                 style={{ backgroundColor: "#4fd1c5" }}
                 onClick={handleSignin}
               >
-                Sign in
+                Sign up
               </button>
             </div>
           </div>
@@ -79,6 +79,7 @@ function WelcomePage() {
                   background: "#4fd1c5",
                   border: "none",
                 }}
+                onClick={handleSignin}
               >
                 Create an account
               </button>
@@ -104,33 +105,33 @@ function WelcomePage() {
                   src="/public/Image 2.png"
                   alt="Hình 3"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 3.png"
                   alt="Hình 1"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 1.png"
                   alt="Hình 2"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 6.png"
                   alt="Hình 4"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 4.png"
                   alt="Hình 5"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
               </Marquee>
               <Marquee
@@ -149,32 +150,32 @@ function WelcomePage() {
                   src="/public/Image 1.png"
                   alt="Hình 2"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 6.png"
                   alt="Hình 4"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 2.png"
                   alt="Hình 3"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
                 <img
                   src="/public/Image 3.png"
                   alt="Hình 1"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
 
                 <img
                   src="/public/Image 4.png"
                   alt="Hình 5"
                   // style={{ width: "350px", marginRight: "30px" }}
-                  className="w-[80%]"
+                  className="w-[75%]"
                 />
               </Marquee>
             </div>

@@ -73,7 +73,7 @@ function Homepage() {
 
       {/* Stats */}
       <div className="container mt-n5">
-        <div className="row g-3">
+        <div className="row g-3 gap-2 justify-content-center">
           {stats.map((stat, idx) => (
             <motion.div
               key={idx}
@@ -81,7 +81,8 @@ function Homepage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: idx * 0.1 }}
               whileHover={hoverEffect}
-              className="col-6 col-md-3"
+              className=""
+              style={{padding: '0px', margin: '2px', width: '24%'}}
             >
               <div className="card shadow-sm">
                 <div className="card-body d-flex justify-content-between align-items-center">
@@ -96,14 +97,15 @@ function Homepage() {
           ))}
         </div>
 
-        <div className="row gy-4 mt-4">
+        <div className="row gy-4 mt-4 gap-4 justify-content-center">
           {/* Recent Activities */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
             whileHover={hoverEffect}
-            className="col-lg-6"
+            className=""
+            style={{ padding: '0px', height: '100%' , width: '48%' }}
           >
             <div className="card shadow-sm">
               <div className="card-header bg-white">
@@ -139,7 +141,8 @@ function Homepage() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
             whileHover={hoverEffect}
-            className="col-lg-6"
+            className="col-lg-5"
+            style={{ padding: '0px',height: '80%', width: '48%' }}
           >
             <div className="card shadow-sm">
               <div className="card-header bg-white">
@@ -184,7 +187,8 @@ function Homepage() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="row gy-4 mt-4"
+          className="row gy-4 mt-4 gap-4 justify-content-center"
+          
         >
           {[
             { title: 'Tính toán nhanh chóng', desc: 'Tối ưu hóa quá trình tính toán với thuật toán hiện đại' },
@@ -194,7 +198,8 @@ function Homepage() {
             <motion.div
               key={i}
               whileHover={hoverEffect}
-              className="col-md-4"
+              className=""
+              style={{ padding: '0px', width: '31%' }}
             >
               <div className="card text-center shadow-sm h-100">
                 <div className="card-body">

@@ -42,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
 
   .table thead th {
     border-top: none;
-    background-color: #198754;
+    background-color: #56D3C7;
     color: white;
     vertical-align: middle;
   }
@@ -569,7 +569,7 @@ export default function CatalogPage() {
         {activeTab === "engine" ? (
           <div className="table-container table-responsive text-center">
             <table className="table table-hover table-striped table-bordered">
-              <thead className="fw-bolder">
+              <thead className="fw-bolder text-dark">
                 <tr>
                   <th
                     onClick={() => handleSort("Type")}

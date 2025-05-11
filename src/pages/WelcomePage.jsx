@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 function WelcomePage () {
+    const navigate = useNavigate();
     return (
         <>
             <div className="mt-[10px] ml-[50px] mr-[50px] h-[100px] flex items-center justify-between p-4 rounded-lg">
@@ -30,66 +32,53 @@ function WelcomePage () {
                 </div>
             </div>
 
-            <div className="relative w-full h-[1000px] bg-gray-100 overflow-hidden">
+            {/* Main Hero */}
+      <div className="relative w-full h-screen bg-gray-100 overflow-hidden">
+        {/* Text block */}
+        <div className="absolute top-12 left-12 z-20 space-y-4">
+          <h1 className="text-6xl font-bold text-gray-700">
+            CREATE YOUR <span className="text-teal-400">GEAR</span><br/>
+            BUILD YOUR <span className="text-teal-400">DREAM</span>
+          </h1>
+          <button
+            onClick={() => navigate('/login')}
+            className="mt-8 px-8 py-3 bg-teal-400 text-white text-xl rounded-lg"
+          >
+            Create an account
+          </button>
+        </div>
 
-                {/* Phần chữ */}
-                <div className="absolute top-[50px] left-[50px] z-20">
-                    <div className="text-[64px] font-bold leading-[0.5]">
-                        <p className="text-[#4F4F4F]">
-                            CREATE YOUR <span className="text-[#4FD1C5]">GEAR</span>
-                        </p>
-                        <p className="text-[#4F4F4F]">
-                            BUILD YOUR <span className="text-[#4FD1C5]">DREAM</span>
-                        </p>
-                    </div>
-
-                    <div className="mt-[50px] w-[260px] h-[60px] bg-[#4FD1C5] rounded-[10px] flex items-center justify-center cursor-pointer">
-                        <span className="text-[24px] text-[white] font-[Arial] font-[800]">
-                            Create an account
-                        </span>
-                    </div>
-                </div>
-
-
-                <div className="relative w-full h-full">
-                    <img
-                        src="/public/Image 3.png"
-                        className="absolute w-[556px] h-[365px] top-[900px] left-[-150px] rotate-[-27deg] z-10"
-                    />
-                    
-                    
-                    <img
-                        src="/public/Image 1.png"
-                        className="absolute w-[556px] h-[365px] top-[620px] left-[380px] rotate-[-27deg] z-10"
-                    />
-
-                    <img
-                        src="/public/Image 3.png"
-                        className="absolute w-[556px] h-[365px] top-[350px] left-[900px] rotate-[-27deg] z-10"
-                    />
-
-                    <img
-                        src="/public/Image 1.png"
-                        className="absolute w-[556px] h-[365px] top-[82px] left-[1420px] rotate-[-27deg] z-10"
-                    />
-                    
-                    <img
-                        src="/public/Image 2.png"
-                        className="absolute w-[556px] h-[365px] top-[810px] left-[900px] rotate-[-27deg] z-10"
-                    />
-
-                    <img
-                        src="/public/Image 6.png"
-                        className="absolute w-[556px] h-[365px] top-[530px] left-[1450px] rotate-[-27deg] z-10"
-                    />
-                </div>
-
+        {/* Marquee container */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-full max-w-6xl h-64 overflow-hidden relative">
+            {/* Track 1 */}
+            <div className="absolute top-0 left-0 w-[200%] h-full flex animate-marquee">
+              {[1,2,3,4,5].map(i => (
+                <img
+                  key={i}
+                  src={`/Image${i}.png`}
+                  className="w- h object-cover -rotate-27"
+                  alt=""
+                  style={{width: '100px', height: '100px'}}
+                />
+              ))}
             </div>
-
-
-
-        </>
-    );
+            {/* Track 2 */}
+            <div className="absolute bottom-0 left-0 w-[20 flex animate-marquee-reverse">
+              {[5,4,3,2,1].map(i => (
+                <img
+                  key={i}
+                  src={`/Image${i}.png`}
+                  className="w- h- object-cover -rotate-27"
+                  alt=""
+                  style={{width: '200px'}}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
-
 export default WelcomePage;

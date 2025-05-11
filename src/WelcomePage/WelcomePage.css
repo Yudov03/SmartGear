@@ -1,3 +1,33 @@
 body {
-    font-family: Arial, sans-serif;
-  }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
+.main-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.blueprint-marquee {
+  position: relative;
+  z-index: 1;
+}
+
+.blueprint-marquee img {
+  margin: 0 20px;
+  pointer-events: none;
+}
+
+.content-wrapper {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}

@@ -8,9 +8,10 @@ import gear1 from "../assets/gear-1.svg";
 import "./login.css";
 import AxiosInstance from "../axios/AxiosInstance";
 import { cssTransition, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [form, setForm] = useState(false);
   const [img, setImg] = useState(true);
 
