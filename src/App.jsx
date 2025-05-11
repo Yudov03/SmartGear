@@ -2,10 +2,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import WelcomePage from "./WelcomePage/WelcomePage";
 import LoginPage from "./login/loginPage";
 import Layout from "./components/Layout";
+import ProfilePage from "./pages/ProfilePage"
 import BuilderPage from "./pages/BuilderPage";
 import CatalogPage from "./pages/CatalogPage";
 import HistoryPage from "./pages/HistoryPage";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import Homepage from "./pages/Homepage"
 
 export default function App() {
   const location = useLocation();
@@ -24,12 +25,15 @@ export default function App() {
         <Layout
           content={
             <Routes>
+              <Route path="/home" element={<Homepage />} />
               <Route path="/builder" element={<BuilderPage />} />
               <Route path="/catalog" element={<CatalogPage />} />
               <Route path="/history" element={<HistoryPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           }
         />
+
       )}
     </>
   );
