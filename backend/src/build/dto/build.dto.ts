@@ -5,6 +5,11 @@ export class BuildDto {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
+  price: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
   P: number;
 
   @IsOptional()
@@ -16,6 +21,16 @@ export class BuildDto {
   @Type(() => Number)
   @IsNumber()
   n_sb: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  L_def: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  n_def: number;
 
   @IsOptional()
   @Type(() => Number)

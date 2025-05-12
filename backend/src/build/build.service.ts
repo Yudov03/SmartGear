@@ -9,6 +9,8 @@ export class BuildService {
   constructor(private prisma: PrismaService) {}
   // Nhap vao P va n tinh ra P_ct va n_sb
   async calculateEngine(dto: BuildDto) {
+    dto.n_def = dto.n;
+    dto.L_def = dto.L;
     dto.P_ct = dto.P / (0.955 * 0.96 * 0.97 * 0.99 ** 3);
     dto.n_sb = dto.n * 37.5;
     const engines = await this.prisma.engine.findMany({

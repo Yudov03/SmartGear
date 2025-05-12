@@ -1,11 +1,12 @@
 import { Type } from 'class-transformer';
-import {
-    IsBoolean, IsNumber,
-    IsOptional,
-    IsString
-} from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EditProjectDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  price: number;
+
   @IsString()
   @IsOptional()
   name: string;
@@ -37,6 +38,16 @@ export class EditProjectDto {
   @Type(() => Number)
   @IsNumber()
   n_sb: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  L_def: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  n_def: number;
 
   @IsOptional()
   @Type(() => Number)

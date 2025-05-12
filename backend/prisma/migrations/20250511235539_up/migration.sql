@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "projects" ADD COLUMN     "L_def" DOUBLE PRECISION,
+ADD COLUMN     "n_def" DOUBLE PRECISION;

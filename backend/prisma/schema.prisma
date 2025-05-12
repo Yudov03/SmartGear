@@ -37,6 +37,8 @@ model Project {
   P Float?
   L Float?
   n_sb Float?
+  L_def Float?
+  n_def Float?
 
   P_real Float?
   P1 Float?
@@ -114,6 +116,7 @@ model Project {
   profin_rang Float?
   alpha_tw Float?
 
+  price Float?
   engineId Int?
 
   userId Int
