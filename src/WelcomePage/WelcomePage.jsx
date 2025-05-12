@@ -73,6 +73,16 @@ function WelcomePage() {
                 BUILD YOUR <span style={{ color: "#4fd1c5" }}>DREAM</span>
               </h1>
               <p className="lead mt-3"></p>
+              <button
+                className="btn btn-primary btn-lg rounded-3 px-4 mt-5"
+                style={{
+                  background: "#4fd1c5",
+                  border: "none",
+                }}
+                onClick={handleSignin}
+              >
+                Create an account
+              </button>
             </div>
             {/* Cột phải: Hình minh họa */}
             <div
