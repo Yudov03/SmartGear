@@ -4,7 +4,8 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import ChatBox from "../components/ChatBox.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 function BuilderPage({ readOnly = false, initialData = null, projectId = null }) {
   const [params, setParams] = useState({ power: "", speed: "", lifetime: "" });
   const [engines, setEngines] = useState([]);
@@ -17,6 +18,32 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [built, setBuilt] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [predict, setPredict] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/projects/${id}`)
+        .then((res) => {
+          console.log(res.data);
+          setVariables(res.data);
+          setComputedVariables(res.data);
+          setStep(1);
+          setParams({power: res.data.P, speed: res.data.n_def, lifetime: res.data.L_def});
+          setBuilt(true);
+          setIsEngineConfirmed(true);
+          setSelectedEngine(res.data.engineId);
+          AxiosInstance.post("build/engine", {
+            P: res.data.P,
+            n: res.data.n_def,
+            L: res.data.L_def,
+          }).then((res) => {
+            setEngines(res.data[0]);
+          });
+        })
+        .catch((err) => console.log(err));  
+    }
+  }, [id]);
 
   useEffect(() => {
     if (initialData) {
@@ -111,12 +138,47 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
     AxiosInstance.post(`build/step2`, variables)
       .then(({ data }) => {
         console.log("API Step2 trả về:", data);
-        setComputedVariables(data);
+        setComputedVariables({...computedVariables, ...data});
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   }, [selectedEngine, variables, readOnly, step]);
 
+  useEffect(() => {
+    if (readOnly || !selectedEngine || step !== 3) return;
+    setLoading(true);
+    AxiosInstance.post(`build/step3`, variables)
+      .then(({ data }) => {
+        console.log("API Step3 trả về:", data);
+        setComputedVariables({...computedVariables, ...data});
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [selectedEngine, variables, readOnly, step]);
+
+  useEffect(() => {
+    if (readOnly || !selectedEngine || step !== 4) return;
+    setLoading(true);
+    AxiosInstance.post(`build/step4`, variables)
+      .then(({ data }) => {
+        console.log("API Step4 trả về:", data);
+        setComputedVariables({...computedVariables, ...data});
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [selectedEngine, variables, readOnly, step]);
+
+  useEffect(() => {
+    if (readOnly || !selectedEngine || step !== 5) return;
+    setLoading(true);
+    AxiosInstance.post(`price/predict`, variables)
+      .then(({ data }) => {
+        console.log("API Predict trả về:", data);
+        setPredict(data);
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [selectedEngine, variables, readOnly, step]);
 
   useEffect(() => {
     console.log("computedVariables hiện tại:", computedVariables);
@@ -128,11 +190,18 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
   const handleSave = async () => {
     if (readOnly) return;
     try {
-      const payload = { projectId: id, params, engines, variables, selectedEngine, computedVariables };
-      await AxiosInstance.post(`/builder/${id}/save`, payload);
-      await AxiosInstance.post(`/projects/${id}/builderData`, payload);
+      console.log(selectedEngine);
+      const payload = {
+        engineId: selectedEngine,
+        price: predict[0],
+        ...computedVariables,
+      };
+      console.log("Payload:", payload);
+      await AxiosInstance.post(`projects`, payload);
+      //console.log("Response from saving project:", response.data);
       setSaveSuccess(true);
-      setTimeout(() => navigate(`/projects/${id}`), 1000);
+      toast.success("Sign Up successful!");
+      setTimeout(() => navigate(`/projects`), 1000);
     } catch (err) {
       console.error(err);
       alert("Có lỗi khi lưu dữ liệu.");
@@ -387,12 +456,13 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
 
           {step === 2 && (
             <>
-              <div className="flex justify-center m-[50px]">
+              <div className="flex flex-col justify-center m-[50px]">
+                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4 mt-[25px]">Belt Drive Type</h2>
                 <BeltTable />
               </div>
               <div className ="m-[50px] ">
                 <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
-                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Belt Drive Parameters Table</h2>
+                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4 mt-[25px]">Belt Drive Parameters Table</h2>
                 <div className = "flex justify-center">
                 <table className="mt-10 w-[1000px] mx-auto border border-gray-300 border-collapse">
                   <thead>
@@ -458,7 +528,54 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
 
           {step === 3 && (
           <>
-            <ConicalGearTable />
+            {/* <ConicalGearTable /> */}
+              <div className ="m-[50px] ">
+                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4 mt-[25px]">Conical Gear Details</h2>
+                <div className = "flex justify-center">
+                <table className="mt-10 w-[1000px] mx-auto border border-gray-300 border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Thông số </th>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Bánh dẫn - Bánh bị dẫn</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { label: "Chiều dài côn ngoài", keys: "R_e" },
+                      { label: "Chiều rộng vành răng", keys: "b" },
+                      { label: "Chiều dài côn trung bình", keys: "R_m" },
+                      { label: "Đường kính vòng chia ngoài", keys: "d_e1" },
+                      { label: "Góc chia mặt côn", keys: "goc_1" },
+                      { label: "Chiều cao răng ngoài", keys: "h_e" },
+                      { label: "Chiều cao đầu răng ngoài", keys: "h_ae1" },
+                      { label: "Chiều cao chân răng ngoài", keys: "h_fe1" },
+                      { label: "Đường kính trung bình", keys: "d_m1" },
+                      { label: "Khoảng cách đến mặt phẳng vòng ngoài", keys: "B_1" },
+                      { label: "Đường kính đỉnh răng ngoài", keys: "d_ae1" },
+                      { label: "Góc chân răng", keys: "theta_f1" },
+                      { label: "Góc côn đỉnh", keys: "goc_a1" },
+                      { label: "Góc côn đáy", keys: "goc_f1" },
+                    ].map((item, i) => {
+                      const raw = item.value != null
+                        ? item.value
+                        : computedVariables[item.keys];
+                      const display = item.value != null
+                        ? item.value
+                        : Number.isFinite(+raw)
+                          ? parseFloat(raw).toFixed(4)
+                          : raw ?? "--";
+                      return (
+                        <tr key={i} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 border border-gray-300 text-center">{item.label}</td>
+                          <td className="px-4 py-2 border border-gray-300 text-center">{display}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                </div>
+              </div>
             <div className ="m-[50px]">
               <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
               <div className="flex items-center justify-center gap-4 mt-[30px]">
@@ -480,7 +597,50 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
 
           {step === 4 && (
           <>
-            <CylindricalGearTable />
+            {/* <CylindricalGearTable /> */}
+            <div className ="m-[50px] ">
+                <h2 className ="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4 mt-[25px]">Cylindrical Gear Details</h2>
+                <div className = "flex justify-center">
+                <table className="mt-10 w-[1000px] mx-auto border border-gray-300 border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Thông số hình học</th>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Bánh chủ động – Bánh bị động</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { label: "Khoảng cách trục", keys: "a_w" },
+                      { label: "Đường kính vòng chia", keys: "d1_cd" },
+                      { label: "Chiều rộng vành răng", keys: "b_w" },
+                      { label: "Đường kính lăn", keys: "d_w1" },
+                      { label: "Đường kính đỉnh răng", keys: "d_a1" },
+                      { label: "Đường kính đáy răng", keys: "d_f1" },
+                      { label: "Đường kính cơ sở", keys: "d_b1" },
+                      { label: "Góc profin gốc", keys: "profin" },
+                      { label: "Góc profin răng", keys: "profin_rang" },
+                      { label: "Góc ăn khớp", keys: "alpha_tw" },
+                    ].map((item, i) => {
+                      const raw = item.value != null
+                        ? item.value
+                        : computedVariables[item.keys];
+                      const display = item.value != null
+                        ? item.value
+                        : Number.isFinite(+raw)
+                          ? parseFloat(raw).toFixed(4)
+                          : raw ?? "--";
+                      return (
+                        <tr key={i} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 border border-gray-300 text-center">{item.label}</td>
+                          <td className="px-4 py-2 border border-gray-300 text-center">{display}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                </div>
+              </div>
             <div className ="m-[50px]">
               <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
               <div className="flex items-center justify-center gap-4 mt-[30px]">
@@ -501,28 +661,38 @@ function BuilderPage({ readOnly = false, initialData = null, projectId = null })
           </>)}
 
           {step === 5 && (
-            <div className ="mx-auto ml-[50px] mt-[10px]">
-                <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Expected Price</h2>
-                <div className ="flex justify-center">
-
-                </div>
-                <div className ="m-[50px]">
-                  <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
-                  <div className="flex items-center justify-center gap-4 mt-[30px]">
-                    <button
-                      onClick={handlePrev}
-                      className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
-                    >
-                      Next
-                    </button>
+            <div className="mx-auto ml-[50px] mt-[10px]">
+              <h2 className="text-[30px] flex justify-center text-[#4FD1C5] font-[800] mb-4">Expected Price</h2>
+              <div className=" mt-[80px] flex flex-col items-center gap-12">
+                {predict.map((item, i) => (
+                  <div
+                    key={i}
+                    className="bg-white border-4 border-[#4FD1C5] rounded-3xl shadow-2xl px-24 py-16 text-[48px] text-[#2D3748] font-extrabold w-[900px] h-[200px] flex items-center justify-center text-center"
+                  >
+                    {item}
                   </div>
+                ))}
+              </div>
+              <h3 className="mt-[80px] text-[40px] font-extrabold text-[#3BAFA2] drop-shadow-lg flex justify-center">
+                The gearbox construction process has been completed. Save it please!
+              </h3>
+              <div className ="m-[50px]">
+                <hr className="h-2 my-8 bg-gray-200 border-1 dark:bg-gray-700" />
+                <div className="flex items-center justify-center gap-4 mt-[30px]">
+                  <button
+                    onClick={handlePrev}
+                    className="mr-[500px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="mr-[60px] border-none bg-[#56D3C7] hover:bg-[#3BAFA2] w-[100px] h-[50px] text-white text-[20px] rounded-[5px] shadow-md transition-all"
+                  >
+                    Next
+                  </button>
                 </div>
+              </div>
             </div>
           )}
 
@@ -573,7 +743,7 @@ const BeltTable = () => {
   const beltData = DEFAULT_BELT_DATA;
 
   return (
-    <div className="overflow-x-auto my-5">
+    <div className="overflow-x-auto">
       <table className="w-auto mx-auto border-collapse border border-gray-400 text-center text-sm">
         <thead>
           <tr>
@@ -647,15 +817,15 @@ const ConicalGearTable = () => {
         <table className="border-collapse border border-gray-300 w-[1000px]">
           <thead>
             <tr>
-              <th className="border px-4 py-2 bg-gray-100">Thông số</th>
-              <th className="border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
+              <th className="text-center border px-4 py-2 bg-gray-100">Thông số</th>
+              <th className="text-center border px-4 py-2 bg-gray-100">Bánh dẫn – Bánh bị dẫn</th>
             </tr>
           </thead>
           <tbody>
             {data.map(([label, value], i) => (
               <tr key={i}>
-                <td className="border px-4 py-2">{label}</td>
-                <td className="border px-4 py-2">{value}</td>
+                <td className="text-center border px-4 py-2">{label}</td>
+                <td className="text-center border px-4 py-2">{value}</td>
               </tr>
             ))}
           </tbody>

@@ -2,13 +2,13 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import WelcomePage from "./WelcomePage/WelcomePage";
 import LoginPage from "./login/loginPage";
 import Layout from "./components/Layout";
-import ProfilePage from "./pages/ProfilePage"
+import ProfilePage from "./pages/ProfilePage";
 import BuilderPage from "./pages/BuilderPage";
 import CatalogPage from "./pages/CatalogPage";
 import ProjectsPage from "./pages/ProjectsPage";
-import ProjectDetails from "./pages/ProjectDetails"
-import Homepage from "./pages/Homepage"
-
+import ProjectDetails from "./pages/ProjectDetails";
+import Homepage from "./pages/Homepage";
+import { ToastContainer } from "react-toastify";
 export default function App() {
   const location = useLocation();
   const noNavbar =
@@ -17,6 +17,7 @@ export default function App() {
     location.pathname.includes("password");
   return (
     <>
+      <ToastContainer />
       {noNavbar ? (
         <Routes>
           <Route path="/" element={<WelcomePage />} />

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.css"
+import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -8,12 +8,12 @@ import gear from "../assets/gear.svg";
 import gear1 from "../assets/gear-1.svg";
 import "./login.css";
 import AxiosInstance from "../axios/AxiosInstance";
-import { cssTransition, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState(false);
-  const [img, setImg] = useState(true);
+  const [form, setForm] = useState(true);
+  const [img, setImg] = useState(false);
 
   const togglePosition = () => {
     setForm(!form);
@@ -34,7 +34,7 @@ const LoginPage = () => {
     })
       .then((res) => {
         console.log(res);
-        localStorage.setItem("Token", res.data);
+        localStorage.setItem("Token", res.data.access_token);
         navigate(`/home`);
         toast.success("Login successful!");
       })
