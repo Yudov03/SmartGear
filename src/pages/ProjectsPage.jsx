@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import AxiosInstance from "../axios/AxiosInstance";
+import { useEffect } from "react";
 
 const PAGE_SIZE = 5;
 
@@ -24,9 +26,21 @@ const dummyHistory = [
 
 export default function ProjectsPage() {
   // Chỉ dùng dummy data, không cần loading hay effect
-  const [history] = useState(dummyHistory);
+  //const [history] = useState(dummyHistory);
   const [page, setPage] = useState(1);
+  const [history, setProjects] = useState([]);
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    AxiosInstance.get("/projects/")
+      .then((res) => {
+        setProjects(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  console.log(history);
 
   const totalPages = Math.ceil(history.length / PAGE_SIZE);
   const start = (page - 1) * PAGE_SIZE;
@@ -47,9 +61,9 @@ export default function ProjectsPage() {
               } flex justify-between items-center`}
             >
               <div>
-                <div className="text-[25px] font-semibold text-gray-800">{item.systemType}</div>
-                <div className="text-[18px] text-gray-700">{item.timestamp}</div>
-                <div className="text-[18px] text-gray-800 mt-1">{item.note}</div>
+                <div className="text-[25px] font-semibold text-gray-800">{item.name || "Project Name"}</div>
+                <div className="text-[18px] text-gray-700">{item.status || "Status"}</div>
+                <div className="text-[18px] text-gray-800 mt-1">{item.description || "Description"}</div>
               </div>
               <button
                 className="px-3 py-1 bg-gray-200 ml-[20px] w-[150px] h-[50px] text-[17px] rounded-[16px] disabled:opacity-50"

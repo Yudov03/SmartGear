@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ChatBox from "../components/ChatBox.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
+import AxiosInstance from "../axios/AxiosInstance.jsx";
 
 const dummyHistoryItem = {
   id: 1,
@@ -31,43 +31,63 @@ const dummyBuilderData = {
   step: 1
 };
 
-const BeltDriveParametersTable = () => {
-  const data = dummyBuilderData.computedVariables;
-  const rows = [
-    { label: "Dạng đai", value: "Đai thẳng" },
-    { label: "Tiết diện đai", value: "A" },
-    { label: "Khoảng cách trục", value: data.a },
-    { label: "Chiều dài đai", value: data.L },
-    { label: "Góc ôm đai", value: data.alpha_1 },
-    { label: "Số vòng đai chạy trong 1 giây", value: data.circle },
-    { label: "Đường kính bánh dẫn", value: data.d1 },
-    { label: "Đường kính bánh bị dẫn", value: data.d2 },
-    { label: "Ứng suất lớn nhất", value: data.phi_max },
-    { label: "Lực căng đai ban đầu", value: data.F_0_final },
-    { label: "Lực tác dụng lên trục", value: data.F_r },
-  ];
+const BeltDriveParametersTable = ({computedVariables}) => {
+  // const rows = [
+  //   { label: "Dạng đai", value: "Đai thẳng" },
+  //   { label: "Tiết diện đai", value: "A" },
+  //   { label: "Khoảng cách trục", value: data.a },
+  //   { label: "Chiều dài đai", value: data.L },
+  //   { label: "Góc ôm đai", value: data.alpha_1 },
+  //   { label: "Số vòng đai chạy trong 1 giây", value: data.circle },
+  //   { label: "Đường kính bánh dẫn", value: data.d1 },
+  //   { label: "Đường kính bánh bị dẫn", value: data.d2 },
+  //   { label: "Ứng suất lớn nhất", value: data.phi_max },
+  //   { label: "Lực căng đai ban đầu", value: data.F_0_final },
+  //   { label: "Lực tác dụng lên trục", value: data.F_r },
+  // ];
 
   return (
-    <div className="w-3/4 mx-auto">
-      <table className="mt-4 w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2 bg-gray-100">Thông số</th>
-            <th className="border px-4 py-2 bg-gray-100">Giá trị</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, idx) => (
-            <tr key={idx}>
-              <td className="border px-4 py-2">{row.label}</td>
-              <td className="border px-4 py-2 text-center">
-                {row.value !== undefined ? row.value.toString() : "-"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <div className = "flex justify-center">
+                <table className="mt-10 w-[1000px] mx-auto border border-gray-300 border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Thông số</th>
+                      <th className="px-4 py-2 border border-gray-300 bg-gray-100 text-center font-semibold">Giá trị</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { label: "Dạng đai", value: "Đai thẳng" },
+                      { label: "Tiết diện đai", value: "A" },
+                      { label: "Khoảng cách trục", keys: "a" },
+                      { label: "Chiều dài đai", keys: "L" },
+                      { label: "Góc ôm đai", keys: "alpha_1" },
+                      { label: "Số vòng đai chạy trong 1 giây", keys: "circle" },
+                      { label: "Đường kính bánh dẫn", keys: "d1" },
+                      { label: "Đường kính bánh bị dẫn", keys: "d2" },
+                      { label: "Ứng suất lớn nhất", keys: "phi_max" },
+                      { label: "Lực căng đai ban đầu", keys: "F_0_final" },
+                      { label: "Lực tác dụng lên trục", keys: "F_r" },
+                    ].map((item, i) => {
+                      const raw = item.value != null
+                        ? item.value
+                        : computedVariables[item.keys];
+                      const display = item.value != null
+                        ? item.value
+                        : Number.isFinite(+raw)
+                          ? parseFloat(raw).toFixed(4)
+                          : raw ?? "--";
+                      return (
+                        <tr key={i} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 border border-gray-300 text-center">{item.label}</td>
+                          <td className="px-4 py-2 border border-gray-300 text-center">{display}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                </div>
   );
 };
 
@@ -141,65 +161,110 @@ const CylindricalGearTable = () => {
     </table>
   );
 };
-const ExpectedPrice = () => {
+const ExpectedPrice = ({project}) => {
   return (
     <div>
-
+              <div className=" mt-[80px] flex flex-col items-center gap-12">
+                  <div
+                    className="bg-white border-4 border-[#4FD1C5] rounded-3xl shadow-2xl px-24 py-16 text-[48px] text-[#2D3748] font-extrabold w-[900px] h-[200px] flex items-center justify-center text-center"
+                  >
+                    {project.price}
+                  </div>
+              </div>
     </div>
   )
 }
-const ComputedVariablesTable = () => {
-  const data = dummyBuilderData.computedVariables;
+const ComputedVariablesTable = ({computedVariables}) => {
   return (
     <div>
       <div className="overflow-x-auto">
-        <table className="w-3/4 mx-auto h-[400px] border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100" rowSpan="2">
-                Thông số
-              </th>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100" colSpan="5">
-                Trục
-              </th>
-            </tr>
-            <tr>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">Động cơ</th>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">I</th>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">II</th>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">III</th>
-              <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">Công tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              { label: "Công suất P (kW)", keys: ["P_real", "P1", "P2", "P3", "P_ct"] },
-              { label: "Tỷ số truyền u", keys: ["u_d", "u_brc", "u_brt", "u_kn"] },
-              { label: "Moment xoắn M (N.mm)", keys: ["T_dc", "T1", "T2", "T3", "T_tt"] },
-              { label: "Số vòng quay n (vg/ph)", keys: ["n_real", "n1", "n2", "n3", "n"] },
-            ].map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td className="border border-gray-300 px-4 py-2">{row.label}</td>
-                {row.keys.length === 4 ? (
-                  <td colSpan="5" className="border border-gray-300 px-4 py-2">
-                    <div className="flex text-center justify-around">
-                      {row.keys.map((key, index) => (
-                        <span key={index}>{parseFloat(data[key]).toFixed(4)}</span>
-                      ))}
-                    </div>
-                  </td>
-                ) : (
-                  row.keys.map((key, index) => (
-                    <td key={index} className="text-center border border-gray-300 px-4 py-2">
-                      {parseFloat(data[key]).toFixed(4)}
-                    </td>
-                  ))
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                    <table className="w-3/4 mx-auto h-[400px] border-collapse border border-gray-300">
+                      <thead>
+                        <tr>
+                          <th
+                            className="text-center border border-gray-300 px-4 py-2 bg-gray-100"
+                            rowSpan="2"
+                          >
+                            Thông số
+                          </th>
+                          <th
+                            className="text-center border border-gray-300 px-4 py-2 bg-gray-100"
+                            colSpan="5"
+                          >
+                            Trục
+                          </th>
+                        </tr>
+                        <tr>
+                          <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                            Động cơ
+                          </th>
+                          <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                            I
+                          </th>
+                          <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                            II
+                          </th>
+                          <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                            III
+                          </th>
+                          <th className="text-center border border-gray-300 px-4 py-2 bg-gray-100">
+                            Công tác
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          {
+                            label: "Công suất P (kW)",
+                            keys: ["P_real", "P1", "P2", "P3", "P_ct"],
+                          },
+                          {
+                            label: "Tỷ số truyền u",
+                            keys: ["u_d", "u_brc", "u_brt", "u_kn"],
+                          },
+                          {
+                            label: "Moment xoắn M (N.mm)",
+                            keys: ["T_dc", "T1", "T2", "T3", "T_tt"],
+                          },
+                          {
+                            label: "Số vòng quay n (vg/ph)",
+                            keys: ["n_real", "n1", "n2", "n3", "n"],
+                          },
+                        ].map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {row.label}
+                            </td>
+                            {row.keys.length === 4 ? (
+                              <td colSpan="5" className="border border-gray-300 px-4 py-2">
+                                <div className="flex text-center justify-around">
+                                  {row.keys.map((key, index) => {
+                                    const value = computedVariables[key];
+                                    const displayValue =
+                                      Number.isInteger(parseFloat(value)) ? value : parseFloat(value).toFixed(4);
+                              
+                                    return <span key={index}>{displayValue}</span>;
+                                  })}
+                                </div>
+                              </td>
+                            ) : (
+                              row.keys.map((key, index) => {
+                                const value = computedVariables[key];
+                                const displayValue =
+                                  Number.isInteger(parseFloat(value)) ? value : parseFloat(value).toFixed(4);
+                              
+                                return (
+                                  <td key={index} className="text-center border border-gray-300 px-4 py-2">
+                                    {displayValue}
+                                  </td>
+                                );
+                              })                        
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
     </div>
   );
 };
@@ -208,15 +273,36 @@ export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [step, setStep] = useState(dummyBuilderData.step);
+  const [project, setProject] = useState({});
+  const [engines, setEngines] = useState([]);
+  const [selectedEngine, setSelectedEngine] = useState(null);
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/projects/${id}`)
+        .then((res) => {
+          setProject(res.data);
+          console.log(res.data.engineId);
+          AxiosInstance.post("build/engine", {
+            P: res.data.P,
+            n: res.data.n_def,
+            L: res.data.L_def,
+          }).then((res) => {
+            const engineList = res.data[0];
+            setEngines(engineList);
+          })
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [id]);
 
   const steps = [
     {
       label: "Input Parameters",
       content: (
         <div className="flex flex-row justify-center items-center space-x-[100px] text-[20px] text-gray-800">
-          <span>P: {dummyBuilderData.params.power} kW</span>
-          <span>n: {dummyBuilderData.params.speed} rpm</span>
-          <span>L: {dummyBuilderData.params.lifetime} years</span>
+          <span>P: {project.P} kW</span>
+          <span>n: {project.n_def} rpm</span>
+          <span>L: {project.L_def} years</span>
         </div>
       )
        
@@ -225,19 +311,19 @@ export default function ProjectDetails() {
       label: "Selected Engine",
       content: (
         <ul className="list-disc mt-[50px] space-y-[40px] ml-[200px] text-gray-800">
-          {dummyBuilderData.engines.map((e) => (
-            <li key={e.id} className={e.id === dummyBuilderData.selectedEngine ? "font-[700] text-[20px] text-[#3BAFA2]" : "text-[20px] text-gray-700"}>
+          {engines.map((e) => (
+            <li key={e.id} className={e.id === project.engineId ? "font-[700] text-[20px] text-[#3BAFA2]" : "text-[20px] text-gray-700"}>
               {e.company} - {e.Type} - {e.P_dc} kW - {e.n_dc} rpm {e.id === dummyBuilderData.selectedEngine && " (selected)"}
             </li>
           ))}
         </ul>
       )
     },
-    { label: "Computed Variables", content: <ComputedVariablesTable /> },
-    { label: "Belt Drive Parameters Table", content: <BeltDriveParametersTable />},
+    { label: "Computed Variables", content: <ComputedVariablesTable computedVariables={project}/> },
+    { label: "Belt Drive Parameters Table", content: <BeltDriveParametersTable computedVariables={project}/>},
     { label: "Conical Gear Details", content: <ConicalGearTable /> },
     { label: "Cylindrical Gear Details", content: <CylindricalGearTable /> },
-    { label: "Expected Price", content: <ExpectedPrice/>},
+    { label: "Expected Price", content: <ExpectedPrice project={project}/>},
   ];
 
   return (

@@ -55,7 +55,7 @@ function WelcomePage() {
                 style={{ backgroundColor: "#4fd1c5" }}
                 onClick={handleSignin}
               >
-                Sign Up
+                Sign In
               </button>
             </div>
           </div>
